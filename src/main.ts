@@ -8,8 +8,13 @@ async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
     // Ensure all endpoints are protected from invalid data
+    app.setGlobalPrefix('api')
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalGuards(new JwtGuard(app.get(Reflector)));
+
+    app.enableCors({
+        origin: "*"
+    })
 
     // Create swagger docs
     const config = new DocumentBuilder()

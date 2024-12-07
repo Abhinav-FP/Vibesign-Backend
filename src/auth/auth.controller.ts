@@ -1,9 +1,10 @@
 import { BadRequestException, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {ApiExtraModels} from "@nestjs/swagger";
 import { AuthGuard } from '@nestjs/passport';
 
 import { Public } from '../decorators/public.decorator';
 import { AuthService } from './auth.service';
-import { LoginResponseDto } from '../dtos/auth.dto';
+import {LoginResponseDto, UserLoginDto} from '../dtos/auth.dto';
 import { ResponseUser, User, UserDocument } from '../schemas/user.schema';
 import { AuthUser } from '../decorators/auth-user.decorator';
 
@@ -14,6 +15,7 @@ export class AuthController {
     @UseGuards(AuthGuard('local'))
     @Public()
     @Post('login')
+    @ApiExtraModels(UserLoginDto)
     async login(@AuthUser() user: UserDocument): Promise<LoginResponseDto | BadRequestException> {
         return this.authService.login(user);
     }
