@@ -1,16 +1,17 @@
-import { BadRequestException, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {BadRequestException, Controller, Get, Post, UseGuards} from '@nestjs/common';
 import {ApiExtraModels} from "@nestjs/swagger";
-import { AuthGuard } from '@nestjs/passport';
+import {AuthGuard} from '@nestjs/passport';
+import {AuthUser} from "@stemy/nest-utils";
 
-import { Public } from '../decorators/public.decorator';
-import { AuthService } from './auth.service';
+import {Public} from '../decorators/public.decorator';
+import {AuthService} from './auth.service';
 import {LoginResponseDto, UserLoginDto} from '../dtos/auth.dto';
-import { ResponseUser, User, UserDocument } from '../schemas/user.schema';
-import { AuthUser } from '../decorators/auth-user.decorator';
+import {ResponseUser, UserDocument} from '../schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService) {
+    }
 
     @UseGuards(AuthGuard('local'))
     @Public()

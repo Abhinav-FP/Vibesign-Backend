@@ -1,9 +1,10 @@
-import { Model } from 'mongoose';
-import { hash } from 'bcrypt';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { AddUserDto } from '../dtos/user.dto';
-import { User, UserDocument } from '../schemas/user.schema';
+import {FilterQuery, Model} from 'mongoose';
+import {hash} from 'bcrypt';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {InjectModel} from '@nestjs/mongoose';
+import {AddUserDto} from '../dtos/user.dto';
+import {User, UserDocument} from '../schemas/user.schema';
+import {IPagination, IPaginationParams, paginate} from "../utils";
 
 @Injectable()
 export class UsersService {
@@ -37,7 +38,7 @@ export class UsersService {
         }).exec();
     }
 
-    async findAll(): Promise<UserDocument[]> {
-        return this.model.find().exec();
+    async paginate(where: FilterQuery<UserDocument>, params: IPaginationParams): Promise<IPagination<UserDocument>> {
+        return paginate(this.model, where, params);
     }
 }

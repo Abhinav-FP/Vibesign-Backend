@@ -1,7 +1,9 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { BaseModel } from './base.model';
-import { createTransformer } from '../utils';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import {HydratedDocument, Types} from 'mongoose';
+import {ObjectId} from 'mongodb';
+
+import {BaseModel} from './base.model';
+import {createTransformer} from '../utils';
 
 export enum UserRole {
     Customer = "customer",
@@ -12,6 +14,7 @@ export enum UserRole {
 
 @Schema({
     id: true,
+    timestamps: { createdAt: 'created', updatedAt: 'updated' },
     toJSON: {
         transform: createTransformer((doc, ret) => {
             delete ret.password;
@@ -33,6 +36,9 @@ export class User extends BaseModel {
 
     @Prop()
     role: UserRole;
+
+    @Prop({type: Types.ObjectId, required: false, ref: User.name})
+    host: ObjectId;
 }
 
 export type ResponseUser = Omit<User, 'password'>;
