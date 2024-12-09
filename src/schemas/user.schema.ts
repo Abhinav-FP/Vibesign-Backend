@@ -22,13 +22,13 @@ export enum UserRole {
     }
 })
 export class User extends BaseModel {
-    @Prop()
+    @Prop({unique: true})
     email: string;
 
     @Prop()
     name: string;
 
-    @Prop()
+    @Prop({unique: true})
     username: string;
 
     @Prop()
