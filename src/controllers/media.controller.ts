@@ -7,7 +7,6 @@ import {AddMediaDto, EditMediaDto, ListMediaDto} from '../dtos/media.dto';
 import {MediaDir, MediaDirDoc} from "../schemas/media-dir.schema";
 import {Media, MediaDoc} from '../schemas/media.schema';
 import {UserDoc} from '../schemas/user.schema';
-import {MediaType} from "../common-types";
 
 export async function getDirPath(dir: MediaDirDoc): Promise<string> {
     if (dir?.parent) {
@@ -15,7 +14,7 @@ export async function getDirPath(dir: MediaDirDoc): Promise<string> {
         const parentPath = await getDirPath(dir.parent as any);
         return `${parentPath}/${dir}`
     }
-    return !dir ? `` : dir.name;
+    return !dir ? `/` : `/${dir.name}`;
 }
 
 @Controller('media/:mediaDirId')
@@ -34,7 +33,7 @@ export class MediaController {
                @Query('query', QueryPipe) q: ListMediaDto) {
         const query = q.toQuery(authUser);
         query.parent = dir?.id;
-        const dirs = await this.dirModel.find(query).exec();
+        const dirs = await this.dirModel.find(query);
         const res = await paginate(this.model, query, {page, limit, sort});
         return {
             ...res,
@@ -43,7 +42,7 @@ export class MediaController {
                 ...res.items.map(i => i.toJSON())
             ],
             meta: {
-                parent: dir?.parent?.toHexString() ?? ``,
+                parent: dir?.parent?.toHexString() ?? `root`,
                 path: await getDirPath(dir)
             }
         };
@@ -66,8 +65,7 @@ export class MediaController {
     async add(@AuthUser() authUser: UserDoc,
               @ResolveEntity(MediaDir, false) dir: MediaDirDoc,
               @Body() dto: AddMediaDto) {
-        const media = dto.type == MediaType.Directory
-            ? new this.dirModel(dto) : new this.model(dto);
+        const media = new this.model(dto);
         media.parent = dir?.id;
         media.owner = authUser.id;
         await media.save();

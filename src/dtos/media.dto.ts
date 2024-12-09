@@ -27,15 +27,12 @@ export class ListMediaDto {
 }
 
 export class MediaDto {
-
-    @IsEnum(MediaType)
-    @IsOptional()
-    @ApiProperty({enum: MediaType})
-    type: MediaType = MediaType.Directory;
-
     @MinLength(3)
     @ApiProperty()
     name: string;
+
+    @ApiProperty({hidden: true})
+    parent: string;
 }
 
 export class AddMediaDto extends MediaDto {
