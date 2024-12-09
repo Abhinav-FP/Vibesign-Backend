@@ -27,8 +27,8 @@ export class ListUserDto {
 
     toQuery(user: UserDocument): FilterQuery<UserDocument> {
         const query: FilterQuery<any> = {
-            name: {$regex: this.name, $options: 'gi'},
-            username: {$regex: this.username, $options: 'gi'},
+            name: {$regex: this.name, $options: 'i'},
+            username: {$regex: this.username, $options: 'i'},
         };
         if (!this.host || (user.role != UserRole.Admin && user.role != UserRole.SuperAdmin)) {
             query.host = user.id;
