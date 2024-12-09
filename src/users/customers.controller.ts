@@ -19,7 +19,6 @@ export class CustomersController {
                @Query('query', QueryPipe) q: ListUserDto) {
         const query = q.toQuery(authUser);
         query.role = UserRole.Customer;
-        query.host = authUser.id;
         const res = await this.users.paginate(query, {page, limit, sort, populate: ['host']});
         return {
             ...res,
