@@ -16,13 +16,18 @@ export class MediaDirController {
     }
 
     @Get('/new/default')
-    getDefault() {
-        return new AddMediaDirDto();
+    async getDefault(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc) {
+        const res = new AddMediaDirDto();
+        res.path = !parent ? `/` : await parent.getPath();
+        return res;
     }
 
     @Get('/:id')
-    get(@ResolveEntity(MediaDir) media: MediaDirDoc) {
-        return media.toJSON();
+    async get(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
+        @ResolveEntity(MediaDir) dir: MediaDirDoc) {
+        const res = dir.toJSON();
+        res['path'] = await parent.getPath();
+        return res;
     }
 
     @Post()

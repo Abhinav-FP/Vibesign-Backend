@@ -1,5 +1,5 @@
 import {FilterQuery} from 'mongoose';
-import {IsEnum, IsOptional, IsString, MinLength} from 'class-validator';
+import {IsOptional, IsString, MinLength} from 'class-validator';
 
 import {ApiProperty} from '../decorators';
 import {MediaType} from '../common-types';
@@ -29,10 +29,16 @@ export class ListMediaDto {
 export class MediaDto {
     @MinLength(3)
     @ApiProperty()
-    name: string;
+    name: string = '';
 
-    @ApiProperty({hidden: true})
-    parent: string;
+    @ApiProperty({type: 'file', required: false})
+    file: string = '';
+
+    @IsOptional()
+    @ApiProperty({hidden: true, required: false})
+    parent: string = '';
+
+    path: string = '';
 }
 
 export class AddMediaDto extends MediaDto {

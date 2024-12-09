@@ -1,13 +1,17 @@
-import {MinLength} from 'class-validator';
+import {IsOptional, MinLength} from 'class-validator';
 import {ApiProperty} from '../decorators';
 
 export class MediaDirDto {
+
     @MinLength(3)
     @ApiProperty()
-    name: string;
+    name: string = '';
 
-    @ApiProperty({hidden: true})
-    parent: string;
+    @IsOptional()
+    @ApiProperty({hidden: true, required: false})
+    parent: string = '';
+
+    path: string = '';
 }
 
 export class AddMediaDirDto extends MediaDirDto {

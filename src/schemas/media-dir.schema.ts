@@ -6,6 +6,7 @@ import {createTransformer} from '@stemy/nest-utils';
 import {MediaType} from '../common-types';
 import {BaseModel} from './base.model';
 import {User} from './user.schema';
+import {MediaDoc} from "./media.schema";
 
 @Schema({
     id: true,
@@ -14,6 +15,16 @@ import {User} from './user.schema';
         transform: createTransformer((_, ret) => {
             ret.type = MediaType.Directory;
         })
+    },
+    methods: {
+        async getPath(this: MediaDoc) {
+            if (this.parent) {
+                await this.populate("parent");
+                const parentPath = await (this.parent as unknown as MediaDirDoc).getPath();
+                return `${parentPath}/${this.name}`
+            }
+            return `/${this.name}`;
+        }
     }
 })
 export class MediaDir extends BaseModel {
@@ -26,6 +37,8 @@ export class MediaDir extends BaseModel {
 
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
+
+    async getPath?(this: MediaDirDoc): Promise<string>;
 }
 
 export type MediaDirDoc = HydratedDocument<MediaDir>;

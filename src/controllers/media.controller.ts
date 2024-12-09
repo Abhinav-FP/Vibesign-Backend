@@ -8,15 +8,6 @@ import {MediaDir, MediaDirDoc} from "../schemas/media-dir.schema";
 import {Media, MediaDoc} from '../schemas/media.schema';
 import {UserDoc} from '../schemas/user.schema';
 
-export async function getDirPath(dir: MediaDirDoc): Promise<string> {
-    if (dir?.parent) {
-        dir = await dir.populate("parent");
-        const parentPath = await getDirPath(dir.parent as any);
-        return `${parentPath}/${dir}`
-    }
-    return !dir ? `/` : `/${dir.name}`;
-}
-
 @Controller('media/:mediaDirId')
 export class MediaController {
 
@@ -43,22 +34,24 @@ export class MediaController {
             ],
             meta: {
                 parent: dir?.parent?.toHexString() ?? `root`,
-                path: await getDirPath(dir)
+                path: !dir ? `/` : await dir.getPath()
             }
         };
     }
 
     @Get('/new/default')
-    getDefault() {
-        return new AddMediaDto();
+    async getDefault(@ResolveEntity(MediaDir, false) dir: MediaDirDoc) {
+        const res = new AddMediaDto();
+        res.path = !dir ? `/` : await dir.getPath();
+        return res;
     }
 
     @Get('/:id')
-    get(@ResolveEntity(Media) media: MediaDoc) {
-        // if (media.parent !== dir?.id) {
-        //     throw new NotFoundException(`Media file not found in dir: ${dir?.name || 'root'}`);
-        // }
-        return media.toJSON();
+    async get(@ResolveEntity(MediaDir, false) dir: MediaDirDoc,
+              @ResolveEntity(Media) media: MediaDoc) {
+        const res = media.toJSON();
+        res['path'] = !dir ? `/` : await dir.getPath();
+        return res;
     }
 
     @Post()
