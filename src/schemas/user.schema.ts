@@ -1,9 +1,9 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
+import {createTransformer} from '@stemy/nest-utils';
 
 import {BaseModel} from './base.model';
-import {createTransformer} from '../utils';
 
 export enum UserRole {
     Customer = "customer",

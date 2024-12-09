@@ -1,9 +1,9 @@
 import {Body, Controller, Delete, ForbiddenException, Get, Patch, Post, Query} from '@nestjs/common';
 import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
+import {UsersService} from "./users.service";
 import {User, UserDocument, UserRole} from "../schemas/user.schema";
 import {AddUserDto, EditUserDto, ListUserDto} from "../dtos/user.dto";
-import {UsersService} from "./users.service";
 
 @Controller('partners')
 export class PartnersController {
@@ -13,15 +13,14 @@ export class PartnersController {
 
     @Get()
     async list(@AuthUser() authUser: UserDocument,
-         @Query("page") page: number = 0,
-         @Query("limit") limit: number = 20,
-         @Query("sort") sort: string = "",
-         @Query("query", QueryPipe) q: ListUserDto) {
-        const params = {page, limit, sort, populate: ["host"]};
+               @Query("page") page: number = 0,
+               @Query("limit") limit: number = 20,
+               @Query("sort") sort: string = "",
+               @Query("query", QueryPipe) q: ListUserDto) {
         const query = q.toQuery(authUser);
         query.role = UserRole.Partner;
         query.host = authUser.id;
-        const res = await this.users.paginate(query, params);
+        const res = await this.users.paginate(query, {page, limit, sort, populate: ['host']});
         return {
             ...res,
             items: res.items.map(i => i.toJSON())
@@ -34,28 +33,27 @@ export class PartnersController {
     }
 
     @Get("/:id")
-    getUser(@ResolveEntity(User, ) user: UserDocument) {
+    get(@ResolveEntity(User, ) user: UserDocument) {
         return user.toJSON();
     }
 
     @Post()
-    async addUser(@AuthUser() authUser: UserDocument, @Body() dto: AddUserDto) {
+    async add(@AuthUser() authUser: UserDocument, @Body() dto: AddUserDto) {
         const user = await this.users.add(dto);
-        user.host = authUser.id;
         user.role = UserRole.Partner;
+        user.host = authUser.id;
         await user.save();
         return user.toJSON();
     }
 
     @Patch("/:id")
-    async updateUser(@ResolveEntity(User) user: UserDocument, @Body() dto: EditUserDto) {
-        dto.password = !dto.password ? user.password : await this.users.hashPassword(dto.password);
-        await user.updateOne(dto);
+    async update(@ResolveEntity(User) user: UserDocument, @Body() dto: EditUserDto) {
+        await this.users.update(user, dto);
         return user.toJSON();
     }
 
     @Delete("/:id")
-    async deleteUser(@AuthUser() authUser: UserDocument, @ResolveEntity(User) user: UserDocument) {
+    async delete(@AuthUser() authUser: UserDocument, @ResolveEntity(User) user: UserDocument) {
         if (authUser.id == user.id) {
             throw new ForbiddenException(`Can't remove own user`);
         }

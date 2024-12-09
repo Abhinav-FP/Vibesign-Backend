@@ -2,9 +2,10 @@ import {FilterQuery, Model} from 'mongoose';
 import {hash} from 'bcrypt';
 import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {AddUserDto} from '../dtos/user.dto';
+import {IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
+
+import {AddUserDto, EditUserDto} from '../dtos/user.dto';
 import {User, UserDocument} from '../schemas/user.schema';
-import {IPagination, IPaginationParams, paginate} from "../utils";
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,7 @@ export class UsersService {
     }
 
     async hashPassword(password: string): Promise<string> {
-        return hash(password, "$2b$12$nLbWAfF5Tcev6r1sGU7C2.");
+        return hash(password, '$2b$12$nLbWAfF5Tcev6r1sGU7C2.');
     }
 
     async add(dto: AddUserDto): Promise<UserDocument> {
@@ -23,6 +24,11 @@ export class UsersService {
         dto.password = await this.hashPassword(dto.password);
         const user = new this.model(dto);
         return user.save();
+    }
+
+    async update(user: UserDocument, dto: EditUserDto): Promise<UserDocument> {
+        dto.password = !dto.password ? user.password : await this.hashPassword(dto.password);
+        return user.updateOne(dto);
     }
 
     async findById(id: string): Promise<UserDocument> {
@@ -38,7 +44,7 @@ export class UsersService {
         }).exec();
     }
 
-    async paginate(where: FilterQuery<UserDocument>, params: IPaginationParams): Promise<IPagination<UserDocument>> {
+    async paginate(where: FilterQuery<UserDocument>, params: IPaginationParams<User>): Promise<IPagination<UserDocument>> {
         return paginate(this.model, where, params);
     }
 }

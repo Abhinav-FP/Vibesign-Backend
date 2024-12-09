@@ -1,34 +1,38 @@
+import {FilterQuery} from 'mongoose';
 import {IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, MinLength} from 'class-validator';
-import {ApiProperty} from "@nestjs/swagger";
-import {UserDocument} from '../schemas/user.schema';
-import {FilterQuery} from "mongoose";
+
+import {UserDocument, UserRole} from '../schemas/user.schema';
+import {ApiProperty} from '../decorators';
 
 export class ListUserDto {
 
     @IsString()
     @IsOptional()
     @ApiProperty()
-    email: string = "";
+    email: string = '';
 
     @IsString()
     @IsOptional()
     @ApiProperty()
-    name: string = "";
+    name: string = '';
 
     @IsString()
     @IsOptional()
     @ApiProperty()
-    username: string = "";
+    username: string = '';
 
-    @IsString()
     @IsOptional()
-    @ApiProperty()
-    host: string = "";
+    @ApiProperty({filterType: 'checkbox'})
+    host: string = '';
 
     toQuery(user: UserDocument): FilterQuery<UserDocument> {
         const query: FilterQuery<any> = {
-            name: {$regex: this.name, $options: "gi"}
+            name: {$regex: this.name, $options: 'gi'},
+            username: {$regex: this.username, $options: 'gi'},
         };
+        if (!this.host && user.role != UserRole.Admin && user.role != UserRole.SuperAdmin) {
+            query.host = user.host;
+        }
         if (user.role) return query;
         // query.profile = user.profile.id;
         return query;
