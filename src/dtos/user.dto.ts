@@ -1,7 +1,8 @@
 import {FilterQuery} from 'mongoose';
 import {IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, MinLength} from 'class-validator';
 
-import {UserDocument, UserRole} from '../schemas/user.schema';
+import {UserRole} from '../common-types';
+import {UserDoc} from '../schemas/user.schema';
 import {ApiProperty} from '../decorators';
 
 export class ListUserDto {
@@ -25,7 +26,7 @@ export class ListUserDto {
     @ApiProperty({filterType: 'checkbox'})
     host: string = '';
 
-    toQuery(user: UserDocument): FilterQuery<UserDocument> {
+    toQuery(user: UserDoc): FilterQuery<UserDoc> {
         const query: FilterQuery<any> = {
             email: {$regex: this.email, $options: 'i'},
             name: {$regex: this.name, $options: 'i'},

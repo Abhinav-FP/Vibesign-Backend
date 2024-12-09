@@ -3,14 +3,8 @@ import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
 
+import {UserRole} from '../common-types';
 import {BaseModel} from './base.model';
-
-export enum UserRole {
-    Customer = "customer",
-    Partner = "partner",
-    Admin = "admin",
-    SuperAdmin = "superAdmin",
-}
 
 @Schema({
     id: true,
@@ -43,6 +37,6 @@ export class User extends BaseModel {
 
 export type ResponseUser = Omit<User, 'password'>;
 
-export type UserDocument = HydratedDocument<User>;
+export type UserDoc = HydratedDocument<User>;
 
 export const UserSchema = SchemaFactory.createForClass(User);

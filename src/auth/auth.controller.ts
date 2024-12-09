@@ -3,10 +3,10 @@ import {ApiExtraModels} from "@nestjs/swagger";
 import {AuthGuard} from '@nestjs/passport';
 import {AuthUser} from "@stemy/nest-utils";
 
-import {Public} from '../decorators/public.decorator';
+import {Public} from '../decorators';
 import {AuthService} from './auth.service';
 import {LoginResponseDto, UserLoginDto} from '../dtos/auth.dto';
-import {ResponseUser, UserDocument} from '../schemas/user.schema';
+import {ResponseUser, UserDoc} from '../schemas/user.schema';
 
 @Controller('auth')
 export class AuthController {
@@ -17,12 +17,12 @@ export class AuthController {
     @Public()
     @Post('login')
     @ApiExtraModels(UserLoginDto)
-    async login(@AuthUser() user: UserDocument): Promise<LoginResponseDto | BadRequestException> {
+    async login(@AuthUser() user: UserDoc): Promise<LoginResponseDto | BadRequestException> {
         return this.authService.login(user);
     }
 
     @Get('user')
-    async user(@AuthUser() user: UserDocument): Promise<ResponseUser | BadRequestException> {
+    async user(@AuthUser() user: UserDoc): Promise<ResponseUser | BadRequestException> {
         return user.toJSON();
     }
 
