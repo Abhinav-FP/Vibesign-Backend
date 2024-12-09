@@ -14,7 +14,7 @@ export enum UserRole {
 
 @Schema({
     id: true,
-    timestamps: { createdAt: 'created', updatedAt: 'updated' },
+    timestamps: { createdAt: true, updatedAt: true },
     toJSON: {
         transform: createTransformer((doc, ret) => {
             delete ret.password;
