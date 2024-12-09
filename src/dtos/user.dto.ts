@@ -27,6 +27,7 @@ export class ListUserDto {
 
     toQuery(user: UserDocument): FilterQuery<UserDocument> {
         const query: FilterQuery<any> = {
+            email: {$regex: this.email, $options: 'i'},
             name: {$regex: this.name, $options: 'i'},
             username: {$regex: this.username, $options: 'i'},
         };
