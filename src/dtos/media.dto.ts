@@ -38,7 +38,7 @@ export class MediaDto {
     @ApiProperty({hidden: true, required: false})
     parent: string = '';
 
-    path: string = '';
+    path: string = null;
 }
 
 export class AddMediaDto extends MediaDto {

@@ -22,14 +22,6 @@ export class MediaDirController {
         return res;
     }
 
-    @Get('/:id')
-    async get(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
-        @ResolveEntity(MediaDir) dir: MediaDirDoc) {
-        const res = dir.toJSON();
-        res['path'] = await parent.getPath();
-        return res;
-    }
-
     @Post()
     async add(@AuthUser() authUser: UserDoc,
               @ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
@@ -41,8 +33,19 @@ export class MediaDirController {
         return dir.toJSON();
     }
 
+    @Get('/:id')
+    async get(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
+              @ResolveEntity(MediaDir) dir: MediaDirDoc) {
+        const res = dir.toJSON();
+        res['path'] = !parent ? `/` : await parent.getPath();
+        return res;
+    }
+
     @Patch('/:id')
-    async update(@ResolveEntity(MediaDir) media: MediaDirDoc, @Body() dto: EditMediaDirDto) {
+    async update(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
+                 @ResolveEntity(MediaDir) media: MediaDirDoc,
+                 @Body() dto: EditMediaDirDto) {
+        dto.parent = parent?.id;
         await media.updateOne(dto);
         return media.toJSON();
     }

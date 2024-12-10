@@ -9,7 +9,7 @@ export class MediaDirDto {
 
     @IsOptional()
     @ApiProperty({hidden: true, required: false})
-    parent: string = '';
+    parent: string = null;
 
     path: string = '';
 }
