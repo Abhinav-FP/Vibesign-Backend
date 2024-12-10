@@ -76,6 +76,6 @@ export class MediaController {
 
     @Delete('/:id')
     async delete(@ResolveEntity(Media) media: MediaDoc) {
-        return media.deleteOne();
+        return this.media.deleteMedia(media);
     }
 }
