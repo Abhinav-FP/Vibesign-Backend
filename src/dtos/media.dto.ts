@@ -1,4 +1,4 @@
-import {FilterQuery} from 'mongoose';
+import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
 
 import {ApiProperty} from '../decorators';
@@ -32,13 +32,13 @@ export class MediaDto {
     name: string = '';
 
     @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg'], required: false})
-    file: string = '';
+    file: Types.ObjectId = null;
 
     @IsOptional()
     @ApiProperty({hidden: true, required: false})
-    parent: string = '';
+    parent: Types.ObjectId = null;
 
-    path: string = null;
+    path: string = '';
 }
 
 export class AddMediaDto extends MediaDto {

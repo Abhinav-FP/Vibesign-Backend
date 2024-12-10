@@ -1,7 +1,7 @@
 import {Model} from 'mongoose';
 import {Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {AuthUser, paginate, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {AuthUser, paginate, QueryPipe, ResolveEntity, AssetsService} from '@stemy/nest-utils';
 
 import {AddMediaDto, EditMediaDto, ListMediaDto} from '../dtos/media.dto';
 import {MediaDir, MediaDirDoc} from "../schemas/media-dir.schema";
@@ -12,7 +12,8 @@ import {UserDoc} from '../schemas/user.schema';
 export class MediaController {
 
     constructor(@InjectModel(MediaDir.name) protected dirModel: Model<MediaDir>,
-                @InjectModel(Media.name) protected model: Model<Media>) {
+                @InjectModel(Media.name) protected model: Model<Media>,
+                protected assets: AssetsService) {
     }
 
     @Get()
@@ -70,6 +71,10 @@ export class MediaController {
                  @ResolveEntity(Media) media: MediaDoc,
                  @Body() dto: EditMediaDto) {
         dto.parent = parent?.id;
+        if (media.file && media.file != dto.file) {
+            await this.assets.unlink(media.file);
+            console.log(`Should delete file, ${media.file} ${dto.file}`);
+        }
         await media.updateOne(dto);
         return media.toJSON();
     }

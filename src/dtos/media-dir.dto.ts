@@ -1,4 +1,5 @@
 import {IsOptional, MinLength} from 'class-validator';
+import {Types} from 'mongoose';
 import {ApiProperty} from '../decorators';
 
 export class MediaDirDto {
@@ -9,7 +10,7 @@ export class MediaDirDto {
 
     @IsOptional()
     @ApiProperty({hidden: true, required: false})
-    parent: string = null;
+    parent: Types.ObjectId = null;
 
     path: string = '';
 }
