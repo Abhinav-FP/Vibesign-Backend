@@ -2,6 +2,8 @@ import {APP_GUARD} from '@nestjs/core';
 import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
 import {MongooseModule} from '@nestjs/mongoose';
+import {AssetsModule} from '@stemy/nest-utils';
+
 import {AuthModule} from './auth/auth.module';
 import {JwtGuard} from './auth/jwt.guard';
 import {UsersModule} from './users/users.module';
@@ -28,6 +30,7 @@ import {MediaDirController} from './controllers/media-dir.controller';
         MongooseModule.forRootAsync(databaseConfig.asProvider()),
         AuthModule,
         UsersModule,
+        AssetsModule,
     ],
     controllers: [MediaController, MediaDirController],
     providers: [

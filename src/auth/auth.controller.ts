@@ -1,9 +1,8 @@
 import {BadRequestException, Controller, Get, Post, UseGuards} from '@nestjs/common';
 import {ApiExtraModels} from "@nestjs/swagger";
 import {AuthGuard} from '@nestjs/passport';
-import {AuthUser} from "@stemy/nest-utils";
+import {AuthUser, Public} from "@stemy/nest-utils";
 
-import {Public} from '../decorators';
 import {AuthService} from './auth.service';
 import {LoginResponseDto, UserLoginDto} from '../dtos/auth.dto';
 import {ResponseUser, UserDoc} from '../schemas/user.schema';

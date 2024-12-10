@@ -31,7 +31,7 @@ export class MediaDto {
     @ApiProperty()
     name: string = '';
 
-    @ApiProperty({type: 'file', required: false})
+    @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg'], required: false})
     file: string = '';
 
     @IsOptional()
