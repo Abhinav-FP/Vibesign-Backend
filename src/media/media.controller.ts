@@ -1,19 +1,16 @@
-import {Model} from 'mongoose';
 import {Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {AuthUser, paginate, QueryPipe, ResolveEntity, AssetsService} from '@stemy/nest-utils';
+import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
 import {AddMediaDto, EditMediaDto, ListMediaDto} from '../dtos/media.dto';
-import {MediaDir, MediaDirDoc} from "../schemas/media-dir.schema";
-import {Media, MediaDoc} from '../schemas/media.schema';
+import {MediaDir, MediaDirDoc} from "./schemas/media-dir.schema";
+import {Media, MediaDoc} from './schemas/media.schema';
 import {UserDoc} from '../schemas/user.schema';
+import {MediaService} from "./media.service";
 
 @Controller('media/:mediaDirId')
 export class MediaController {
 
-    constructor(@InjectModel(MediaDir.name) protected dirModel: Model<MediaDir>,
-                @InjectModel(Media.name) protected model: Model<Media>,
-                protected assets: AssetsService) {
+    constructor(protected media: MediaService) {
     }
 
     @Get()
@@ -25,8 +22,8 @@ export class MediaController {
                @Query('query', QueryPipe) q: ListMediaDto) {
         const query = q.toQuery(authUser);
         query.parent = parent?.id;
-        const dirs = await this.dirModel.find(query);
-        const res = await paginate(this.model, query, {page, limit, sort});
+        const dirs = await this.media.findDirs(query);
+        const res = await this.media.paginateMedia(query, {page, limit, sort});
         return {
             ...res,
             items: [
@@ -51,7 +48,8 @@ export class MediaController {
     async add(@AuthUser() authUser: UserDoc,
               @ResolveEntity(MediaDir, false) parent: MediaDirDoc,
               @Body() dto: AddMediaDto) {
-        const media = new this.model(dto);
+        await this.media.generatePreview(dto);
+        const media = this.media.createMedia(dto);
         media.parent = parent?.id;
         media.owner = authUser.id;
         await media.save();
@@ -71,10 +69,7 @@ export class MediaController {
                  @ResolveEntity(Media) media: MediaDoc,
                  @Body() dto: EditMediaDto) {
         dto.parent = parent?.id;
-        if (media.file && media.file != dto.file) {
-            await this.assets.unlink(media.file);
-            console.log(`Should delete file, ${media.file} ${dto.file}`);
-        }
+        await this.media.replaceFile(media, dto);
         await media.updateOne(dto);
         return media.toJSON();
     }

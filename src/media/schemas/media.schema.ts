@@ -3,9 +3,9 @@ import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
 
-import {MediaType} from '../common-types';
-import {BaseModel} from './base.model';
-import {User} from './user.schema';
+import {MediaType} from '../../common-types';
+import {BaseModel} from '../../schemas/base.model';
+import {User} from '../../schemas/user.schema';
 import {MediaDir} from './media-dir.schema';
 
 @Schema({
@@ -31,7 +31,8 @@ export class Media extends BaseModel {
     @Prop({type: Types.ObjectId, required: false})
     file: ObjectId;
 
-    async getPath?(this: MediaDoc): Promise<string>;
+    @Prop({type: Types.ObjectId, required: false})
+    preview: ObjectId;
 }
 
 export type MediaDoc = HydratedDocument<Media>;

@@ -4,7 +4,7 @@ import {IsOptional, IsString, MinLength} from 'class-validator';
 import {ApiProperty} from '../decorators';
 import {MediaType} from '../common-types';
 import {UserDoc} from '../schemas/user.schema';
-import {MediaDoc} from '../schemas/media.schema';
+import {MediaDoc} from '../media/schemas/media.schema';
 
 export class ListMediaDto {
 
@@ -33,6 +33,9 @@ export class MediaDto {
 
     @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg'], required: false})
     file: Types.ObjectId = null;
+
+    // Handle preview generation
+    preview: Types.ObjectId = null;
 
     @IsOptional()
     @ApiProperty({hidden: true, required: false})

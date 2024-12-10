@@ -40,8 +40,9 @@
         "rxjs": "^7.8.1",
         "node-fetch-cjs": "^3.3.2",
         "sharp": "^0.33.5",
+        "fontkit": "^1.9.0",
         "mimetics": "^1.0.0",
-        "@stemy/nest-utils": "0.0.7"
+        "@stemy/nest-utils": "0.0.8"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.0.0",

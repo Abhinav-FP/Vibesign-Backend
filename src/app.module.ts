@@ -11,10 +11,7 @@ import {JwtStrategy} from './auth/jwt.strategy';
 
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
-import {MediaDir, MediaDirSchema} from './schemas/media-dir.schema';
-import {Media, MediaSchema} from './schemas/media.schema';
-import {MediaController} from './controllers/media.controller';
-import {MediaDirController} from './controllers/media-dir.controller';
+import {MediaModule} from "./media/media.module";
 
 @Module({
     imports: [
@@ -23,16 +20,13 @@ import {MediaDirController} from './controllers/media-dir.controller';
             cache: true,
             isGlobal: true,
         }),
-        MongooseModule.forFeature([
-            {name:  MediaDir.name, schema: MediaDirSchema},
-            {name: Media.name, schema: MediaSchema},
-        ]),
         MongooseModule.forRootAsync(databaseConfig.asProvider()),
+        AssetsModule.forRoot(),
         AuthModule,
         UsersModule,
-        AssetsModule,
+        MediaModule
     ],
-    controllers: [MediaController, MediaDirController],
+    controllers: [],
     providers: [
         {
             provide: APP_GUARD,
