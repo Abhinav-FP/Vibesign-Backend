@@ -1,4 +1,4 @@
-import {Prop,  Schema, SchemaFactory} from '@nestjs/mongoose';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
@@ -6,7 +6,7 @@ import {createTransformer} from '@stemy/nest-utils';
 import {MediaType} from '../common-types';
 import {BaseModel} from './base.model';
 import {User} from './user.schema';
-import {MediaDir, MediaDirDoc} from './media-dir.schema';
+import {MediaDir} from './media-dir.schema';
 
 @Schema({
     id: true,
@@ -27,6 +27,9 @@ export class Media extends BaseModel {
 
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
+
+    @Prop({type: Types.ObjectId, required: false})
+    file: ObjectId;
 
     async getPath?(this: MediaDoc): Promise<string>;
 }
