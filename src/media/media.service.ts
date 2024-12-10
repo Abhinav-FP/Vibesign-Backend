@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AssetsService, IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
+import {AssetsService, IPagination, IPaginationParams, paginate, isString} from '@stemy/nest-utils';
 
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
 import {Media, MediaDoc} from './schemas/media.schema';
@@ -16,8 +16,12 @@ export class MediaService {
                 @InjectModel(Media.name) protected mediaModel: Model<Media>) {
     }
 
-    findDirs(query: FilterQuery<MediaDirDoc>): Promise<MediaDirDoc[]> {
-        return this.dirModel.find(query);
+    findDirs(query: FilterQuery<MediaDirDoc>, sort: string): Promise<MediaDirDoc[]> {
+        const res = this.dirModel.find(query);
+        if (isString(sort) && sort) {
+            return res.sort(sort);
+        }
+        return res;
     }
 
     paginateMedia(query: FilterQuery<MediaDoc>, params: IPaginationParams<Media>): Promise<IPagination<MediaDoc>> {
@@ -49,20 +53,12 @@ export class MediaService {
             dto.preview = null;
             return;
         }
-        let {width, height} = asset.metadata;
-        const size = 128;
+        const {width, height} = asset.metadata;
+        const size = 200;
         const ratio = Math.max(size / width, size / height);
-        width *= ratio;
-        height *= ratio;
         const image = await asset.getImage({
             scaleX: ratio,
-            scaleY: ratio,
-            cropAfter: {
-                x: (width - size) / 2,
-                y: (height - size) / 2,
-                w: size,
-                h: size,
-            }
+            scaleY: ratio
         });
         const preview = await this.assets.writeStream(image);
         dto.preview = preview.oid;

@@ -3,16 +3,10 @@ import {IsOptional, IsString, MinLength} from 'class-validator';
 import {Type} from 'class-transformer';
 
 import {ApiProperty} from '../decorators';
-import {MediaType} from '../common-types';
 import {UserDoc} from '../schemas/user.schema';
 import {MediaDoc} from '../media/schemas/media.schema';
 
 export class ListMediaDto {
-
-    @IsString()
-    @IsOptional()
-    @ApiProperty({enum: MediaType})
-    type: MediaType = MediaType.Directory;
 
     @IsString()
     @IsOptional()

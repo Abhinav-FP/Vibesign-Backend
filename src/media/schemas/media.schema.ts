@@ -3,7 +3,6 @@ import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
 
-import {MediaType} from '../../common-types';
 import {User} from '../../schemas/user.schema';
 import {MediaDir} from './media-dir.schema';
 
@@ -12,7 +11,7 @@ import {MediaDir} from './media-dir.schema';
     timestamps: { createdAt: true, updatedAt: true },
     toJSON: {
         transform: createTransformer((_, ret) => {
-            ret.type = MediaType.File;
+            ret.type = 'file';
         })
     }
 })

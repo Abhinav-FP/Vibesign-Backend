@@ -2,23 +2,20 @@ import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
-
-import {MediaType} from '../../common-types';
 import {User} from '../../schemas/user.schema';
-import {MediaDoc} from "./media.schema";
 
 @Schema({
     id: true,
     timestamps: { createdAt: true, updatedAt: true },
     toJSON: {
         transform: createTransformer((_, ret) => {
-            ret.type = MediaType.Directory;
+            ret.type = 'directory';
         })
     },
     methods: {
-        async getPath(this: MediaDoc) {
+        async getPath(this: MediaDirDoc) {
             if (this.parent) {
-                await this.populate("parent");
+                await this.populate('parent');
                 const parentPath = await (this.parent as unknown as MediaDirDoc).getPath();
                 return `${parentPath}/${this.name}`
             }

@@ -4,8 +4,3 @@ export enum UserRole {
     Admin = "admin",
     SuperAdmin = "superAdmin",
 }
-
-export enum MediaType {
-    File = "file",
-    Directory = "directory",
-}

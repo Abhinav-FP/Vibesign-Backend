@@ -21,8 +21,8 @@ export class MediaController {
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListMediaDto) {
         const query = q.toQuery(authUser);
-        query.parent = dir?.id;
-        const dirs = await this.media.findDirs(query);
+        query.parent = dir?._id;
+        const dirs = await this.media.findDirs(query, sort);
         const res = await this.media.paginateMedia(query, {page, limit, sort});
         return {
             ...res,
