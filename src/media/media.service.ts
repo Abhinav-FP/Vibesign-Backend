@@ -60,6 +60,7 @@ export class MediaService {
     }
 
     async deleteDir(dir: MediaDirDoc): Promise<any> {
+        if (!dir) return;
         const subDirs = await this.dirModel.find({parent: dir.id});
         const subMedia = await this.mediaModel.find({parent: dir.id});
         await Promise.all(subDirs.map(d => this.deleteDir(d)));
@@ -68,6 +69,9 @@ export class MediaService {
     }
 
     async deleteMedia(media: MediaDoc): Promise<any> {
+        if (!media) return;
+        await this.assets.unlink(media.file);
+        await this.assets.unlink(media.preview);
         return media.deleteOne();
     }
 }
