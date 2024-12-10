@@ -2,7 +2,7 @@
 /dist
 /node_modules
 /build
-/asset_files
+/assets_files
 
 # Logs
 logs

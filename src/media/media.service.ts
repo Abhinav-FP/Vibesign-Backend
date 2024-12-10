@@ -34,6 +34,7 @@ export class MediaService {
 
     async replaceFile(media: MediaDoc, dto: MediaDto): Promise<MediaDoc> {
         if (media.file == dto.file) return;
+        console.log('unlinking', media.file, media.preview);
         await this.assets.unlink(media.file);
         await this.assets.unlink(media.preview);
         await this.generatePreview(dto);
@@ -48,21 +49,29 @@ export class MediaService {
             dto.preview = null;
             return;
         }
-        const {width, height} = asset.metadata;
-        const size = 256;
+        let {width, height} = asset.metadata;
+        const size = 128;
         const ratio = Math.max(size / width, size / height);
+        width *= ratio;
+        height *= ratio;
         const image = await asset.getImage({
             scaleX: ratio,
             scaleY: ratio,
+            cropAfter: {
+                x: (width - size) / 2,
+                y: (height - size) / 2,
+                w: size,
+                h: size,
+            }
         });
-        const preview = await this.assets.write(image);
+        const preview = await this.assets.writeStream(image);
         dto.preview = preview.oid;
     }
 
     async deleteDir(dir: MediaDirDoc): Promise<any> {
         if (!dir) return;
-        const subDirs = await this.dirModel.find({parent: dir.id});
-        const subMedia = await this.mediaModel.find({parent: dir.id});
+        const subDirs = await this.dirModel.find({parent: dir._id});
+        const subMedia = await this.mediaModel.find({parent: dir._id});
         await Promise.all(subDirs.map(d => this.deleteDir(d)));
         await Promise.all(subMedia.map(m => this.deleteMedia(m)));
         return dir.deleteOne();

@@ -33,7 +33,7 @@ export class ListUserDto {
             username: {$regex: this.username, $options: 'i'},
         };
         if (!this.host || (user.role != UserRole.Admin && user.role != UserRole.SuperAdmin)) {
-            query.host = user.id;
+            query.host = user._id;
         }
         if (user.role) return query;
         // query.profile = user.profile.id;

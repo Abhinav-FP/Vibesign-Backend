@@ -1,4 +1,5 @@
 import {IsOptional, MinLength} from 'class-validator';
+import {Type} from 'class-transformer';
 import {Types} from 'mongoose';
 import {ApiProperty} from '../decorators';
 
@@ -9,6 +10,7 @@ export class MediaDirDto {
     name: string = '';
 
     @IsOptional()
+    @Type(() => Types.ObjectId)
     @ApiProperty({hidden: true, required: false})
     parent: Types.ObjectId = null;
 

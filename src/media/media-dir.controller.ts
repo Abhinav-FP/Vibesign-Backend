@@ -24,8 +24,8 @@ export class MediaDirController {
               @ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
               @Body() dto: AddMediaDirDto) {
         const dir = this.media.createDir(dto);
-        dir.parent = parent?.id;
-        dir.owner = authUser.id;
+        dir.parent = parent?._id;
+        dir.owner = authUser._id;
         await dir.save();
         return dir.toJSON();
     }
@@ -42,7 +42,7 @@ export class MediaDirController {
     async update(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
                  @ResolveEntity(MediaDir) media: MediaDirDoc,
                  @Body() dto: EditMediaDirDto) {
-        dto.parent = parent?.id;
+        dto.parent = parent?._id;
         await media.updateOne(dto);
         return media.toJSON();
     }

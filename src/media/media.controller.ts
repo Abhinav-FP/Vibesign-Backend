@@ -15,13 +15,13 @@ export class MediaController {
 
     @Get()
     async list(@AuthUser() authUser: UserDoc,
-               @ResolveEntity(MediaDir, false) parent: MediaDirDoc,
+               @ResolveEntity(MediaDir, false) dir: MediaDirDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListMediaDto) {
         const query = q.toQuery(authUser);
-        query.parent = parent?.id;
+        query.parent = dir?.id;
         const dirs = await this.media.findDirs(query);
         const res = await this.media.paginateMedia(query, {page, limit, sort});
         return {
@@ -31,44 +31,44 @@ export class MediaController {
                 ...res.items.map(i => i.toJSON())
             ],
             meta: {
-                parent: parent?.parent?.toHexString() ?? `root`,
-                path: !parent ? `/` : await parent.getPath()
+                parent: dir?.parent?.toHexString() ?? `root`,
+                path: !dir ? `/` : await dir.getPath()
             }
         };
     }
 
     @Get('/new/default')
-    async getDefault(@ResolveEntity(MediaDir, false) parent: MediaDirDoc) {
+    async getDefault(@ResolveEntity(MediaDir, false) dir: MediaDirDoc) {
         const res = new AddMediaDto();
-        res.path = !parent ? `/` : await parent.getPath();
+        res.path = !dir ? `/` : await dir.getPath();
         return res;
     }
 
     @Post()
     async add(@AuthUser() authUser: UserDoc,
-              @ResolveEntity(MediaDir, false) parent: MediaDirDoc,
+              @ResolveEntity(MediaDir, false) dir: MediaDirDoc,
               @Body() dto: AddMediaDto) {
         await this.media.generatePreview(dto);
         const media = this.media.createMedia(dto);
-        media.parent = parent?.id;
-        media.owner = authUser.id;
+        media.parent = dir?._id;
+        media.owner = authUser._id;
         await media.save();
         return media.toJSON();
     }
 
     @Get('/:id')
-    async get(@ResolveEntity(MediaDir, false) parent: MediaDirDoc,
+    async get(@ResolveEntity(MediaDir, false) dir: MediaDirDoc,
               @ResolveEntity(Media) media: MediaDoc) {
         const res = media.toJSON();
-        res['path'] = !parent ? `/` : await parent.getPath();
+        res['path'] = !dir ? `/` : await dir.getPath();
         return res;
     }
 
     @Patch('/:id')
-    async update(@ResolveEntity(MediaDir, false) parent: MediaDirDoc,
+    async update(@ResolveEntity(MediaDir, false) dir: MediaDirDoc,
                  @ResolveEntity(Media) media: MediaDoc,
                  @Body() dto: EditMediaDto) {
-        dto.parent = parent?.id;
+        dto.parent = dir?._id;
         await this.media.replaceFile(media, dto);
         await media.updateOne(dto);
         return media.toJSON();

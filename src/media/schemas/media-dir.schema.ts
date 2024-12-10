@@ -27,7 +27,7 @@ import {MediaDoc} from "./media.schema";
         }
     }
 })
-export class MediaDir extends BaseModel {
+export class MediaDir {
 
     @Prop()
     name: string;

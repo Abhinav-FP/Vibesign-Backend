@@ -4,7 +4,6 @@ import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
-import {BaseModel} from './base.model';
 
 @Schema({
     id: true,
@@ -15,7 +14,7 @@ import {BaseModel} from './base.model';
         })
     }
 })
-export class User extends BaseModel {
+export class User {
     @Prop({unique: true})
     email: string;
 

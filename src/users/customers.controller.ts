@@ -41,7 +41,7 @@ export class CustomersController {
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddUserDto) {
         const user = await this.users.add(dto);
         user.role = UserRole.Customer;
-        user.host = authUser.id;
+        user.host = authUser._id;
         await user.save();
         return user.toJSON();
     }

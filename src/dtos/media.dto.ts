@@ -1,5 +1,6 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
+import {Type} from 'class-transformer';
 
 import {ApiProperty} from '../decorators';
 import {MediaType} from '../common-types';
@@ -21,7 +22,7 @@ export class ListMediaDto {
     toQuery(user: UserDoc): FilterQuery<MediaDoc> {
         return {
             name: {$regex: this.name, $options: 'i'},
-            owner: user.id
+            owner: user._id
         };
     }
 }
@@ -32,12 +33,14 @@ export class MediaDto {
     name: string = '';
 
     @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg'], required: false})
+    @Type(() => Types.ObjectId)
     file: Types.ObjectId = null;
 
     // Handle preview generation
     preview: Types.ObjectId = null;
 
     @IsOptional()
+    @Type(() => Types.ObjectId)
     @ApiProperty({hidden: true, required: false})
     parent: Types.ObjectId = null;
 
