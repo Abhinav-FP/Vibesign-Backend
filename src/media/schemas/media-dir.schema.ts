@@ -4,7 +4,6 @@ import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
 
 import {MediaType} from '../../common-types';
-import {BaseModel} from '../../schemas/base.model';
 import {User} from '../../schemas/user.schema';
 import {MediaDoc} from "./media.schema";
 
