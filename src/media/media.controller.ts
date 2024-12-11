@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
 import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
 import {AddMediaDto, EditMediaDto, ListMediaDto} from '../dtos/media.dto';
@@ -50,9 +50,13 @@ export class MediaController {
               @Body() dto: AddMediaDto) {
         await this.media.generatePreview(dto);
         const media = this.media.createMedia(dto);
-        media.parent = dir?._id;
-        media.owner = authUser._id;
-        await media.save();
+        try {
+            media.parent = dir?._id;
+            media.owner = authUser._id;
+            await media.save();
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return media.toJSON();
     }
 

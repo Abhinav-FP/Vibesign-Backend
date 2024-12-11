@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Patch, Post} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, Patch, Post} from '@nestjs/common';
 import {AuthUser, ResolveEntity} from '@stemy/nest-utils';
 
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
@@ -24,9 +24,13 @@ export class MediaDirController {
               @ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
               @Body() dto: AddMediaDirDto) {
         const dir = this.media.createDir(dto);
-        dir.parent = parent?._id;
-        dir.owner = authUser._id;
-        await dir.save();
+        try {
+            dir.parent = parent?._id;
+            dir.owner = authUser._id;
+            await dir.save();
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return dir.toJSON();
     }
 
