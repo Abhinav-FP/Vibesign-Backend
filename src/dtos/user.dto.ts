@@ -48,11 +48,11 @@ export class UserDto {
     @ApiProperty()
     email: string;
 
-    @MinLength(10)
+    @MinLength(3)
     @ApiProperty()
     name: string;
 
-    @MinLength(5)
+    @MinLength(3)
     @ApiProperty()
     username: string;
 }
