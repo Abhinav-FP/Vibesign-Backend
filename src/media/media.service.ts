@@ -49,8 +49,9 @@ export class MediaService {
         }
         const asset = await this.assets.read(dto.file);
         if (!asset) {
-            dto.preview = null;
-            dto.mimeType = null;
+            dto.preview = null
+            dto.mimeType = '';
+            dto.ext = '';
             return;
         }
         dto.mimeType = asset.contentType;
