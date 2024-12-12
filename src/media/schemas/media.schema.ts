@@ -31,6 +31,9 @@ export class Media {
 
     @Prop({type: Types.ObjectId, required: false})
     preview: ObjectId;
+
+    @Prop({required: false})
+    mimeType: string;
 }
 
 export type MediaDoc = HydratedDocument<Media>;

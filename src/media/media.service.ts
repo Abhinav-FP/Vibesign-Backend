@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AssetsService, IPagination, IPaginationParams, paginate, isString} from '@stemy/nest-utils';
+import {AssetsService, IPagination, IPaginationParams, isString, paginate, generateVideoThumbnail} from '@stemy/nest-utils';
 
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
 import {Media, MediaDoc} from './schemas/media.schema';
@@ -38,7 +38,6 @@ export class MediaService {
 
     async replaceFile(media: MediaDoc, dto: MediaDto): Promise<MediaDoc> {
         if (media.file == dto.file) return;
-        console.log('unlinking', media.file, media.preview);
         await this.assets.unlink(media.file);
         await this.assets.unlink(media.preview);
         await this.generatePreview(dto);
@@ -51,16 +50,24 @@ export class MediaService {
         const asset = await this.assets.read(dto.file);
         if (!asset) {
             dto.preview = null;
+            dto.mimeType = null;
             return;
         }
-        const {width, height} = asset.metadata;
+        dto.mimeType = asset.contentType;
+        // Get image of uploaded asset
+        let image = asset;
+        if (asset.contentType?.startsWith('video')) {
+            image = await this.assets.read(asset.metadata.preview);
+        }
+        // Generate a thumbnail image based on the thumbnail
+        const {width, height} = image.metadata;
         const size = 200;
         const ratio = Math.max(size / width, size / height);
-        const image = await asset.getImage({
+        const thumbnail = await image.getImage({
             scaleX: ratio,
             scaleY: ratio
         });
-        const preview = await this.assets.writeStream(image);
+        const preview = await this.assets.writeStream(thumbnail);
         dto.preview = preview.oid;
     }
 

@@ -13,6 +13,11 @@ export class ListMediaDto {
     @ApiProperty()
     name: string = '';
 
+    @IsString()
+    @IsOptional()
+    @ApiProperty()
+    mimeType: string = '';
+
     toQuery(user: UserDoc): FilterQuery<MediaDoc> {
         return {
             name: {$regex: this.name, $options: 'i'},
@@ -26,12 +31,15 @@ export class MediaDto {
     @ApiProperty()
     name: string = '';
 
-    @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg'], required: false})
+    @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg', 'video/mp4'], required: false})
     @Type(() => Types.ObjectId)
     file: Types.ObjectId = null;
 
     // Handle preview generation
     preview: Types.ObjectId = null;
+
+    // Mime type
+    mimeType: string = null;
 
     @IsOptional()
     @Type(() => Types.ObjectId)
