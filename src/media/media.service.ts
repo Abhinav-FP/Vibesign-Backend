@@ -5,8 +5,8 @@ import {AssetsService, IPagination, IPaginationParams, isString, paginate, gener
 
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
 import {Media, MediaDoc} from './schemas/media.schema';
-import {AddMediaDirDto} from '../dtos/media-dir.dto';
-import {MediaDto} from '../dtos/media.dto';
+import {AddMediaDirDto} from './dtos/media-dir.dto';
+import {MediaDto} from './dtos/media.dto';
 
 @Injectable()
 export class MediaService {
@@ -54,6 +54,7 @@ export class MediaService {
             return;
         }
         dto.mimeType = asset.contentType;
+        dto.ext = asset.metadata?.extension;
         // Get image of uploaded asset
         let image = asset;
         if (asset.contentType?.startsWith('video')) {

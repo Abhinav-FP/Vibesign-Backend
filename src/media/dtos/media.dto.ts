@@ -2,9 +2,9 @@ import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
 import {Type} from 'class-transformer';
 
-import {ApiProperty} from '../decorators';
-import {UserDoc} from '../schemas/user.schema';
-import {MediaDoc} from '../media/schemas/media.schema';
+import {ApiProperty} from '../../decorators';
+import {UserDoc} from '../../schemas/user.schema';
+import {MediaDoc} from '../schemas/media.schema';
 
 export class ListMediaDto {
 
@@ -46,6 +46,9 @@ export class MediaDto {
 
     // Mime type
     mimeType: string = null;
+
+    // Extension
+    ext: string = null;
 
     @IsOptional()
     @Type(() => Types.ObjectId)

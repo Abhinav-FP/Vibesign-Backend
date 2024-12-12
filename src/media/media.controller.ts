@@ -1,7 +1,7 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
 import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
-import {AddMediaDto, EditMediaDto, ListMediaDto} from '../dtos/media.dto';
+import {AddMediaDto, EditMediaDto, ListMediaDto} from './dtos/media.dto';
 import {MediaDir, MediaDirDoc} from "./schemas/media-dir.schema";
 import {Media, MediaDoc} from './schemas/media.schema';
 import {UserDoc} from '../schemas/user.schema';

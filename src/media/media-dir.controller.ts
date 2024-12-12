@@ -3,7 +3,7 @@ import {AuthUser, ResolveEntity} from '@stemy/nest-utils';
 
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
 import {UserDoc} from '../schemas/user.schema';
-import {AddMediaDirDto, EditMediaDirDto} from '../dtos/media-dir.dto';
+import {AddMediaDirDto, EditMediaDirDto} from './dtos/media-dir.dto';
 import {MediaService} from "./media.service";
 
 @Controller('media-dir/:parentId')

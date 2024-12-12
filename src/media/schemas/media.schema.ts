@@ -34,6 +34,9 @@ export class Media {
 
     @Prop({required: false})
     mimeType: string;
+
+    @Prop({required: false})
+    ext: string;
 }
 
 export type MediaDoc = HydratedDocument<Media>;
