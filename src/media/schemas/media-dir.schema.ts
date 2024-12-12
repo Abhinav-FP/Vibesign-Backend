@@ -10,6 +10,7 @@ import {User} from '../../schemas/user.schema';
     toJSON: {
         transform: createTransformer((_, ret) => {
             ret.type = 'directory';
+            ret.mimeType = 'directory';
         })
     },
     methods: {

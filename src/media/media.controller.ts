@@ -20,10 +20,11 @@ export class MediaController {
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListMediaDto) {
-        const query = q.toQuery(authUser);
-        query.parent = dir?._id;
-        const dirs = await this.media.findDirs(query, sort);
-        const res = await this.media.paginateMedia(query, {page, limit, sort});
+        const dirs = await this.media.findDirs(q.toQuery(authUser, dir?._id, false), sort);
+        const res = await this.media.paginateMedia(
+            q.toQuery(authUser, dir?._id, true),
+            {page, limit, sort}
+        );
         return {
             ...res,
             items: [

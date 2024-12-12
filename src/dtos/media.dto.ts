@@ -18,11 +18,17 @@ export class ListMediaDto {
     @ApiProperty()
     mimeType: string = '';
 
-    toQuery(user: UserDoc): FilterQuery<MediaDoc> {
-        return {
+    toQuery(user: UserDoc, parent: Types.ObjectId, useMime: boolean): FilterQuery<MediaDoc> {
+        const res = {
             name: {$regex: this.name, $options: 'i'},
-            owner: user._id
-        };
+            mimeType: {$regex: this.mimeType, $options: 'i'},
+            owner: user._id,
+            parent: parent
+        } as FilterQuery<MediaDoc>;
+        if (!useMime) {
+            delete res.mimeType;
+        }
+        return res;
     }
 }
 
