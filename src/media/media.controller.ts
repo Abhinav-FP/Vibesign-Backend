@@ -10,10 +10,11 @@ import {MediaService} from "./media.service";
 
 interface IMediaItem {
     id?: string;
-    mimeType?: string;
     name: string;
     type?: 'directory' | 'file';
-    owner: string | ObjectId;
+    mimeType?: string;
+    ext?: string;
+    owner?: string | ObjectId;
     parent?: string | ObjectId;
 }
 
@@ -42,7 +43,6 @@ export class MediaController {
         if (dir) {
             items.unshift({
                 id: dir.parent?.toHexString() ?? `root`,
-                mimeType: 'directory',
                 name: '..',
                 type: 'directory',
                 owner: authUser.id,
