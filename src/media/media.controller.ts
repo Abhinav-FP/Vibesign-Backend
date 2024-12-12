@@ -1,11 +1,21 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
 import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {ObjectId} from 'mongodb';
 
 import {AddMediaDto, EditMediaDto, ListMediaDto} from './dtos/media.dto';
 import {MediaDir, MediaDirDoc} from "./schemas/media-dir.schema";
 import {Media, MediaDoc} from './schemas/media.schema';
 import {UserDoc} from '../schemas/user.schema';
 import {MediaService} from "./media.service";
+
+interface IMediaItem {
+    id?: string;
+    mimeType?: string;
+    name: string;
+    type?: 'directory' | 'file';
+    owner: string | ObjectId;
+    parent?: string | ObjectId;
+}
 
 @Controller('media/:mediaDirId')
 export class MediaController {
@@ -25,12 +35,22 @@ export class MediaController {
             q.toQuery(authUser, dir?._id, true),
             {page, limit, sort}
         );
+        const items = [
+            ...dirs.map(i => i.toJSON()),
+            ...res.items.map(i => i.toJSON())
+        ] as IMediaItem[];
+        if (dir) {
+            items.unshift({
+                id: dir.parent?.toHexString() ?? `root`,
+                mimeType: 'directory',
+                name: '..',
+                type: 'directory',
+                owner: authUser.id,
+            });
+        }
         return {
             ...res,
-            items: [
-                ...dirs.map(i => i.toJSON()),
-                ...res.items.map(i => i.toJSON())
-            ],
+            items,
             meta: {
                 parent: dir?.parent?.toHexString() ?? `root`,
                 path: !dir ? `/` : await dir.getPath()
