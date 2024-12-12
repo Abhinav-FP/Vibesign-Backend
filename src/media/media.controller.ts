@@ -16,6 +16,8 @@ interface IMediaItem {
     ext?: string;
     owner?: string | ObjectId;
     parent?: string | ObjectId;
+    file?: string;
+    preview?: string;
 }
 
 @Controller('media/:mediaDirId')
