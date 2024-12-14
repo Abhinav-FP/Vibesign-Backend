@@ -13,6 +13,7 @@ import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
 import {MediaModule} from './media/media.module';
 import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
+import {AssetFileTypeService} from "./services/file-type.service";
 
 @Module({
     imports: [
@@ -23,7 +24,8 @@ import {CompressionAssetProcessorService} from './services/compression-asset-pro
         }),
         MongooseModule.forRootAsync(databaseConfig.asProvider()),
         AssetsModule.forRoot({
-            assetProcessor: CompressionAssetProcessorService
+            assetProcessor: CompressionAssetProcessorService,
+            typeDetector: AssetFileTypeService
         }),
         AuthModule,
         UsersModule,
