@@ -1,6 +1,7 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
 import {Type} from 'class-transformer';
+import {imageTypes, videoTypes} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../../decorators';
 import {UserDoc} from '../../schemas/user.schema';
@@ -37,7 +38,7 @@ export class MediaDto {
     @ApiProperty()
     name: string = '';
 
-    @ApiProperty({type: 'file', accept: ['image/png', 'image/jpeg', 'video/mp4'], required: false})
+    @ApiProperty({type: 'file', accept: [...imageTypes, ...videoTypes], required: false})
     @Type(() => Types.ObjectId)
     file: Types.ObjectId = null;
 
