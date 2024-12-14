@@ -45,10 +45,10 @@ export class MediaDto {
     preview: Types.ObjectId = null;
 
     // Mime type
-    mimeType: string = null;
+    mimeType: string = '';
 
     // Extension
-    ext: string = null;
+    ext: string = '';
 
     @IsOptional()
     @Type(() => Types.ObjectId)

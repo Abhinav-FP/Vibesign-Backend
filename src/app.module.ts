@@ -2,7 +2,7 @@ import {APP_GUARD} from '@nestjs/core';
 import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
 import {MongooseModule} from '@nestjs/mongoose';
-import {AssetProcessorService, AssetsModule} from '@stemy/nest-utils';
+import {AssetsModule} from '@stemy/nest-utils';
 
 import {AuthModule} from './auth/auth.module';
 import {JwtGuard} from './auth/jwt.guard';
