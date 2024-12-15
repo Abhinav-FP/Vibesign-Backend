@@ -11,9 +11,11 @@ import {JwtStrategy} from './auth/jwt.strategy';
 
 import databaseConfig from './config/database.config';
 import authConfig from './config/auth.config';
-import {MediaModule} from './media/media.module';
 import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
-import {AssetFileTypeService} from "./services/file-type.service";
+import {AssetFileTypeService} from "./services/file-type.service"
+
+import {MediaModule} from './media/media.module';
+import {PlaylistModule} from "./playlist/playlist.module";
 
 @Module({
     imports: [
@@ -29,7 +31,8 @@ import {AssetFileTypeService} from "./services/file-type.service";
         }),
         AuthModule,
         UsersModule,
-        MediaModule
+        MediaModule,
+        PlaylistModule
     ],
     controllers: [],
     providers: [

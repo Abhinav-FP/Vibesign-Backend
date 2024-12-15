@@ -8,6 +8,8 @@ export type ApiPropertyOptions = Omit<BaseOptions, 'type'> & {
     url?: string;
     multi?: boolean;
     accept?: string[];
+    endpoint?: string;
+    labelField?: string;
 }
 
 export function ApiProperty(opts?: ApiPropertyOptions): PropertyDecorator {

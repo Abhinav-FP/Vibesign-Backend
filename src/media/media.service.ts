@@ -6,7 +6,7 @@ import {AssetsService, IPagination, IPaginationParams, isString, paginate, gener
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
 import {Media, MediaDoc} from './schemas/media.schema';
 import {AddMediaDirDto} from './dtos/media-dir.dto';
-import {MediaDto} from './dtos/media.dto';
+import {AddMediaDto, MediaDto} from './dtos/media.dto';
 
 @Injectable()
 export class MediaService {
@@ -32,7 +32,7 @@ export class MediaService {
         return new this.dirModel(dto);
     }
 
-    createMedia(dto: AddMediaDirDto): MediaDoc {
+    createMedia(dto: AddMediaDto): MediaDoc {
         return new this.mediaModel(dto);
     }
 
