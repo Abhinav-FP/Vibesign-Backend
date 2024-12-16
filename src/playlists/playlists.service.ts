@@ -32,9 +32,11 @@ export class PlaylistsService {
     async delete(playlist: PlaylistDoc): Promise<any> {
         if (!playlist) return null;
         const channels = await this.channelModel
-            .find({ playlists: {$in: [playlist.id]}});
-        console.log(channels);
-        return null;
-        // return playlist.deleteOne();
+            .find({ playlists: {$in: [playlist._id]}});
+        for (const channel of channels) {
+            const playlists = channel.playlists.filter(c => !c?.equals(playlist._id));
+            await channel.updateOne({playlists});
+        }
+        return playlist.deleteOne();
     }
 }
