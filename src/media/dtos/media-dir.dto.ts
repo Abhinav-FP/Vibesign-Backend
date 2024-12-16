@@ -1,6 +1,6 @@
 import {IsOptional, MinLength} from 'class-validator';
-import {Type} from 'class-transformer';
 import {Types} from 'mongoose';
+import {ToObjectId} from '@stemy/nest-utils';
 import {ApiProperty} from '../../decorators';
 
 export class MediaDirDto {
@@ -10,11 +10,11 @@ export class MediaDirDto {
     name: string = '';
 
     @IsOptional()
-    @Type(() => Types.ObjectId)
+    @ToObjectId()
     @ApiProperty({hidden: true, required: false})
     parent: Types.ObjectId = null;
 
-    path: string = '';
+    path?: string = '';
 }
 
 export class AddMediaDirDto extends MediaDirDto {

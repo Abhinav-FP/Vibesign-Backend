@@ -1,9 +1,9 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
+import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nest-utils';
 
-import {AddPlaylistDto} from './dtos/playlist.dto';
+import {AddPlaylistDto, EditPlaylistDto} from './dtos/playlist.dto';
 import {UserDoc} from '../schemas/user.schema';
 import {Media, MediaDoc} from '../media/schemas/media.schema';
 import {Channel} from '../channels/schemas/channel.schema';
@@ -27,6 +27,10 @@ export class PlaylistsService {
 
     create(dto: AddPlaylistDto): PlaylistDoc {
         return new this.model(dto);
+    }
+
+    update(playlist: PlaylistDoc, dto: EditPlaylistDto) {
+        return setAndUpdate(playlist, dto);
     }
 
     async delete(playlist: PlaylistDoc): Promise<any> {

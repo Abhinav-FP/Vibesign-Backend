@@ -44,11 +44,11 @@ export class MediaDirController {
 
     @Patch('/:id')
     async update(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
-                 @ResolveEntity(MediaDir) media: MediaDirDoc,
+                 @ResolveEntity(MediaDir) dir: MediaDirDoc,
                  @Body() dto: EditMediaDirDto) {
-        dto.parent = parent?._id;
-        await media.updateOne(dto);
-        return media.toJSON();
+        dto.parent = parent?._id ?? null;
+        await this.media.updateDir(dir, dto);
+        return dir.toJSON();
     }
 
     @Delete('/:id')

@@ -1,12 +1,12 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
+import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nest-utils';
 
-import {AddChannelDto} from './dtos/channel.dto';
+import {AddChannelDto, EditChannelDto} from './dtos/channel.dto';
 import {Channel, ChannelDoc} from './schemas/channel.schema';
-import {Playlist, PlaylistDoc} from "../playlists/schemas/playlist.schema";
-import {UserDoc} from "../schemas/user.schema";
+import {Playlist, PlaylistDoc} from '../playlists/schemas/playlist.schema';
+import {UserDoc} from '../schemas/user.schema';
 
 @Injectable()
 export class ChannelsService {
@@ -25,6 +25,10 @@ export class ChannelsService {
 
     create(dto: AddChannelDto): ChannelDoc {
         return new this.model(dto);
+    }
+
+    update(channel: ChannelDoc, dto: EditChannelDto) {
+        return setAndUpdate(channel, dto);
     }
 
     async delete(channel: ChannelDoc): Promise<any> {

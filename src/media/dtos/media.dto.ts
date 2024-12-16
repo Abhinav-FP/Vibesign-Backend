@@ -1,7 +1,6 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
-import {Type} from 'class-transformer';
-import {imageTypes, videoTypes} from '@stemy/nest-utils';
+import {imageTypes, ToObjectId, videoTypes} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../../decorators';
 import {UserDoc} from '../../schemas/user.schema';
@@ -36,31 +35,38 @@ export class ListMediaDto {
 export class MediaDto {
     @MinLength(3)
     @ApiProperty()
-    name: string = '';
+    name: string;
 
     @ApiProperty({type: 'file', accept: [...imageTypes, ...videoTypes], required: false})
-    @Type(() => Types.ObjectId)
-    file: Types.ObjectId = null;
+    @ToObjectId()
+    file: Types.ObjectId;
 
     // Handle preview generation
-    preview: Types.ObjectId = null;
+    preview: Types.ObjectId;
 
     // Mime type
-    mimeType: string = '';
+    mimeType: string;
 
     // Extension
-    ext: string = '';
+    ext: string;
 
     @IsOptional()
-    @Type(() => Types.ObjectId)
+    @ToObjectId()
     @ApiProperty({hidden: true, required: false})
-    parent: Types.ObjectId = null;
+    parent: Types.ObjectId;
 
-    path: string = '';
+    path?: string;
 }
 
 export class AddMediaDto extends MediaDto {
-
+    constructor() {
+        super();
+        this.file = null;
+        this.preview = null;
+        this.ext = '';
+        this.parent = null;
+        this.path = '';
+    }
 }
 
 export class EditMediaDto extends MediaDto {
