@@ -1,6 +1,6 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
-import {Type} from 'class-transformer';
+import {ToObjectId} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../../decorators';
 import {UserDoc} from '../../schemas/user.schema';
@@ -25,8 +25,8 @@ export class PlaylistDto {
     @ApiProperty()
     name: string = '';
 
-    @Type(() => Types.ObjectId)
-    @ApiProperty({ endpoint: 'playlist/media', multi: true, labelField: 'label', default: () => [] })
+    @ToObjectId()
+    @ApiProperty({endpoint: 'playlists/media', multi: true, labelField: 'name', default: () => []})
     medias: Types.ObjectId[] = [];
 }
 

@@ -1,18 +1,19 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AssetsService, IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
+import {IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
 
 import {AddPlaylistDto} from './dtos/playlist.dto';
+import {UserDoc} from '../schemas/user.schema';
+import {Media, MediaDoc} from '../media/schemas/media.schema';
+import {Channel} from '../channels/schemas/channel.schema';
 import {Playlist, PlaylistDoc} from './schemas/playlist.schema';
-import {Media, MediaDoc} from "../media/schemas/media.schema";
-import {UserDoc} from "../schemas/user.schema";
 
 @Injectable()
-export class PlaylistService {
+export class PlaylistsService {
 
-    constructor(readonly assets: AssetsService,
-                @InjectModel(Media.name) protected mediaModel: Model<Media>,
+    constructor(@InjectModel(Media.name) protected mediaModel: Model<Media>,
+                @InjectModel(Channel.name) protected channelModel: Model<Channel>,
                 @InjectModel(Playlist.name) protected model: Model<Playlist>) {
     }
 
@@ -30,6 +31,10 @@ export class PlaylistService {
 
     async delete(playlist: PlaylistDoc): Promise<any> {
         if (!playlist) return null;
-        return playlist.deleteOne();
+        const channels = await this.channelModel
+            .find({ playlists: {$in: [playlist.id]}});
+        console.log(channels);
+        return null;
+        // return playlist.deleteOne();
     }
 }

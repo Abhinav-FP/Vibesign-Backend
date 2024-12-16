@@ -9,7 +9,9 @@ async function bootstrap() {
 
     // Ensure all endpoints are protected from invalid data
     app.setGlobalPrefix('api')
-    app.useGlobalPipes(new ValidationPipe({ transform: true, transformOptions: { enableImplicitConversion: true } }));
+    app.useGlobalPipes(new ValidationPipe({ transform: true, transformOptions: {
+        enableImplicitConversion: true
+    }}));
     app.useGlobalGuards(new JwtGuard(app.get(Reflector)));
 
     app.enableCors({

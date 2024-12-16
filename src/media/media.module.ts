@@ -4,8 +4,9 @@ import {AssetsModule} from '@stemy/nest-utils';
 
 import {MediaDir, MediaDirSchema} from './schemas/media-dir.schema';
 import {Media, MediaSchema} from './schemas/media.schema';
+import {Playlist, PlaylistSchema} from '../playlists/schemas/playlist.schema';
 
-import {MediaService} from "./media.service";
+import {MediaService} from './media.service';
 
 import {MediaController} from './media.controller';
 import {MediaDirController} from './media-dir.controller';
@@ -13,8 +14,9 @@ import {MediaDirController} from './media-dir.controller';
 @Module({
     imports: [
         MongooseModule.forFeature([
-            {name:  MediaDir.name, schema: MediaDirSchema},
+            {name: MediaDir.name, schema: MediaDirSchema},
             {name: Media.name, schema: MediaSchema},
+            {name: Playlist.name, schema: PlaylistSchema},
         ]),
         AssetsModule
     ],

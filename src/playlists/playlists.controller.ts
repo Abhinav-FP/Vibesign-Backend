@@ -4,12 +4,12 @@ import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 import {UserDoc} from '../schemas/user.schema';
 import {Playlist, PlaylistDoc} from './schemas/playlist.schema';
 import {AddPlaylistDto, EditPlaylistDto, ListPlaylistDto} from './dtos/playlist.dto';
-import {PlaylistService} from "./playlist.service";
+import {PlaylistsService} from "./playlists.service";
 
-@Controller('playlist')
-export class PlaylistController {
+@Controller('playlists')
+export class PlaylistsController {
 
-    constructor(protected playlist: PlaylistService) {
+    constructor(protected playlists: PlaylistsService) {
     }
 
     @Get()
@@ -18,7 +18,7 @@ export class PlaylistController {
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListPlaylistDto) {
-        return await this.playlist.paginate(
+        return await this.playlists.paginate(
             q.toQuery(authUser),
             {page, limit, sort}
         );
@@ -26,7 +26,7 @@ export class PlaylistController {
 
     @Get('/media')
     async getMedia(@AuthUser() authUser: UserDoc) {
-        return this.playlist.listMedias(authUser);
+        return this.playlists.listMedias(authUser);
     }
 
     @Get('/new/default')
@@ -36,7 +36,7 @@ export class PlaylistController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddPlaylistDto) {
-        const playlist = this.playlist.create(dto);
+        const playlist = this.playlists.create(dto);
         try {
             playlist.owner = authUser._id;
             await playlist.save();
@@ -54,11 +54,12 @@ export class PlaylistController {
     @Patch('/:id')
     async update(@ResolveEntity(Playlist) playlist: PlaylistDoc, @Body() dto: EditPlaylistDto) {
         await playlist.updateOne(dto);
+        console.log(playlist, dto);
         return playlist.toJSON();
     }
 
     @Delete('/:id')
     async delete(@ResolveEntity(Playlist) playlist: PlaylistDoc) {
-        return this.playlist.delete(playlist);
+        return this.playlists.delete(playlist);
     }
 }

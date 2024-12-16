@@ -15,7 +15,8 @@ import {CompressionAssetProcessorService} from './services/compression-asset-pro
 import {AssetFileTypeService} from "./services/file-type.service"
 
 import {MediaModule} from './media/media.module';
-import {PlaylistModule} from "./playlist/playlist.module";
+import {PlaylistsModule} from "./playlists/playlists.module";
+import {ChannelsModule} from "./channels/channels.module";
 
 @Module({
     imports: [
@@ -32,7 +33,8 @@ import {PlaylistModule} from "./playlist/playlist.module";
         AuthModule,
         UsersModule,
         MediaModule,
-        PlaylistModule
+        PlaylistsModule,
+        ChannelsModule
     ],
     controllers: [],
     providers: [
