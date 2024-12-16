@@ -53,7 +53,11 @@ export class PlaylistsController {
 
     @Patch('/:id')
     async update(@ResolveEntity(Playlist) playlist: PlaylistDoc, @Body() dto: EditPlaylistDto) {
-        await this.playlists.update(playlist, dto);
+        try {
+            await this.playlists.update(playlist, dto);
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return playlist.toJSON();
     }
 

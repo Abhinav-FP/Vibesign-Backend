@@ -40,11 +40,14 @@ export class MediaService {
     }
 
     async updateDir(dir: MediaDirDoc, dto: MediaDirDto) {
+        if (compareId(dir._id, dto.parent)) {
+            throw new Error(`The directory can't be its own parent`);
+        }
         return setAndUpdate(dir, dto);
     }
 
     async updateMedia(media: MediaDoc, dto: MediaDto) {
-        if (!compareId(media.file, dto.file)) {
+        if (dto.file !== undefined && !compareId(media.file, dto.file)) {
             await this.assets.unlink(media.file);
             await this.assets.unlink(media.preview);
             await this.generatePreview(dto);
@@ -53,9 +56,6 @@ export class MediaService {
     }
 
     async generatePreview(dto: MediaDto): Promise<void> {
-        if (dto.file === undefined) {
-            return;
-        }
         const asset = !dto.file ? null : await this.assets.read(dto.file);
         if (!asset) {
             dto.preview = null

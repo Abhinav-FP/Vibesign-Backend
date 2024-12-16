@@ -53,7 +53,11 @@ export class ChannelsController {
 
     @Patch('/:id')
     async update(@ResolveEntity(Channel) channel: ChannelDoc, @Body() dto: EditChannelDto) {
-        await this.channels.update(channel, dto);
+        try {
+            await this.channels.update(channel, dto);
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return channel.toJSON();
     }
 

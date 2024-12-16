@@ -95,8 +95,12 @@ export class MediaController {
     async update(@ResolveEntity(MediaDir, false) dir: MediaDirDoc,
                  @ResolveEntity(Media) media: MediaDoc,
                  @Body() dto: EditMediaDto) {
-        dto.parent = dir?._id ?? null;
-        await this.media.updateMedia(media, dto);
+        try {
+            dto.parent = dir?._id ?? null;
+            await this.media.updateMedia(media, dto);
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return media.toJSON();
     }
 
