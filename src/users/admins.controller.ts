@@ -6,8 +6,8 @@ import {UsersService} from './users.service';
 import {User, UserDoc} from '../schemas/user.schema';
 import {AddUserDto, EditUserDto, ListUserDto} from '../dtos/user.dto';
 
-@Controller('partners')
-export class PartnersController {
+@Controller('admins')
+export class AdminsController {
 
     constructor(protected users: UsersService) {
     }
@@ -19,7 +19,10 @@ export class PartnersController {
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListUserDto) {
         const query = q.toQuery(authUser);
-        query.role = UserRole.Partner;
+        query.$or = [
+            {role: UserRole.Admin},
+            {role: UserRole.SuperAdmin}
+        ];
         const res = await this.users.paginate(query, {page, limit, sort, populate: ['host']});
         return {
             ...res,
@@ -40,7 +43,7 @@ export class PartnersController {
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddUserDto) {
         const user = await this.users.add(dto);
-        user.role = UserRole.Partner;
+        user.role = UserRole.Admin;
         user.host = authUser._id;
         await user.save();
         return user.toJSON();

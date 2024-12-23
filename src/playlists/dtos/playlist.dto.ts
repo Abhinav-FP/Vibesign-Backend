@@ -16,6 +16,7 @@ export class ListPlaylistDto {
     toQuery(user: UserDoc): FilterQuery<PlaylistDoc> {
         return {
             name: {$regex: this.name, $options: 'i'},
+            owner: user?._id
         } as FilterQuery<PlaylistDoc>;
     }
 }

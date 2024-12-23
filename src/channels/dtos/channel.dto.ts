@@ -16,6 +16,7 @@ export class ListChannelDto {
     toQuery(user: UserDoc): FilterQuery<ChannelDoc> {
         return {
             name: {$regex: this.name, $options: 'i'},
+            owner: user?._id
         } as FilterQuery<ChannelDoc>;
     }
 }
