@@ -19,10 +19,7 @@ export class AdminsController {
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListUserDto) {
         const query = q.toQuery(authUser);
-        query.$or = [
-            {role: UserRole.Admin},
-            {role: UserRole.SuperAdmin}
-        ];
+        query.role = {$in: [UserRole.Admin, UserRole.SuperAdmin]};
         const res = await this.users.paginate(query, {page, limit, sort, populate: ['host']});
         return {
             ...res,
