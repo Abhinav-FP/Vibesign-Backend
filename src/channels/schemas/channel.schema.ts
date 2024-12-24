@@ -19,7 +19,7 @@ export class Channel {
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
 
-    @Prop({type: Types.ObjectId, required: false, ref: Playlist.name})
+    @Prop({type: [Types.ObjectId], required: false, ref: Playlist.name})
     playlists: ObjectId[];
 }
 

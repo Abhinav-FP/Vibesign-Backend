@@ -27,7 +27,7 @@ export class ChannelDto {
     name: string = '';
 
     @ToObjectId()
-    @ApiProperty({endpoint: 'channels/playlists', multi: true, labelField: 'name', default: () => []})
+    @ApiProperty({required: false, endpoint: 'channels/playlists', multi: true, labelField: 'name', default: () => []})
     playlists: Types.ObjectId[] = [];
 }
 

@@ -1,10 +1,12 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
-import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {AuthUser, Public, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
 import {UserDoc} from '../schemas/user.schema';
 import {Device, DeviceDoc} from './schemas/device.schema';
 import {AddDeviceDto, EditDeviceDto, ListDeviceDto} from './dtos/device.dto';
 import {DevicesService} from "./devices.service";
+import {ChannelDoc} from "../channels/schemas/channel.schema";
+import {PlaylistDoc} from "../playlists/schemas/playlist.schema";
 
 @Controller('devices')
 export class DevicesController {
@@ -64,5 +66,16 @@ export class DevicesController {
     @Delete('/:id')
     async delete(@ResolveEntity(Device) device: DeviceDoc) {
         return this.devices.delete(device);
+    }
+
+    @Public()
+    @Get('/:hexCode/playlist')
+    async playlist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc) {
+        await device.populate('channel');
+        const channel = device.channel as unknown as ChannelDoc;
+        await channel.populate('playlists');
+        const playlists = channel.playlists.map(p => p as unknown as PlaylistDoc);
+        await Promise.all(playlists.map(p => p.populate('medias')));
+        return playlists.map(p => p.medias).flat();
     }
 }

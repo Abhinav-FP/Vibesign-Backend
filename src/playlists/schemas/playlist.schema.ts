@@ -19,7 +19,7 @@ export class Playlist {
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
 
-    @Prop({type: Types.ObjectId, required: false, ref: Media.name})
+    @Prop({type: [Types.ObjectId], required: false, ref: Media.name})
     medias: ObjectId[];
 }
 
