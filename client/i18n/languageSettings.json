@@ -1,0 +1,12 @@
+{
+    "languages": [
+        "en",
+        "de"
+    ],
+    "devLanguages": [],
+    "defaultLanguage": "en",
+    "settings": {
+        "de": {},
+        "en": {}
+    }
+}

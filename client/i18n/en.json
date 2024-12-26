@@ -1,0 +1,14 @@
+{
+    "menu.customers": "Customers",
+    "menu.partners": "Partners",
+    "menu.media": "Media",
+    "menu.dashboard": "Dashboard",
+    "menu.support": "Support",
+    "title": "Vibe sign",
+    "title.dashboard": "Dashboard",
+    "title.support": "Support",
+    "title.login": "Login",
+    "title.media": "Media {{page.meta.path}}",
+    "title.add-media": "Add media {{entity.path}}",
+    "title.edit-media": "Edit media {{entity.path}}"
+}
