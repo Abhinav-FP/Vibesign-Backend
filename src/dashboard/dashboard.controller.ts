@@ -1,5 +1,5 @@
-import {Controller, Get} from '@nestjs/common';
-import {AuthUser} from '@stemy/nest-utils';
+import {Controller, Get, StreamableFile} from '@nestjs/common';
+import {AuthUser, Public} from '@stemy/nest-utils';
 
 import {UserDoc} from '../schemas/user.schema';
 import {DashboardService} from './dashboard.service';
@@ -15,8 +15,13 @@ export class DashboardController {
         return await this.dashboard.aggregate(authUser);
     }
 
+    @Public()
     @Get('download-app')
     async downloadApp() {
-        return await this.dashboard.downloadApp();
+        const stream = await this.dashboard.downloadApp();
+        return new StreamableFile(stream, {
+            type: 'application/vnd.android.package-archive',
+            disposition: 'attachment; filename="vibe-sign.apk"'
+        });
     }
 }
