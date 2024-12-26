@@ -1,6 +1,7 @@
+import {Readable} from 'stream';
+import {join} from 'path';
+import {createReadStream} from 'fs';
 import {Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {Model} from 'mongoose';
 import {UserDoc} from '../schemas/user.schema';
 
 @Injectable()
@@ -34,5 +35,10 @@ export class DashboardService {
                 }
             ]
         };
+    }
+
+    async downloadApp(): Promise<Readable> {
+        const path = join(__dirname, '..', '..', 'client', 'app.apk');
+        return createReadStream(path, {autoClose: true});
     }
 }

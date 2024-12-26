@@ -14,4 +14,9 @@ export class DashboardController {
     async aggregate(@AuthUser() authUser: UserDoc) {
         return await this.dashboard.aggregate(authUser);
     }
+
+    @Get('download-app')
+    async downloadApp() {
+        return await this.dashboard.downloadApp();
+    }
 }
