@@ -6,6 +6,10 @@ import {TicketDoc} from '../schemas/ticket.schema';
 
 export class ListTicketDto {
 
+    @IsOptional()
+    @ApiProperty()
+    createdAt: Date = null;
+
     @IsString()
     @IsOptional()
     @ApiProperty()
