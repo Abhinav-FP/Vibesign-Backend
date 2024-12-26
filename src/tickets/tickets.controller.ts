@@ -19,7 +19,7 @@ export class TicketsController {
                @Query('sort') sort: string = '',
                @Query('query', QueryPipe) q: ListTicketDto) {
         return await this.tickets.paginate(
-            q.toQuery(authUser),
+            q.toQuery(),
             {page, limit, sort}
         );
     }

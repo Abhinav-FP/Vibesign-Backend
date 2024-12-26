@@ -15,14 +15,19 @@ export class Ticket {
     @Prop()
     name: string;
 
+    @Prop()
+    email: string;
+
+    @Prop()
+    subject: string;
+
+    @Prop()
+    notes: string;
+
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
-
-
 }
 
 export type TicketDoc = HydratedDocument<Ticket>;
 
 export const TicketSchema = SchemaFactory.createForClass(Ticket);
-
-TicketSchema.index({name: 1, owner: 1}, { unique: true });

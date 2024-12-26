@@ -1,9 +1,7 @@
-import {FilterQuery, Types} from 'mongoose';
-import {IsOptional, IsString, MinLength} from 'class-validator';
-import {ToObjectId} from '@stemy/nest-utils';
+import {FilterQuery} from 'mongoose';
+import {IsEmail, IsOptional, IsString, MinLength} from 'class-validator';
 
 import {ApiProperty} from '../../decorators';
-import {UserDoc} from '../../schemas/user.schema';
 import {TicketDoc} from '../schemas/ticket.schema';
 
 export class ListTicketDto {
@@ -13,9 +11,21 @@ export class ListTicketDto {
     @ApiProperty()
     name: string = '';
 
-    toQuery(user: UserDoc): FilterQuery<TicketDoc> {
+    @IsString()
+    @IsOptional()
+    @ApiProperty()
+    email: string = '';
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty()
+    subject: string = '';
+
+    toQuery(): FilterQuery<TicketDoc> {
         return {
-            name: {$regex: this.name, $options: 'i'}
+            name: {$regex: this.name, $options: 'i'},
+            email: {$regex: this.email, $options: 'i'},
+            subject: {$regex: this.subject, $options: 'i'},
         } as FilterQuery<TicketDoc>;
     }
 }
@@ -24,6 +34,18 @@ export class TicketDto {
     @MinLength(3)
     @ApiProperty()
     name: string = '';
+
+    @IsEmail()
+    @ApiProperty({format: 'email'})
+    email: string = '';
+
+    @MinLength(3)
+    @ApiProperty()
+    subject: string = '';
+
+    @MinLength(10)
+    @ApiProperty({format: 'textarea'})
+    notes: string = '';
 
 }
 
