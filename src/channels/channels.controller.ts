@@ -36,14 +36,14 @@ export class ChannelsController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddChannelDto) {
-        const playlist = this.channels.create(dto);
+        const channel = this.channels.create(dto);
         try {
-            playlist.owner = authUser._id;
-            await playlist.save();
+            channel.owner = authUser._id;
+            await channel.save();
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
-        return playlist.toJSON();
+        return channel.toJSON();
     }
 
     @Get('/:id')

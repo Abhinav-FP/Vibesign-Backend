@@ -1,10 +1,11 @@
-import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, Post, Query} from '@nestjs/common';
+import {ApiExtraModels} from '@nestjs/swagger';
 import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
 import {UserDoc} from '../schemas/user.schema';
 import {Ticket, TicketDoc} from './schemas/ticket.schema';
 import {AddTicketDto, EditTicketDto, ListTicketDto} from './dtos/ticket.dto';
-import {TicketsService} from "./tickets.service";
+import {TicketsService} from './tickets.service';
 
 @Controller('tickets')
 export class TicketsController {
@@ -31,23 +32,19 @@ export class TicketsController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddTicketDto) {
-        const playlist = this.tickets.create(dto);
+        const ticket = this.tickets.create(dto);
         try {
-            playlist.owner = authUser._id;
-            await playlist.save();
+            ticket.owner = authUser._id;
+            await ticket.save();
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
-        return playlist.toJSON();
-    }
-
-    @Get('/:id')
-    async get(@ResolveEntity(Ticket) ticket: TicketDoc) {
         return ticket.toJSON();
     }
 
-    @Patch('/:id')
-    async update(@ResolveEntity(Ticket) ticket: TicketDoc, @Body() dto: EditTicketDto) {
+    @Get('/:id')
+    @ApiExtraModels(EditTicketDto)
+    async get(@ResolveEntity(Ticket) ticket: TicketDoc) {
         return ticket.toJSON();
     }
 

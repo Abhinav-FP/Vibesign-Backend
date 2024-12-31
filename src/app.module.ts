@@ -11,10 +11,10 @@ import {JwtGuard} from './auth/jwt.guard';
 import {UsersModule} from './users/users.module';
 import {JwtStrategy} from './auth/jwt.strategy';
 
-import databaseConfig from './config/database.config';
+import assetsConfig from './config/assets.config';
 import authConfig from './config/auth.config';
-import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
-import {AssetFileTypeService} from './services/file-type.service'
+import dashboardConfig from './config/dashboard.config';
+import databaseConfig from './config/database.config';
 
 import {MediaModule} from './media/media.module';
 import {PlaylistsModule} from './playlists/playlists.module';
@@ -22,11 +22,13 @@ import {ChannelsModule} from './channels/channels.module';
 import {DevicesModule} from './devices/devices.module';
 import {TicketsModule} from './tickets/tickets.module';
 import {DashboardModule} from './dashboard/dashboard.module';
+import {AssetFileTypeService} from './services/file-type.service';
+import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
 
 @Module({
     imports: [
         ConfigModule.forRoot({
-            load: [databaseConfig, authConfig],
+            load: [assetsConfig, authConfig, dashboardConfig, databaseConfig],
             cache: true,
             isGlobal: true,
         }),
@@ -34,10 +36,12 @@ import {DashboardModule} from './dashboard/dashboard.module';
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, '..', 'client'),
         }),
-        AssetsModule.forRoot({
-            assetProcessor: CompressionAssetProcessorService,
-            typeDetector: AssetFileTypeService
-        }),
+        AssetsModule.forRootAsync(
+            assetsConfig.asProvider(),
+            AssetFileTypeService,
+            CompressionAssetProcessorService
+        ),
+        AuthModule,
         AuthModule,
         UsersModule,
         MediaModule,
@@ -45,7 +49,7 @@ import {DashboardModule} from './dashboard/dashboard.module';
         ChannelsModule,
         DevicesModule,
         TicketsModule,
-        DashboardModule
+        DashboardModule.forRootAsync(dashboardConfig.asProvider())
     ],
     controllers: [],
     providers: [
@@ -53,7 +57,7 @@ import {DashboardModule} from './dashboard/dashboard.module';
             provide: APP_GUARD,
             useClass: JwtGuard,
         },
-        JwtStrategy
+        JwtStrategy,
     ],
 })
 export class AppModule {

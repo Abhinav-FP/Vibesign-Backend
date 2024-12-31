@@ -16,12 +16,19 @@ export class DashboardController {
     }
 
     @Public()
+    @Get('app-info')
+    async appInfo() {
+        const asset = await this.dashboard.appAsset();
+        return asset.metadata;
+    }
+
+    @Public()
     @Get('download-app')
     async downloadApp() {
-        const stream = await this.dashboard.downloadApp();
-        return new StreamableFile(stream, {
+        const asset = await this.dashboard.appAsset();
+        return new StreamableFile(asset.stream, {
             type: 'application/vnd.android.package-archive',
-            disposition: 'attachment; filename="vibe-sign.apk"'
+            disposition: `attachment; filename="${asset.filename}"`
         });
     }
 }
