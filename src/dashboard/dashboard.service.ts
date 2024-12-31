@@ -2,11 +2,10 @@ import {join} from 'path';
 import {createReadStream} from 'fs';
 import axios, {AxiosInstance} from 'axios';
 import {Inject, Injectable} from '@nestjs/common'
-import {AssetsService, IAsset, TempAsset} from '@stemy/nest-utils';
+import {AssetsService, IAsset, Asset, TempAsset} from '@stemy/nest-utils';
 
 import {EXPO_PASSWORD, EXPO_USER} from './common';
 import {UserDoc} from '../schemas/user.schema';
-import {Asset} from "@stemy/nest-utils/src";
 
 interface BuildData {
     builds: {

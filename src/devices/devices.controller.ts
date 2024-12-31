@@ -27,7 +27,7 @@ export class DevicesController {
     }
 
     @Get('/channels')
-    async getPlaylists(@AuthUser() authUser: UserDoc) {
+    async getChannels(@AuthUser() authUser: UserDoc) {
         return this.devices.listChannels(authUser);
     }
 
@@ -77,5 +77,11 @@ export class DevicesController {
         const playlists = channel.playlists.map(p => p as unknown as PlaylistDoc);
         await Promise.all(playlists.map(p => p.populate('medias')));
         return playlists.map(p => p.medias).flat();
+    }
+
+    @Public()
+    @Post('/:hexCode/playlist')
+    async postPlaylist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc, Body) {
+        return this.playlist(device);
     }
 }
