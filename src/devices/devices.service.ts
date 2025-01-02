@@ -6,12 +6,15 @@ import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nes
 import {AddDeviceDto, EditDeviceDto} from './dtos/device.dto';
 import {Device, DeviceDoc} from './schemas/device.schema';
 import {Channel, ChannelDoc} from '../channels/schemas/channel.schema';
+import {Activity, ActivityDoc} from '../activities/schemas/activity.schema';
 import {UserDoc} from '../schemas/user.schema';
+import {AddActivityDto} from "../activities/dtos/activity.dto";
 
 @Injectable()
 export class DevicesService {
 
     constructor(@InjectModel(Channel.name) protected channelModel: Model<Channel>,
+                @InjectModel(Activity.name) protected activityModel: Model<Activity>,
                 @InjectModel(Device.name) protected model: Model<Device>) {
     }
 
@@ -27,8 +30,12 @@ export class DevicesService {
         return new this.model(dto);
     }
 
-    update(channel: DeviceDoc, dto: EditDeviceDto) {
-        return setAndUpdate(channel, dto);
+    update(device: DeviceDoc, dto: EditDeviceDto) {
+        return setAndUpdate(device, dto);
+    }
+
+    createActivity(dto: AddActivityDto): ActivityDoc {
+        return new this.activityModel(dto);
     }
 
     async delete(channel: DeviceDoc): Promise<any> {

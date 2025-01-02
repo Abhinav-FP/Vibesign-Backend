@@ -3,9 +3,9 @@ import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
 import {createTransformer} from '@stemy/nest-utils';
 import {User} from '../../schemas/user.schema';
-import {Channel} from '../../channels/schemas/channel.schema';
+import {Device} from '../../devices/schemas/device.schema';
 
-export class DeviceAddress {
+export class Location {
     address: string;
     lat: number;
     lng: number;
@@ -18,28 +18,23 @@ export class DeviceAddress {
         transform: createTransformer()
     }
 })
-export class Device {
+export class Activity {
     @Prop()
     name: string;
 
-    @Prop({unique: true})
-    hexCode: string;
+    @Prop({type: () => Location})
+    location: Location;
 
     @Prop()
-    active: boolean;
-
-    @Prop({type: () => DeviceAddress})
-    address: DeviceAddress;
+    address: string;
 
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
 
-    @Prop({type: Types.ObjectId, required: false, ref: Channel.name})
-    channel: ObjectId;
+    @Prop({type: Types.ObjectId, required: false, ref: Device.name})
+    device: ObjectId;
 }
 
-export type DeviceDoc = HydratedDocument<Device>;
+export type ActivityDoc = HydratedDocument<Activity>;
 
-export const DeviceSchema = SchemaFactory.createForClass(Device);
-
-DeviceSchema.index({name: 1, owner: 1}, { unique: true });
+export const ActivitySchema = SchemaFactory.createForClass(Activity);

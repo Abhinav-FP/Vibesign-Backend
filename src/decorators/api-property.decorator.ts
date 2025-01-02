@@ -1,7 +1,7 @@
-import { ApiProperty as Base, ApiPropertyOptions as BaseOptions } from '@nestjs/swagger';
+import { ApiProperty as Base, ApiPropertyOptions } from '@nestjs/swagger';
 
-export type ApiPropertyOptions = Omit<BaseOptions, 'type'> & {
-    type?: 'file' | BaseOptions['type'];
+export type ApiPropertyOpts = Omit<ApiPropertyOptions, 'type'> & {
+    type?: 'file' | ApiPropertyOptions['type'];
     hidden?: boolean;
     disableFilter?: boolean;
     filterType?: "string" | "checkbox";
@@ -10,8 +10,9 @@ export type ApiPropertyOptions = Omit<BaseOptions, 'type'> & {
     accept?: string[];
     endpoint?: string;
     labelField?: string;
+    step?: number;
 }
 
-export function ApiProperty(opts?: ApiPropertyOptions): PropertyDecorator {
+export function ApiProperty(opts?: ApiPropertyOpts): PropertyDecorator {
     return Base(opts as any);
 }

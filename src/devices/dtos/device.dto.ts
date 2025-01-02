@@ -1,5 +1,5 @@
 import {FilterQuery, Types} from 'mongoose';
-import {IsBoolean, IsOptional, IsString, MaxLength, MinLength} from 'class-validator';
+import {IsBoolean, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested} from 'class-validator';
 import {ToObjectId} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../../decorators';
@@ -27,6 +27,22 @@ export class ListDeviceDto {
     }
 }
 
+export class DeviceAddressDto {
+
+    @MinLength(3)
+    @IsOptional()
+    @ApiProperty()
+    address: string = '';
+
+    @IsNumber()
+    @ApiProperty({step: 0.000000001})
+    lat: number;
+
+    @IsNumber()
+    @ApiProperty({step: 0.000000001})
+    lng: number;
+}
+
 export class DeviceDto {
     @MinLength(3)
     @ApiProperty()
@@ -46,6 +62,10 @@ export class DeviceDto {
     @IsOptional()
     @ApiProperty({required: false})
     active: boolean = true;
+
+    @ValidateNested()
+    @ApiProperty({type: () => DeviceAddressDto})
+    address: DeviceAddressDto = new DeviceAddressDto();
 }
 
 export class AddDeviceDto extends DeviceDto {

@@ -7,6 +7,8 @@ import {AddDeviceDto, EditDeviceDto, ListDeviceDto} from './dtos/device.dto';
 import {DevicesService} from "./devices.service";
 import {ChannelDoc} from "../channels/schemas/channel.schema";
 import {PlaylistDoc} from "../playlists/schemas/playlist.schema";
+import {ActivityDto, AddActivityDto} from "../activities/dtos/activity.dto";
+import {ActivityDoc} from "../activities/schemas/activity.schema";
 
 @Controller('devices')
 export class DevicesController {
@@ -38,14 +40,15 @@ export class DevicesController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddDeviceDto) {
-        const playlist = this.devices.create(dto);
+        let device: DeviceDoc = null;
         try {
-            playlist.owner = authUser._id;
-            await playlist.save();
+            device = this.devices.create(dto);
+            device.owner = authUser._id;
+            await device.save();
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
-        return playlist.toJSON();
+        return device.toJSON();
     }
 
     @Get('/:id')
@@ -71,17 +74,32 @@ export class DevicesController {
     @Public()
     @Get('/:hexCode/playlist')
     async playlist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc) {
-        await device.populate('channel');
-        const channel = device.channel as unknown as ChannelDoc;
-        await channel.populate('playlists');
-        const playlists = channel.playlists.map(p => p as unknown as PlaylistDoc);
-        await Promise.all(playlists.map(p => p.populate('medias')));
-        return playlists.map(p => p.medias).flat();
+        try {
+            await device.populate('channel');
+            const channel = device.channel as unknown as ChannelDoc;
+            await channel.populate('playlists');
+            const playlists = channel.playlists.map(p => p as unknown as PlaylistDoc);
+            await Promise.all(playlists.map(p => p.populate('medias')));
+            return playlists.map(p => p.medias).flat();
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
     }
 
     @Public()
     @Post('/:hexCode/playlist')
-    async postPlaylist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc, Body) {
+    async postPlaylist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc,
+                       @Body() dto: AddActivityDto) {
+        let activity: ActivityDoc = null;
+        try {
+            activity = this.devices.createActivity(dto);
+            activity.name = device.name;
+            activity.owner = device.owner;
+            activity.device = device._id;
+            await activity.save();
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return this.playlist(device);
     }
 }

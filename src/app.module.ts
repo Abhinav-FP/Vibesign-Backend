@@ -24,6 +24,7 @@ import {TicketsModule} from './tickets/tickets.module';
 import {DashboardModule} from './dashboard/dashboard.module';
 import {AssetFileTypeService} from './services/file-type.service';
 import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
+import {ActivitiesModule} from "./activities/activities.module";
 
 @Module({
     imports: [
@@ -49,6 +50,7 @@ import {CompressionAssetProcessorService} from './services/compression-asset-pro
         ChannelsModule,
         DevicesModule,
         TicketsModule,
+        ActivitiesModule,
         DashboardModule.forRootAsync(dashboardConfig.asProvider())
     ],
     controllers: [],
