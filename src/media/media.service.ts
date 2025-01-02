@@ -52,6 +52,9 @@ export class MediaService {
             await this.assets.unlink(media.preview);
             await this.generatePreview(dto);
         }
+        if (dto.template !== undefined && !compareId(media.template, dto.template)) {
+            await this.assets.unlink(media.template);
+        }
         return setAndUpdate(media, dto);
     }
 
@@ -100,6 +103,7 @@ export class MediaService {
             await playlist.updateOne({medias});
         }
         await this.assets.unlink(media.file);
+        await this.assets.unlink(media.template);
         await this.assets.unlink(media.preview);
         return media.deleteOne();
     }

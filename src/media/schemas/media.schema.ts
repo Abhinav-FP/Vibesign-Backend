@@ -30,6 +30,9 @@ export class Media {
     file: ObjectId;
 
     @Prop({type: Types.ObjectId, required: false})
+    template: ObjectId;
+
+    @Prop({type: Types.ObjectId, required: false})
     preview: ObjectId;
 
     @Prop({required: false})

@@ -41,6 +41,9 @@ export class MediaDto {
     @ToObjectId()
     file: Types.ObjectId;
 
+    @ToObjectId()
+    template: Types.ObjectId;
+
     // Handle preview generation
     preview: Types.ObjectId;
 
