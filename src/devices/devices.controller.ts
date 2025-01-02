@@ -90,16 +90,8 @@ export class DevicesController {
     @Post('/:hexCode/playlist')
     async postPlaylist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc,
                        @Body() dto: AddActivityDto) {
-        let activity: ActivityDoc = null;
         try {
-            const {address, lat, lng} = device.address || {address: 'Unknown', lat: 0, lng: 0};
-            activity = this.devices.createActivity(dto);
-            activity.name = device.name;
-            activity.location = activity.location || new Location(lat, lng);
-            activity.address = activity.address || address;
-            activity.owner = device.owner;
-            activity.device = device._id;
-            await activity.save();
+            await this.devices.createActivity(dto, device);
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }

@@ -6,7 +6,7 @@ import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nes
 import {AddDeviceDto, EditDeviceDto} from './dtos/device.dto';
 import {Device, DeviceDoc} from './schemas/device.schema';
 import {Channel, ChannelDoc} from '../channels/schemas/channel.schema';
-import {Activity, ActivityDoc} from '../activities/schemas/activity.schema';
+import {Activity, ActivityDoc, Location} from '../activities/schemas/activity.schema';
 import {UserDoc} from '../schemas/user.schema';
 import {AddActivityDto} from "../activities/dtos/activity.dto";
 
@@ -34,8 +34,22 @@ export class DevicesService {
         return setAndUpdate(device, dto);
     }
 
-    createActivity(dto: AddActivityDto): ActivityDoc {
-        return new this.activityModel(dto);
+    async createActivity(dto: AddActivityDto, device: DeviceDoc): Promise<ActivityDoc> {
+        const activity = new this.activityModel(dto);
+        const {address, lat, lng} = device.address || {address: 'Unknown', lat: 0, lng: 0};
+        activity.name = device.name;
+        activity.location = activity.location || new Location(lat, lng);
+        activity.address = activity.address || address;
+        activity.owner = device.owner;
+        activity.device = device._id;
+        await activity.save();
+        const now = new Date();
+        await this.activityModel.deleteMany({
+            _id: {$ne: activity._id},
+            device: device._id,
+            createdAt: {$lte: new Date(now.getTime() - 3600 * 1000)}
+        });
+        return activity;
     }
 
     async delete(channel: DeviceDoc): Promise<any> {
