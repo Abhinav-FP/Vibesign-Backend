@@ -35,7 +35,7 @@ export class MediaDir {
     @Prop({type: Types.ObjectId, required: false, ref: User.name})
     owner: ObjectId;
 
-    async getPath?(this: MediaDirDoc): Promise<string>;
+    async getPath?(): Promise<string>;
 }
 
 export type MediaDirDoc = HydratedDocument<MediaDir>;

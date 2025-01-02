@@ -1,11 +1,15 @@
 import {join} from 'path';
 import {createReadStream} from 'fs';
 import axios, {AxiosInstance} from 'axios';
+import {Model} from 'mongoose';
 import {Inject, Injectable} from '@nestjs/common'
-import {AssetsService, IAsset, Asset, TempAsset} from '@stemy/nest-utils';
+import {InjectModel} from '@nestjs/mongoose';
+import {AssetsService, IAsset, Asset, TempAsset, compareId} from '@stemy/nest-utils';
 
 import {EXPO_PASSWORD, EXPO_USER} from './common';
 import {UserDoc} from '../schemas/user.schema';
+import {Device} from '../devices/schemas/device.schema';
+import {Activity} from '../activities/schemas/activity.schema';
 
 interface BuildData {
     builds: {
@@ -61,6 +65,8 @@ export class DashboardService {
     protected client: AxiosInstance;
 
     constructor(readonly assets: AssetsService,
+                @InjectModel(Device.name) protected deviceModel: Model<Device>,
+                @InjectModel(Activity.name) protected activityModel: Model<Activity>,
                 @Inject(EXPO_USER) protected expoUser: string,
                 @Inject(EXPO_PASSWORD) protected expoPassword: string) {
         this.client = axios.create({
@@ -91,29 +97,19 @@ export class DashboardService {
     }
 
     async aggregate(user: UserDoc): Promise<any> {
+        const devices = await this.deviceModel.find({owner: user?._id});
+        const $in = devices.map(d => d._id);
+        const activities = await this.activityModel.find({device: {$in}});
+        const online = devices.filter(d => {
+            return activities.some(a => compareId(a.device, d._id) && a.isOnline());
+        });
         return {
             devices: {
-                total: 5,
-                online: 2,
-                offline: 3
+                total: devices.length,
+                online: online.length,
+                offline: devices.length - online.length
             },
-            recent: [
-                {
-                    name: 'Testingscreen',
-                    address: '37 W 53rd St, New York, NY 10019, USA 18th Floor, New York, NY 10019',
-                    location: [40.75002355872513, -74.15814154780075]
-                },
-                {
-                    name: 'Testing FP',
-                    address: 'Jaipur, Rajasthan, India',
-                    location: [26.90157607519801, 75.77272084908525]
-                },
-                {
-                    name: 'Divya',
-                    address: 'FF-109, Nilamber Billissimo-3, 1, Vasna Bhayli Main Rd, nr. Nilamber Bellissimo, Gotri, Vadodara, Gu...',
-                    location: [22.299468961666925, 73.13424174896343]
-                }
-            ]
+            recent: activities.map(r => r.toJSON())
         };
     }
 

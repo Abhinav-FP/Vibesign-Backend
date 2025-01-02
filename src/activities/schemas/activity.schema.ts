@@ -11,14 +11,25 @@ export class Location {
     }
 }
 
+const TEN_MINS = 10 * 60_000;
+
 @Schema({
     id: true,
     timestamps: { createdAt: true, updatedAt: true },
     toJSON: {
         transform: createTransformer()
+    },
+    methods: {
+        isOnline(this: ActivityDoc) {
+            const diff = new Date().getTime() - this.createdAt.getTime();
+            return diff < TEN_MINS;
+        }
     }
 })
 export class Activity {
+
+    createdAt: Date;
+
     @Prop()
     name: string;
 
@@ -33,6 +44,8 @@ export class Activity {
 
     @Prop({type: Types.ObjectId, required: false, ref: Device.name})
     device: ObjectId;
+
+    isOnline?(): boolean;
 }
 
 export type ActivityDoc = HydratedDocument<Activity>;
