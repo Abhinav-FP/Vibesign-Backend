@@ -7,7 +7,7 @@ import {Activity, ActivityDoc} from './schemas/activity.schema';
 import {AddActivityDto, EditActivityDto, ListActivityDto} from './dtos/activity.dto';
 import {ActivitiesService} from './activities.service';
 
-@Controller('tickets')
+@Controller('activities')
 export class ActivitiesController {
 
     constructor(protected tickets: ActivitiesService) {
