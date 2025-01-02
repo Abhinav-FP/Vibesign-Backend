@@ -18,17 +18,23 @@ export class ListMediaDto {
     @ApiProperty()
     mimeType: string = '';
 
-    toQuery(user: UserDoc, parent: Types.ObjectId, useMime: boolean): FilterQuery<MediaDoc> {
-        const res = {
+    @IsOptional()
+    @ApiProperty({filterType: 'checkbox'})
+    template: string = '';
+
+    toQuery(user: UserDoc, parent: Types.ObjectId, forFile: boolean): FilterQuery<MediaDoc> {
+        const query = {
             name: {$regex: this.name, $options: 'i'},
             mimeType: {$regex: this.mimeType, $options: 'i'},
             owner: user._id,
             parent: parent
         } as FilterQuery<MediaDoc>;
-        if (!useMime) {
-            delete res.mimeType;
+        if (!forFile) {
+            delete query.mimeType;
+        } else if (this.template) {
+            query.template = {$exists: true};
         }
-        return res;
+        return query;
     }
 }
 
