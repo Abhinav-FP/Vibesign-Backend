@@ -8,7 +8,7 @@ import {DevicesService} from "./devices.service";
 import {ChannelDoc} from "../channels/schemas/channel.schema";
 import {PlaylistDoc} from "../playlists/schemas/playlist.schema";
 import {ActivityDto, AddActivityDto} from "../activities/dtos/activity.dto";
-import {ActivityDoc} from "../activities/schemas/activity.schema";
+import {Location, ActivityDoc} from "../activities/schemas/activity.schema";
 
 @Controller('devices')
 export class DevicesController {
@@ -92,8 +92,11 @@ export class DevicesController {
                        @Body() dto: AddActivityDto) {
         let activity: ActivityDoc = null;
         try {
+            const {address, lat, lng} = device.address || {address: 'Unknown', lat: 0, lng: 0};
             activity = this.devices.createActivity(dto);
             activity.name = device.name;
+            activity.location = activity.location || new Location(lat, lng);
+            activity.address = activity.address || address;
             activity.owner = device.owner;
             activity.device = device._id;
             await activity.save();

@@ -49,6 +49,7 @@ export class ActivityDto {
     address: string = '';
 
     @ValidateNested()
+    @IsOptional()
     @ApiProperty({type: () => LocationDto})
     location: LocationDto = new LocationDto();
 

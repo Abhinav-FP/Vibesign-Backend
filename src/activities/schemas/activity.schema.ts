@@ -6,9 +6,9 @@ import {User} from '../../schemas/user.schema';
 import {Device} from '../../devices/schemas/device.schema';
 
 export class Location {
-    address: string;
-    lat: number;
-    lng: number;
+
+    constructor(public lat: number = 0, public lng: number = 0) {
+    }
 }
 
 @Schema({
