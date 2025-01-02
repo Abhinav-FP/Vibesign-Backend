@@ -3,6 +3,7 @@ import { ApiProperty as Base, ApiPropertyOptions } from '@nestjs/swagger';
 export type ApiPropertyOpts = Omit<ApiPropertyOptions, 'type'> & {
     type?: 'file' | ApiPropertyOptions['type'];
     hidden?: boolean;
+    serialize?: boolean;
     disableFilter?: boolean;
     filterType?: "string" | "checkbox";
     url?: string;

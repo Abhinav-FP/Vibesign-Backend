@@ -41,6 +41,7 @@ export class MediaDto {
     @ToObjectId()
     file: Types.ObjectId;
 
+    @ApiProperty({type: 'file', accept: ['application/json'], hidden: true, serialize: true, required: false})
     @ToObjectId()
     template: Types.ObjectId;
 
