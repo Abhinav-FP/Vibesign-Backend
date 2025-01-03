@@ -6,6 +6,23 @@ import {createTransformer} from '@stemy/nest-utils';
 import {User} from '../../schemas/user.schema';
 import {MediaDir} from './media-dir.schema';
 
+export enum MediaType {
+    File = 'file',
+    Weather = 'weather'
+}
+
+export class WeatherAddress {
+
+    @Prop()
+    address: string;
+
+    @Prop()
+    lat: number;
+
+    @Prop()
+    lng: number;
+}
+
 @Schema({
     id: true,
     timestamps: { createdAt: true, updatedAt: true },
@@ -20,11 +37,8 @@ export class Media {
     @Prop()
     name: string;
 
-    @Prop({type: Types.ObjectId, required: false, ref: MediaDir.name})
-    parent: ObjectId;
-
-    @Prop({type: Types.ObjectId, required: false, ref: User.name})
-    owner: ObjectId;
+    @Prop({enum: MediaType, required: false})
+    mediaType: MediaType;
 
     @Prop({type: Types.ObjectId, required: false})
     file: ObjectId;
@@ -40,6 +54,15 @@ export class Media {
 
     @Prop({required: false})
     ext: string;
+
+    @Prop({type: () => WeatherAddress})
+    address: WeatherAddress;
+
+    @Prop({type: Types.ObjectId, required: false, ref: MediaDir.name})
+    parent: ObjectId;
+
+    @Prop({type: Types.ObjectId, required: false, ref: User.name})
+    owner: ObjectId;
 }
 
 export type MediaDoc = HydratedDocument<Media>;

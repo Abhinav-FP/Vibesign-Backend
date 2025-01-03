@@ -6,8 +6,14 @@ import {User} from '../../schemas/user.schema';
 import {Channel} from '../../channels/schemas/channel.schema';
 
 export class DeviceAddress {
+
+    @Prop()
     address: string;
+
+    @Prop()
     lat: number;
+
+    @Prop()
     lng: number;
 }
 

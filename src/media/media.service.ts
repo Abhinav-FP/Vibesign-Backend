@@ -1,10 +1,18 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
-import {AssetsService, IPagination, IPaginationParams, isString, compareId, paginate, setAndUpdate} from '@stemy/nest-utils';
+import {
+    AssetsService,
+    compareId,
+    IPagination,
+    IPaginationParams,
+    isString,
+    paginate,
+    setAndUpdate
+} from '@stemy/nest-utils';
 
 import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
-import {Media, MediaDoc} from './schemas/media.schema';
+import {Media, MediaDoc, MediaType} from './schemas/media.schema';
 import {Playlist} from '../playlists/schemas/playlist.schema';
 
 import {AddMediaDirDto, MediaDirDto} from './dtos/media-dir.dto';
@@ -47,23 +55,27 @@ export class MediaService {
     }
 
     async updateMedia(media: MediaDoc, dto: MediaDto) {
-        if (dto.file !== undefined && !compareId(media.file, dto.file)) {
+        const isFile = dto.mediaType === MediaType.File;
+        if (!isFile || (dto.template !== undefined && !compareId(media.template, dto.template))) {
+            await this.assets.unlink(media.template);
+        }
+        if (!isFile || (dto.file !== undefined && !compareId(media.file, dto.file))) {
             await this.assets.unlink(media.file);
             await this.assets.unlink(media.preview);
             await this.generatePreview(dto);
-        }
-        if (dto.template !== undefined && !compareId(media.template, dto.template)) {
-            await this.assets.unlink(media.template);
         }
         return setAndUpdate(media, dto);
     }
 
     async generatePreview(dto: MediaDto): Promise<void> {
-        const asset = !dto.file ? null : await this.assets.read(dto.file);
+        const asset = !dto.file || dto.mediaType !== MediaType.File ? null : await this.assets.read(dto.file);
         if (!asset) {
-            dto.preview = null
-            dto.mimeType = '';
-            dto.ext = '';
+            const isWeather = dto.mediaType == MediaType.Weather;
+            dto.file = null;
+            dto.preview = null;
+            dto.template = null;
+            dto.mimeType = isWeather ? 'application/weather' : '';
+            dto.ext = isWeather ? 'wea' : '';
             return;
         }
         dto.mimeType = asset.contentType;

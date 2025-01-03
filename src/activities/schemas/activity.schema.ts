@@ -7,7 +7,15 @@ import {Device} from '../../devices/schemas/device.schema';
 
 export class Location {
 
-    constructor(public lat: number = 0, public lng: number = 0) {
+    @Prop()
+    lat: number;
+
+    @Prop()
+    lng: number;
+
+    constructor(lat: number = 0, lng: number = 0) {
+        this.lat = lat;
+        this.lng = lng;
     }
 }
 

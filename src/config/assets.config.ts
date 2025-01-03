@@ -4,6 +4,7 @@ import {CompressionAssetProcessorService} from '../services/compression-asset-pr
 import {AssetFileTypeService} from '../services/file-type.service';
 
 export default registerAs('assets', () => ({
+    maxSize: Number.MAX_SAFE_INTEGER,
     assetProcessor: CompressionAssetProcessorService,
     typeDetector: AssetFileTypeService,
 } as IAssetModuleOpts));
