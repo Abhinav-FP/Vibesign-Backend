@@ -29,6 +29,9 @@ export class WeatherAddress {
     toJSON: {
         transform: createTransformer((_, ret) => {
             ret.type = 'file';
+            ret.playbackType = ret.mediaType === 'weather'
+                ? 'weather'
+                : (ret.mimeType?.startsWith('video') ? 'video' : 'image');
         })
     }
 })
