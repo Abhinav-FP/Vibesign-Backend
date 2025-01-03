@@ -55,12 +55,15 @@ export class MediaService {
     }
 
     async updateMedia(media: MediaDoc, dto: MediaDto) {
-        const isFile = dto.mediaType === MediaType.File;
-        if (!isFile || (dto.template !== undefined && !compareId(media.template, dto.template))) {
+        const typeChanged = dto.mediaType !== media.mediaType;
+        const fileChanged = dto.file !== undefined && !compareId(media.file, dto.file);
+        if (typeChanged || (dto.template !== undefined && !compareId(media.template, dto.template))) {
             await this.assets.unlink(media.template);
         }
-        if (!isFile || (dto.file !== undefined && !compareId(media.file, dto.file))) {
+        if (fileChanged) {
             await this.assets.unlink(media.file);
+        }
+        if (typeChanged || fileChanged) {
             await this.assets.unlink(media.preview);
             await this.generatePreview(dto);
         }
