@@ -4,58 +4,13 @@ import axios, {AxiosInstance} from 'axios';
 import {Model} from 'mongoose';
 import {Inject, Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose';
-import {AssetsService, IAsset, Asset, TempAsset, compareId} from '@stemy/nest-utils';
+import {Asset, AssetsService, compareId, IAsset, TempAsset} from '@stemy/nest-utils';
 
-import {EXPO_PASSWORD, EXPO_USER} from './common';
+import {APK_MIME, BuildData, BuildsResponse, EXPO_PASSWORD, EXPO_USER} from './common';
 import {UserDoc} from '../schemas/user.schema';
 import {Device} from '../devices/schemas/device.schema';
 import {Activity} from '../activities/schemas/activity.schema';
 
-interface BuildData {
-    builds: {
-        byId: {
-            id: string;
-            createdAt: string;
-            platform: 'ANDROID' | 'IOS';
-            status: 'FINISHED' | 'FAILED' | 'IN_PROGRESS';
-            buildProfile: 'preview' | 'development' | 'production';
-            appBuildVersion: string;
-            appVersion: string;
-            gitCommitMessage: string;
-            artifacts: {
-                applicationArchiveUrl: string;
-                buildArtifactsUrl: string;
-                xcodeBuildLogsUrl: string;
-            }
-        }
-    }
-}
-
-interface BuildEdge {
-    node: {
-        id: string;
-        createdAt: string;
-        buildPlatform: 'ANDROID' | 'IOS';
-        buildStatus: 'FINISHED' | 'FAILED' | 'IN_PROGRESS';
-        buildGitCommitMessage: string;
-        expirationDate: string;
-        buildProfile: 'preview' | 'development' | 'production';
-        appBuildVersion: string;
-        appVersion: string;
-    }
-}
-
-interface BuildsResponse {
-    app: {
-        byFullName: {
-            buildsPaginated: {
-                edges: BuildEdge[];
-            }
-        }
-    }
-}
-
-const APK_MIME = 'application/vnd.android.package-archive';
 
 @Injectable()
 export class DashboardService {
@@ -120,16 +75,16 @@ export class DashboardService {
         const lastAsset = apps
             .sort((a, b) => Number(a.metadata.buildVersion) - Number(b.metadata.buildVersion))
             .pop() || new TempAsset(
-                createReadStream(path, {autoClose: true}),
-                'vibesign-2024-12-24.apk',
-                APK_MIME,
-                {
-                    filename: 'vibesign-2024-12-24.apk',
-                    buildDate: '2024-12-24T03:03:14.554Z',
-                    buildVersion: '1',
-                    version: '1.0.0',
-                    notes: 'Initial build'
-                }
+            createReadStream(path, {autoClose: true}),
+            'vibesign-2024-12-24.apk',
+            APK_MIME,
+            {
+                filename: 'vibesign-2024-12-24.apk',
+                buildDate: '2024-12-24T03:03:14.554Z',
+                buildVersion: '1',
+                version: '1.0.0',
+                notes: 'Initial build'
+            }
         );
         const build = await this.getLastBuild(lastAsset);
         if (build !== lastAsset) {

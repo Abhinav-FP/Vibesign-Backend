@@ -1,0 +1,55 @@
+<html lang="{{ language }}">
+    <head>
+        <title>Weather of Budapest, Budapest, Hungary</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/weather.css">
+    </head>
+    <body>
+        <div class="weather-animated">
+            <div class="location">
+                <span data-api="location">Budapest, Budapest, Hungary</span>
+            </div>
+
+            <div class="main-left">
+                <i data-api="current-icon" class="partly-cloudy"></i>
+                <span data-api="current-main-descr">Partly Cloudy</span>
+            </div>
+
+            <div class="main-right">
+                <span data-api="current-wind-speed" class="wind">Wind: 17 kmph</span>
+                <span data-api="current-precip" class="precip">Precip: 0 mm</span>
+                <span data-api="current-pressure" class="pressure">Pressure: 1016 mb</span>
+                <span data-api="current-temperature" class="temperature">2°c</span>
+            </div>
+
+            <div data-api="forecast-week" class="week">
+                <div class="day">
+                    <span class="name">SAT</span>
+                    <i class="full-sun"></i>
+                    <span class="temperature">2 °c</span>
+                </div>
+                <div class="day">
+                    <span class="name">SUN</span>
+                    <i class="full-clouds"></i>
+                    <span class="temperature">2 °c</span>
+                </div>
+                <div class="day">
+                    <span class="name">MON</span>
+                    <i class="full-clouds"></i>
+                    <span class="temperature">9 °c</span></div>
+                <div class="day">
+                    <span class="name">TUE</span>
+                    <i class="full-clouds"></i>
+                    <span class="temperature">9 °c</span>
+                </div>
+                <div class="day">
+                    <span class="name">WED</span>
+                    <i class="full-clouds"></i>
+                    <span class="temperature">8 °c</span>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
