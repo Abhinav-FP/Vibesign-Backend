@@ -11,7 +11,7 @@ export enum MediaType {
     Weather = 'weather'
 }
 
-export class WeatherAddress {
+export class MediaAddress {
 
     @Prop()
     address: string;
@@ -21,6 +21,9 @@ export class WeatherAddress {
 
     @Prop()
     lng: number;
+
+    @Prop()
+    utcOffset: number;
 }
 
 @Schema({
@@ -58,8 +61,8 @@ export class Media {
     @Prop({required: false})
     ext: string;
 
-    @Prop({type: () => WeatherAddress})
-    address: WeatherAddress;
+    @Prop({type: () => MediaAddress})
+    address: MediaAddress;
 
     @Prop({type: Types.ObjectId, required: false, ref: MediaDir.name})
     parent: ObjectId;

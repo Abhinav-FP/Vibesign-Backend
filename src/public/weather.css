@@ -28,50 +28,66 @@ body * {
 }
 
 .weather-animated .icon {
-    background: url(./images/weather_icon_partly_cloudy.svg) center center no-repeat;
+    background: url(./weather-icons/clear-day.svg) center center no-repeat;
     background-size: contain;
     width: 100%;
     position: relative;
 }
 
-.weather-animated .icon.partly-cloudy {
-    background-image: url(./images/weather_icon_partly_cloudy.svg);
-    top: 19px !important;
+.weather-animated .icon.clear-night {
+    background-image: url(./weather-icons/clear-night.svg);
 }
 
-.weather-animated .icon.full-clouds {
-    background-image: url(./images/weather_icon_full_clouds.svg);
-    top: 19px !important;
+.weather-animated .icon.cloudy {
+    background-image: url(./weather-icons/cloudy.svg);
 }
 
-.weather-animated .icon.night {
-    background-image: url(./images/weather_icon_night.svg);
-    top: 16px !important;
+.weather-animated .icon.fog {
+    background-image: url(./weather-icons/fog.svg);
 }
 
-.weather-animated .icon.sun-rain-clouds {
-    background-image: url(./images/weather_icon_sun_rain_clouds.svg);
-    top: 15px !important;
+.weather-animated .icon.partly-cloudy-day {
+    background-image: url(./weather-icons/partly-cloudy-day.svg);
 }
 
-.weather-animated .icon.full-sun {
-    background-image: url(./images/weather_icon_full_sun.svg);
-    top: 17px !important;
+.weather-animated .icon.partly-cloudy-night {
+    background-image: url(./weather-icons/partly-cloudy-night.svg);
 }
 
 .weather-animated .icon.rainy {
-    background-image: url(./images/weather_icon_rainy.svg);
-    top: 13px !important;
+    background-image: url(./weather-icons/rainy.svg);
 }
 
-.weather-animated .icon.cloud-slight-rain {
-    background-image: url(./images/weather_icon_cloud_slight_rain.svg);
-    top: 13px !important;
+.weather-animated .icon.showers-day {
+    background-image: url(./weather-icons/showers-day.svg);
+}
+
+.weather-animated .icon.showers-night {
+    background-image: url(./weather-icons/showers-night.svg);
+}
+
+.weather-animated .icon.snow-showers-day {
+    background-image: url(./weather-icons/snow-showers-day.svg);
+}
+
+.weather-animated .icon.snow-showers-night {
+    background-image: url(./weather-icons/snow-showers-night.svg);
 }
 
 .weather-animated .icon.thunder {
-    background-image: url(./images/weather_icon_thunder.svg);
-    top: 0;
+    background-image: url(./weather-icons/thunder.svg);
+}
+
+.weather-animated .icon.thunder-showers-day {
+    background-image: url(./weather-icons/thunder-showers-day.svg);
+}
+
+.weather-animated .icon.thunder-showers-night {
+    background-image: url(./weather-icons/thunder-showers-night.svg);
+}
+
+.weather-animated .icon.wind {
+    background-image: url(./weather-icons/wind.svg);
 }
 
 .weather-animated .location {

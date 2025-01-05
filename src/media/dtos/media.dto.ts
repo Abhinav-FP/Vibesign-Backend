@@ -59,6 +59,10 @@ export class WeatherAddressDto {
     @IsNumber()
     @ApiProperty({step: 0.000000001})
     lng: number;
+
+    @IsNumber()
+    @ApiProperty({step: 0.000000001})
+    utcOffset: number;
 }
 
 export class MediaDto {

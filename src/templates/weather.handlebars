@@ -1,57 +1,43 @@
 <html lang="{{ language }}">
-    <head>
-        <title>Weather of Budapest, Budapest, Hungary</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/weather.css">
-    </head>
-    <body>
-        <div class="weather-animated">
-            <div class="location">
-                Budapest, Budapest, Hungary
-            </div>
+<head>
+    <title>Weather of {{ address.address }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/weather.css">
+</head>
+<body>
+<div class="weather-animated">
+    <div class="location">
+        {{ address.address }}
+    </div>
 
-            <div class="main">
-                <div class="main-left">
-                    <div class="icon partly-cloudy"></div>
-                    <div>Partly Cloudy</div>
-                </div>
-
-                <div class="main-right">
-                    <div class="wind">Wind: 17 kmph</div>
-                    <div class="precip">Precip: 0 mm</div>
-                    <div class="pressure">Pressure: 1016 mb</div>
-                    <div class="temperature">2°c</div>
-                </div>
-            </div>
-
-            <div class="week">
-                <div class="day">
-                    <div class="name">SAT</div>
-                    <div class="icon full-sun"></div>
-                    <div class="temperature">2 °c</div>
-                </div>
-                <div class="day">
-                    <div class="name">SUN</div>
-                    <div class="icon full-clouds"></div>
-                    <div class="temperature">2 °c</div>
-                </div>
-                <div class="day">
-                    <div class="name">MON</div>
-                    <div class="icon full-clouds"></div>
-                    <div class="temperature">9 °c</div></div>
-                <div class="day">
-                    <div class="name">TUE</div>
-                    <div class="icon full-clouds"></div>
-                    <div class="temperature">9 °c</div>
-                </div>
-                <div class="day">
-                    <div class="name">WED</div>
-                    <div class="icon full-clouds"></div>
-                    <div class="temperature">8 °c</div>
-                </div>
-            </div>
+    {{#with currentConditions}}
+    <div class="main">
+        <div class="main-left">
+            <div class="icon {{ icon }}"></div>
+            <div>{{ conditions }}</div>
         </div>
-    </body>
+        <div class="main-right">
+            <div class="wind">Wind: {{ windspeed }} kmph</div>
+            <div class="precip">Precip: {{ precip }} mm</div>
+            <div class="pressure">Pressure: {{ pressure }} mb</div>
+            <div class="temperature">{{ temp }} °c</div>
+        </div>
+    </div>
+    {{/with}}
+
+    <div class="week">
+        {{#each days}}
+            <div class="day">
+                <div class="name">{{ day }}</div>
+                <div class="icon {{ icon }}"></div>
+                <div class="temperature"> {{ temp }} °c</div>
+            </div>
+        {{/each}}
+    </div>
+</div>
+</body>
 </html>

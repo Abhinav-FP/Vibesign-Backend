@@ -1,13 +1,15 @@
 import axios, {AxiosInstance} from 'axios';
 import {Model} from 'mongoose';
+import {DateTime, FixedOffsetZone} from 'luxon';
 import {Inject, Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose';
 import {TemplatesService} from '@stemy/nest-utils';
 
-import {WEATHER_API_KEY} from './common';
+import {IWeatherData, WEATHER_API_KEY} from './common';
 import {Device} from '../devices/schemas/device.schema';
 import {Activity} from '../activities/schemas/activity.schema';
-import {MediaDoc, MediaType} from '../media/schemas/media.schema';
+import {MediaAddress, MediaDoc, MediaType} from '../media/schemas/media.schema';
+import {sampleData} from './data';
 
 @Injectable()
 export class WeatherService {
@@ -28,6 +30,25 @@ export class WeatherService {
         if (media.mediaType !== MediaType.Weather) {
             throw new Error('Media type is not weather');
         }
-        return this.templates.render('weather', 'en');
+        const weather = await this.getWeatherData(media.address);
+        return this.templates.render('weather', 'en', {
+            ...weather,
+            ...media.toJSON(),
+        });
+    }
+
+    async getWeatherData(address: MediaAddress): Promise<IWeatherData> {
+        const data = Object.assign({}, sampleData);
+        const zone = FixedOffsetZone.instance(330);
+        data.days = data.days.map(d => {
+            console.log(DateTime.fromSQL(d.datetime)
+                .setZone(zone, {keepLocalTime: true}));
+            d.day = DateTime.fromSQL(d.datetime)
+                .setZone(zone)
+                .setLocale('bn-IN')
+                .weekdayShort;
+            return d;
+        });
+        return data;
     }
 }
