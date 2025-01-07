@@ -4,7 +4,7 @@ import {imageTypes, ToObjectId, videoTypes} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../../decorators';
 import {UserDoc} from '../../schemas/user.schema';
-import {MediaDoc, MediaType} from '../schemas/media.schema';
+import {ForecastDays, ForecastUnits, MediaDoc, MediaType} from '../schemas/media.schema';
 
 export class ListMediaDto {
 
@@ -60,9 +60,9 @@ export class WeatherAddressDto {
     @ApiProperty({step: 0.000000001})
     lng: number;
 
-    @IsNumber()
-    @ApiProperty({step: 0.000000001})
-    utcOffset: number;
+    @IsString()
+    @ApiProperty()
+    countryCode: string;
 }
 
 export class MediaDto {
@@ -91,6 +91,17 @@ export class MediaDto {
     // Extension
     ext: string;
 
+    @IsEnum(ForecastDays)
+    @ApiProperty({enum: ForecastDays, fieldSet: 'forecast'})
+    forecastDays: ForecastDays;
+
+    @IsEnum(ForecastUnits)
+    @ApiProperty({enum: ForecastUnits})
+    forecastUnits: ForecastUnits;
+
+    @ApiProperty({endpoint: 'weather/locales?country=$address.countryCode'})
+    forecastLocale: string;
+
     @ValidateNested()
     @IsOptional()
     @ApiProperty({required: false, serialize: true, type: () => WeatherAddressDto})
@@ -110,8 +121,12 @@ export class AddMediaDto extends MediaDto {
         this.file = null;
         this.preview = null;
         this.ext = '';
+        this.forecastDays = ForecastDays.FiveDays;
+        this.forecastUnits = ForecastUnits.Metric;
+        this.forecastLocale = 'gu-IN';
         this.address = new WeatherAddressDto();
         this.address.address = 'Rajkot, Gujarat, India';
+        this.address.countryCode = 'IN';
         this.address.lat = 22.3038945;
         this.address.lng = 70.80215989999999;
         this.parent = null;

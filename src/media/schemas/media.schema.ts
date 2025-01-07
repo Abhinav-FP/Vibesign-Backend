@@ -11,6 +11,19 @@ export enum MediaType {
     Weather = 'weather'
 }
 
+export enum ForecastDays {
+    Current = 0,
+    ThreeDays = 3,
+    FiveDays = 5,
+}
+
+export enum ForecastUnits {
+    Metric = 'metric',
+    Us = 'us',
+    Uk = 'uk',
+    Scientific = 'scientific',
+}
+
 export class MediaAddress {
 
     @Prop()
@@ -23,7 +36,7 @@ export class MediaAddress {
     lng: number;
 
     @Prop()
-    utcOffset: number;
+    countryCode: string;
 }
 
 @Schema({
@@ -60,6 +73,15 @@ export class Media {
 
     @Prop({required: false})
     ext: string;
+
+    @Prop({required: false, enum: ForecastDays})
+    forecastDays: ForecastDays;
+
+    @Prop({required: false, enum: ForecastUnits})
+    forecastUnits: ForecastUnits;
+
+    @Prop({required: false})
+    forecastLocale: string;
 
     @Prop({type: () => MediaAddress})
     address: MediaAddress;

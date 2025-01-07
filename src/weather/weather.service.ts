@@ -1,6 +1,6 @@
 import axios, {AxiosInstance} from 'axios';
 import {Model} from 'mongoose';
-import {DateTime, FixedOffsetZone} from 'luxon';
+import {DateTime} from 'luxon';
 import {Inject, Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose';
 import {TemplatesService} from '@stemy/nest-utils';
@@ -8,8 +8,9 @@ import {TemplatesService} from '@stemy/nest-utils';
 import {IWeatherData, WEATHER_API_KEY} from './common';
 import {Device} from '../devices/schemas/device.schema';
 import {Activity} from '../activities/schemas/activity.schema';
-import {MediaAddress, MediaDoc, MediaType} from '../media/schemas/media.schema';
+import {MediaDoc, MediaType} from '../media/schemas/media.schema';
 import {sampleData} from './data';
+import {locales} from "./locales";
 
 @Injectable()
 export class WeatherService {
@@ -26,29 +27,42 @@ export class WeatherService {
         });
     }
 
-    async info(media: MediaDoc): Promise<string> {
+    async getInfo(media: MediaDoc): Promise<string> {
         if (media.mediaType !== MediaType.Weather) {
             throw new Error('Media type is not weather');
         }
-        const weather = await this.getWeatherData(media.address);
+        const weather = await this.getWeatherData(media);
         return this.templates.render('weather', 'en', {
             ...weather,
             ...media.toJSON(),
         });
     }
 
-    async getWeatherData(address: MediaAddress): Promise<IWeatherData> {
+    async getWeatherData(media: MediaDoc): Promise<IWeatherData> {
+        const {address, forecastLocale, forecastDays} = media;
         const data = Object.assign({}, sampleData);
-        const zone = FixedOffsetZone.instance(330);
         data.days = data.days.map(d => {
-            console.log(DateTime.fromSQL(d.datetime)
-                .setZone(zone, {keepLocalTime: true}));
             d.day = DateTime.fromSQL(d.datetime)
-                .setZone(zone)
-                .setLocale('bn-IN')
+                .setLocale(forecastLocale)
                 .weekdayShort;
             return d;
         });
         return data;
+    }
+
+    async getLocales(country: string) {
+        const list = Array.from(locales);
+        const ending = `-${country}`.toLowerCase();
+        return list.sort((a, b) => {
+            const ac = a.id.toLowerCase().endsWith(ending) ? 0 : 1;
+            const bc = b.id.toLowerCase().endsWith(ending) ? 0 : 1;
+            const res = ac - bc;
+
+            if (res !== 0) {
+                return res;
+            }
+
+            return a.label.localeCompare(b.label);
+        });
     }
 }
