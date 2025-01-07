@@ -92,13 +92,17 @@ export class MediaDto {
     ext: string;
 
     @IsEnum(ForecastDays)
-    @ApiProperty({enum: ForecastDays, fieldSet: 'forecast'})
+    @IsOptional()
+    @ApiProperty({enum: ForecastDays})
     forecastDays: ForecastDays;
 
     @IsEnum(ForecastUnits)
+    @IsOptional()
     @ApiProperty({enum: ForecastUnits})
     forecastUnits: ForecastUnits;
 
+    @IsString()
+    @IsOptional()
     @ApiProperty({endpoint: 'weather/locales?country=$address.countryCode'})
     forecastLocale: string;
 

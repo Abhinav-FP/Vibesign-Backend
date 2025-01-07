@@ -22,7 +22,7 @@ export class WeatherService {
                 @InjectModel(Activity.name) protected activityModel: Model<Activity>,
                 @Inject(WEATHER_API_KEY) protected apiKey: string) {
         this.client = axios.create({
-            baseURL: `https://api.weatherstack.com/forecast`,
+            baseURL: `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services`,
             method: 'get'
         });
     }
@@ -39,14 +39,29 @@ export class WeatherService {
     }
 
     async getWeatherData(media: MediaDoc): Promise<IWeatherData> {
-        const {address, forecastLocale, forecastDays} = media;
-        const data = Object.assign({}, sampleData);
+        const {address, forecastLocale, forecastUnits, forecastDays} = media;
+        const location = `${address.lat},${address.lng}`;
+        const start = DateTime.now().set({hour: 0, minute: 0, second: 0});
+        const end = start.plus({day: 5});
+        const lang = (forecastLocale || 'en-US').split('-').shift();
+        const response = await this.client.request<IWeatherData>({
+            url: `timeline/${location}/${start.toFormat('yyyy-MM-dd')}/${end.toFormat('yyyy-MM-dd')}`,
+            params: {
+                key: this.apiKey,
+                unitGroup: forecastUnits,
+                include: 'current',
+                iconSet: 'icons2',
+                lang
+            }
+        });
+        const data = response.data;
+        data.currentConditions.precip =data.currentConditions.precip ?? 0;
         data.days = data.days.map(d => {
             d.day = DateTime.fromSQL(d.datetime)
                 .setLocale(forecastLocale)
                 .weekdayShort;
             return d;
-        });
+        }).slice(1, forecastDays + 1);
         return data;
     }
 
