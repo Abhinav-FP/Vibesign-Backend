@@ -1,5 +1,5 @@
 import {FilterQuery, Types} from 'mongoose';
-import {IsEnum, IsNumber, IsOptional, IsString, MinLength, ValidateNested} from 'class-validator';
+import {IsEnum, IsNumber, IsOptional, IsString, Min, MinLength, ValidateNested} from 'class-validator';
 import {imageTypes, ToObjectId, videoTypes} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../../decorators';
@@ -50,29 +50,33 @@ export class WeatherAddressDto {
     @MinLength(3)
     @IsOptional()
     @ApiProperty()
-    address: string = '';
+    address: string = 'Rajkot, Gujarat, India';
 
     @IsNumber()
     @ApiProperty({step: 0.000000001})
-    lat: number;
+    lat: number = 22.3038945;
 
     @IsNumber()
     @ApiProperty({step: 0.000000001})
-    lng: number;
+    lng: number = 70.80215989999999;
 
     @IsString()
     @ApiProperty()
-    countryCode: string;
+    countryCode: string = 'IN';
 }
 
 export class MediaDto {
     @MinLength(3)
     @ApiProperty()
-    name: string = '';
+    name: string;
 
     @IsEnum(MediaType)
     @ApiProperty({enum: MediaType})
-    mediaType: MediaType = MediaType.File;
+    mediaType: MediaType;
+
+    @Min(1)
+    @ApiProperty()
+    duration: number;
 
     @ApiProperty({type: 'file', accept: [...imageTypes, ...videoTypes], required: false})
     @ToObjectId()
@@ -122,6 +126,9 @@ export class MediaDto {
 export class AddMediaDto extends MediaDto {
     constructor() {
         super();
+        this.name = '';
+        this.mediaType = MediaType.File;
+        this.duration = 10;
         this.file = null;
         this.preview = null;
         this.ext = '';
@@ -129,10 +136,6 @@ export class AddMediaDto extends MediaDto {
         this.forecastUnits = ForecastUnits.Metric;
         this.forecastLocale = 'gu-IN';
         this.address = new WeatherAddressDto();
-        this.address.address = 'Rajkot, Gujarat, India';
-        this.address.countryCode = 'IN';
-        this.address.lat = 22.3038945;
-        this.address.lng = 70.80215989999999;
         this.parent = null;
         this.path = '';
     }

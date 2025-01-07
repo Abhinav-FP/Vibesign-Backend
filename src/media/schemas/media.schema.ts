@@ -56,8 +56,11 @@ export class Media {
     @Prop()
     name: string;
 
-    @Prop({enum: MediaType, required: false})
+    @Prop({enum: MediaType})
     mediaType: MediaType;
+
+    @Prop()
+    duration: number;
 
     @Prop({type: Types.ObjectId, required: false})
     file: ObjectId;
