@@ -69,26 +69,17 @@ export class DashboardService {
     }
 
     async appAsset(): Promise<IAsset> {
-        const path = join(__dirname, '..', '..', 'client', 'app.apk');
         const apps = await this.assets
             .findMany({contentType: APK_MIME, filename: {$regex: 'vibesign-', $options: 'i'}});
         const lastAsset = apps
             .sort((a, b) => Number(a.metadata.buildVersion) - Number(b.metadata.buildVersion))
-            .pop() || new TempAsset(
-            createReadStream(path, {autoClose: true}),
-            'vibesign-2024-12-24.apk',
-            APK_MIME,
-            {
-                filename: 'vibesign-2024-12-24.apk',
-                buildDate: '2024-12-24T03:03:14.554Z',
-                buildVersion: '1',
-                version: '1.0.0',
-                notes: 'Initial build'
-            }
-        );
+            .pop();
         const build = await this.getLastBuild(lastAsset);
         if (build !== lastAsset) {
             await Promise.all(apps.map(a => a.unlink()));
+        }
+        if (!build) {
+            throw new Error('No APK build is available at the moment');
         }
         return build;
     }
@@ -134,11 +125,11 @@ export class DashboardService {
         const now = new Date();
         const dayAgo = new Date(now.getTime() - 24 * 3_600_1000);
         // We check only once a day
-        if (dayAgo > now && lastAsset instanceof Asset) {
+        if (lastAsset instanceof Asset && dayAgo > new Date(lastAsset.createdAt)) {
             return lastAsset;
         }
         // We check build version
-        const lastBuildVersion = Number(lastAsset.metadata.buildVersion);
+        const lastBuildVersion = !lastAsset ? 1 : Number(lastAsset.metadata.buildVersion);
         try {
             const builds = await this.client.request<BuildsResponse>({
                 data: [
