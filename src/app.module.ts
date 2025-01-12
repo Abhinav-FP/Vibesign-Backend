@@ -2,7 +2,7 @@ import {join} from 'path';
 import {APP_GUARD} from '@nestjs/core';
 import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
-import {MongooseModule} from '@nestjs/mongoose';
+import {getConnectionToken, MongooseModule} from '@nestjs/mongoose';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import {AssetsModule, TemplatesModule} from '@stemy/nest-utils';
 
@@ -23,10 +23,11 @@ import {ChannelsModule} from './channels/channels.module';
 import {DevicesModule} from './devices/devices.module';
 import {TicketsModule} from './tickets/tickets.module';
 import {DashboardModule} from './dashboard/dashboard.module';
-import {AssetFileTypeService} from './services/file-type.service';
-import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
 import {ActivitiesModule} from './activities/activities.module';
 import {WeatherModule} from './weather/weather.module';
+
+import {AssetFileTypeService} from './services/file-type.service';
+import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
 
 @Module({
     imports: [
