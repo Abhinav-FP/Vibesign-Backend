@@ -1,9 +1,9 @@
 import {FilterQuery} from 'mongoose';
 import {IsNumber, IsOptional, IsString, MinLength, ValidateNested} from 'class-validator';
 
-import {ApiProperty} from '../../decorators';
-import {ActivityDoc} from '../schemas/activity.schema';
-import {UserDoc} from "../../schemas/user.schema";
+import {ApiProperty} from '../decorators';
+import {ActivityDoc} from './activity.schema';
+import {UserDoc} from '../users/user.schema';
 
 export class LocationDto {
 

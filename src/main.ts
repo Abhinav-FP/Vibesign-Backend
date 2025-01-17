@@ -15,7 +15,7 @@ async function bootstrap() {
     app.useGlobalGuards(new JwtGuard(app.get(Reflector)));
 
     app.enableCors({
-        origin: "*"
+        origin: '*'
     })
 
     // Create swagger docs

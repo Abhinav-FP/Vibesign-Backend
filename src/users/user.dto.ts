@@ -1,7 +1,7 @@
 import {FilterQuery, Types} from 'mongoose';
 import {DateTime} from 'luxon';
 import {
-    IS_BOOLEAN, IsBoolean,
+    IsBoolean,
     IsDate,
     IsEmail,
     IsNotEmpty,
@@ -12,10 +12,10 @@ import {
     IsStrongPasswordOptions,
     MinLength
 } from 'class-validator';
-import {imageTypes, ToObjectId} from '@stemy/nest-utils';
+import {imageTypes, ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
-import {UserDoc} from '../schemas/user.schema';
+import {UserDoc} from './user.schema';
 import {ApiProperty} from '../decorators';
 
 const strongPassword = {
@@ -50,7 +50,7 @@ export class ListUserDto {
     @IsNumber()
     @IsOptional()
     @ApiProperty()
-    player: number = 0;
+    devices: number = 0;
 
     @IsDate()
     @IsOptional()
@@ -59,7 +59,7 @@ export class ListUserDto {
 
     @IsString()
     @IsOptional()
-    @ApiProperty({disableFilter: true})
+    @ApiProperty({disableFilter: true, disableSort: true})
     picture: string = '';
 
     @IsBoolean()
@@ -67,14 +67,17 @@ export class ListUserDto {
     @ApiProperty()
     active: boolean = true;
 
+    filter: string = '';
+
     toQuery(user: UserDoc): FilterQuery<UserDoc> {
-        const query: FilterQuery<any> = {
-            email: {$regex: this.email, $options: 'i'},
-            name: {$regex: this.name, $options: 'i'},
-            username: {$regex: this.username, $options: 'i'},
-        };
+        const query = toRegexFilter({
+            name: this.name,
+            username: this.username,
+            host: this.host,
+            email: this.email,
+        }, this.filter);
         if (user.role !== UserRole.Admin) {
-            query.host = user._id;
+            query.hostId = user._id;
         }
         return query;
     }
@@ -98,7 +101,7 @@ export class UserDto {
     @IsNumber()
     @IsOptional()
     @ApiProperty({serialize: true})
-    playerLimit: number = 1;
+    deviceLimit: number = 1;
 
     @IsDate()
     @IsOptional()

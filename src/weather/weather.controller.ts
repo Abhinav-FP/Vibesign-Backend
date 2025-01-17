@@ -1,7 +1,7 @@
 import {BadRequestException, Controller, Get, Header, Query} from '@nestjs/common';
 import {Public, ResolveEntity} from '@stemy/nest-utils';
 import {WeatherService} from './weather.service';
-import {Media, MediaDoc} from "../media/schemas/media.schema";
+import {Media, MediaDoc} from '../media/media.schema';
 
 @Controller('weather')
 export class WeatherController {

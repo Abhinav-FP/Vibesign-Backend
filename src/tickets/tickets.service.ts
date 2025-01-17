@@ -3,8 +3,8 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
 
-import {AddTicketDto} from './dtos/ticket.dto';
-import {Ticket, TicketDoc} from './schemas/ticket.schema';
+import {AddTicketDto} from './ticket.dto';
+import {Ticket, TicketDoc} from './ticket.schema';
 
 @Injectable()
 export class TicketsService {

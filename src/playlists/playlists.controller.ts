@@ -1,10 +1,11 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
-import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {ApiExtraModels} from '@nestjs/swagger';
+import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 
-import {UserDoc} from '../schemas/user.schema';
-import {Playlist, PlaylistDoc} from './schemas/playlist.schema';
-import {AddPlaylistDto, EditPlaylistDto, ListPlaylistDto} from './dtos/playlist.dto';
-import {PlaylistsService} from "./playlists.service";
+import {UserDoc} from '../users/user.schema';
+import {Playlist, PlaylistDoc} from './playlist.schema';
+import {AddPlaylistDto, EditPlaylistDto, ListPlaylistDto} from './playlist.dto';
+import {PlaylistsService} from './playlists.service';
 
 @Controller('playlists')
 export class PlaylistsController {
@@ -13,11 +14,12 @@ export class PlaylistsController {
     }
 
     @Get()
+    @ApiExtraModels(ListPlaylistDto)
     async list(@AuthUser() authUser: UserDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @Query('query', QueryPipe) q: ListPlaylistDto) {
+               @ComplexQuery() q: ListPlaylistDto) {
         return await this.playlists.paginate(
             q.toQuery(authUser),
             {page, limit, sort}

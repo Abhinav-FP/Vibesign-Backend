@@ -25,7 +25,7 @@ export class User {
     username: string;
 
     @Prop()
-    playerLimit: number;
+    deviceLimit: number;
 
     @Prop()
     expireDate: Date;

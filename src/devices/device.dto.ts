@@ -1,10 +1,10 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsBoolean, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested} from 'class-validator';
-import {ToObjectId} from '@stemy/nest-utils';
+import {ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
-import {ApiProperty} from '../../decorators';
-import {UserDoc} from '../../schemas/user.schema';
-import {DeviceDoc} from '../schemas/device.schema';
+import {ApiProperty} from '../decorators';
+import {UserDoc} from '../users/user.schema';
+import {DeviceDoc} from './device.schema';
 
 export class ListDeviceDto {
 
@@ -18,12 +18,15 @@ export class ListDeviceDto {
     @ApiProperty()
     hexCode: string = '';
 
+    filter: string = '';
+
     toQuery(user: UserDoc): FilterQuery<DeviceDoc> {
-        return {
-            name: {$regex: this.name, $options: 'i'},
-            hexCode: {$regex: this.hexCode, $options: 'i'},
-            owner: user?._id
-        } as FilterQuery<DeviceDoc>;
+        const query = toRegexFilter({
+            name: this.name,
+            hexCode: this.hexCode,
+        }, this.filter) as FilterQuery<DeviceDoc>;
+        query.owner = user._id;
+        return query;
     }
 }
 

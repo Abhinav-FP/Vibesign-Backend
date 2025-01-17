@@ -2,11 +2,11 @@ import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssetsModule} from '@stemy/nest-utils';
 
-import {Channel, ChannelSchema} from './schemas/channel.schema';
+import {Channel, ChannelSchema} from './channel.schema';
 
-import {ChannelsService} from "./channels.service";
+import {ChannelsService} from './channels.service';
 import {ChannelsController} from './channels.controller';
-import {Playlist, PlaylistSchema} from "../playlists/schemas/playlist.schema";
+import {Playlist, PlaylistSchema} from '../playlists/playlist.schema';
 
 @Module({
     imports: [

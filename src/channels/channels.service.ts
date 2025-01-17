@@ -3,10 +3,10 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nest-utils';
 
-import {AddChannelDto, EditChannelDto} from './dtos/channel.dto';
-import {Channel, ChannelDoc} from './schemas/channel.schema';
-import {Playlist, PlaylistDoc} from '../playlists/schemas/playlist.schema';
-import {UserDoc} from '../schemas/user.schema';
+import {AddChannelDto, EditChannelDto} from './channel.dto';
+import {Channel, ChannelDoc} from './channel.schema';
+import {Playlist, PlaylistDoc} from '../playlists/playlist.schema';
+import {UserDoc} from '../users/user.schema';
 
 @Injectable()
 export class ChannelsService {

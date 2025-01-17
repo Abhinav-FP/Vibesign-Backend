@@ -1,10 +1,10 @@
 import {Body, Controller, Delete, ForbiddenException, Get, Patch, Post, Query} from '@nestjs/common';
-import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
 import {UsersService} from './users.service';
-import {User, UserDoc} from '../schemas/user.schema';
-import {AddUserDto, EditUserDto, ListUserDto} from '../dtos/user.dto';
+import {User, UserDoc} from './user.schema';
+import {AddUserDto, EditUserDto, ListUserDto} from './user.dto';
 
 @Controller('partners')
 export class PartnersController {
@@ -17,7 +17,7 @@ export class PartnersController {
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @Query('query', QueryPipe) q: ListUserDto) {
+               @ComplexQuery() q: ListUserDto) {
         const query = q.toQuery(authUser);
         query.role = UserRole.Partner;
         const res = await this.users.paginate(query, {page, limit, sort, populate: ['host']});

@@ -7,9 +7,9 @@ import {InjectModel} from '@nestjs/mongoose';
 import {Asset, AssetsService, compareId, IAsset, TempAsset} from '@stemy/nest-utils';
 
 import {APK_MIME, BuildData, BuildsResponse, EXPO_PASSWORD, EXPO_USER} from './common';
-import {UserDoc} from '../schemas/user.schema';
-import {Device} from '../devices/schemas/device.schema';
-import {Activity} from '../activities/schemas/activity.schema';
+import {UserDoc} from '../users/user.schema';
+import {Device} from '../devices/device.schema';
+import {Activity} from '../activities/activity.schema';
 
 
 @Injectable()

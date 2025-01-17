@@ -1,5 +1,5 @@
-import {Injectable} from "@nestjs/common";
-import {AssetProcessorService, IAssetMeta, IFileType} from "@stemy/nest-utils";
+import {Injectable} from '@nestjs/common';
+import {AssetProcessorService, IAssetMeta, IFileType} from '@stemy/nest-utils';
 
 @Injectable()
 export class CompressionAssetProcessorService extends AssetProcessorService {

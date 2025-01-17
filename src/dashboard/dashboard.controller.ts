@@ -1,7 +1,7 @@
 import {BadRequestException, Controller, Get, StreamableFile} from '@nestjs/common';
 import {AuthUser, Public} from '@stemy/nest-utils';
 
-import {UserDoc} from '../schemas/user.schema';
+import {UserDoc} from '../users/user.schema';
 import {DashboardService} from './dashboard.service';
 
 @Controller('dashboard')
@@ -33,7 +33,7 @@ export class DashboardController {
             const asset = await this.dashboard.appAsset();
             return new StreamableFile(asset.stream, {
                 type: 'application/vnd.android.package-archive',
-                disposition: `attachment; filename="${asset.filename}"`
+                disposition: `attachment; filename='${asset.filename}'`
             });
         } catch (e) {
             throw new BadRequestException(`${e}`);

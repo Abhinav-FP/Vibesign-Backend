@@ -1,7 +1,7 @@
 import {IsOptional, MinLength} from 'class-validator';
 import {Types} from 'mongoose';
 import {ToObjectId} from '@stemy/nest-utils';
-import {ApiProperty} from '../../decorators';
+import {ApiProperty} from '../decorators';
 
 export class MediaDirDto {
 

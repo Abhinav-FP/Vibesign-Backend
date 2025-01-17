@@ -1,10 +1,10 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsEnum, IsNumber, IsOptional, IsString, Min, MinLength, ValidateNested} from 'class-validator';
-import {imageTypes, ToObjectId, videoTypes} from '@stemy/nest-utils';
+import {imageTypes, ToObjectId, videoTypes, toRegexFilter} from '@stemy/nest-utils';
 
-import {ApiProperty} from '../../decorators';
-import {UserDoc} from '../../schemas/user.schema';
-import {ForecastDays, ForecastUnits, MediaDoc, MediaType} from '../schemas/media.schema';
+import {ApiProperty} from '../decorators';
+import {UserDoc} from '../users/user.schema';
+import {ForecastDays, ForecastUnits, MediaDoc, MediaType} from './media.schema';
 
 export class ListMediaDto {
 
@@ -27,20 +27,22 @@ export class ListMediaDto {
     @ApiProperty({filterType: 'checkbox'})
     template: string = '';
 
+    filter: string = '';
+
     toQuery(user: UserDoc, parent: Types.ObjectId, forFile: boolean): FilterQuery<MediaDoc> {
-        const query = {
-            name: {$regex: this.name, $options: 'i'},
-            mediaType: {$regex: this.mediaType, $options: 'i'},
-            mimeType: {$regex: this.mimeType, $options: 'i'},
-            owner: user._id,
-            parent: parent
-        } as FilterQuery<MediaDoc>;
+        const query = toRegexFilter({
+            name: this.name,
+            mediaType: this.mediaType,
+            mimeType: this.mimeType
+        }, this.filter) as FilterQuery<MediaDoc>;
         if (!forFile) {
             delete query.mediaType;
             delete query.mimeType;
         } else if (this.template) {
             query.template = {$exists: true};
         }
+        query.owner = user._id;
+        query.parent = parent;
         return query;
     }
 }

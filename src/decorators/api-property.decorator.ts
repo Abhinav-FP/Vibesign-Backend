@@ -6,7 +6,7 @@ export type ApiPropertyOpts = Omit<ApiPropertyOptions, 'type'> & {
     serialize?: boolean;
     disableFilter?: boolean;
     disableSort?: boolean;
-    filterType?: "string" | "checkbox";
+    filterType?: 'string' | 'checkbox';
     url?: string;
     multi?: boolean;
     accept?: string[];

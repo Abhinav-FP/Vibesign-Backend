@@ -3,11 +3,11 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nest-utils';
 
-import {AddPlaylistDto, EditPlaylistDto} from './dtos/playlist.dto';
-import {UserDoc} from '../schemas/user.schema';
-import {Media, MediaDoc} from '../media/schemas/media.schema';
-import {Channel} from '../channels/schemas/channel.schema';
-import {Playlist, PlaylistDoc} from './schemas/playlist.schema';
+import {AddPlaylistDto, EditPlaylistDto} from './playlist.dto';
+import {UserDoc} from '../users/user.schema';
+import {Media, MediaDoc} from '../media/media.schema';
+import {Channel} from '../channels/channel.schema';
+import {Playlist, PlaylistDoc} from './playlist.schema';
 
 @Injectable()
 export class PlaylistsService {

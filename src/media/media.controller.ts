@@ -1,12 +1,13 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
-import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {ApiExtraModels} from '@nestjs/swagger';
+import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 import {ObjectId} from 'mongodb';
 
-import {AddMediaDto, EditMediaDto, ListMediaDto} from './dtos/media.dto';
-import {MediaDir, MediaDirDoc} from "./schemas/media-dir.schema";
-import {Media, MediaDoc} from './schemas/media.schema';
-import {UserDoc} from '../schemas/user.schema';
-import {MediaService} from "./media.service";
+import {AddMediaDto, EditMediaDto, ListMediaDto} from './media.dto';
+import {MediaDir, MediaDirDoc} from './media-dir.schema';
+import {Media, MediaDoc} from './media.schema';
+import {UserDoc} from '../users/user.schema';
+import {MediaService} from './media.service';
 
 interface IMediaItem {
     id?: string;
@@ -27,12 +28,13 @@ export class MediaController {
     }
 
     @Get()
+    @ApiExtraModels(ListMediaDto)
     async list(@AuthUser() authUser: UserDoc,
                @ResolveEntity(MediaDir, false) dir: MediaDirDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @Query('query', QueryPipe) q: ListMediaDto) {
+               @ComplexQuery() q: ListMediaDto) {
         const dirs = await this.media.findDirs(q.toQuery(authUser, dir?._id, false), sort);
         const res = await this.media.paginateMedia(
             q.toQuery(authUser, dir?._id, true),

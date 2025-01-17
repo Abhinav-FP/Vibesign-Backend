@@ -2,12 +2,12 @@ import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssetsModule} from '@stemy/nest-utils';
 
-import {Device, DeviceSchema} from './schemas/device.schema';
+import {Device, DeviceSchema} from './device.schema';
 
 import {DevicesService} from './devices.service';
 import {DevicesController} from './devices.controller';
-import {Channel, ChannelSchema} from '../channels/schemas/channel.schema';
-import {Activity, ActivitySchema} from '../activities/schemas/activity.schema';
+import {Channel, ChannelSchema} from '../channels/channel.schema';
+import {Activity, ActivitySchema} from '../activities/activity.schema';
 
 @Module({
     imports: [

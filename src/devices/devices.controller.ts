@@ -1,14 +1,14 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
-import {AuthUser, Public, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {ApiExtraModels} from '@nestjs/swagger';
+import {AuthUser, ComplexQuery, Public, ResolveEntity} from '@stemy/nest-utils';
 
-import {UserDoc} from '../schemas/user.schema';
-import {Device, DeviceDoc} from './schemas/device.schema';
-import {AddDeviceDto, EditDeviceDto, ListDeviceDto} from './dtos/device.dto';
-import {DevicesService} from "./devices.service";
-import {ChannelDoc} from "../channels/schemas/channel.schema";
-import {PlaylistDoc} from "../playlists/schemas/playlist.schema";
-import {ActivityDto, AddActivityDto} from "../activities/dtos/activity.dto";
-import {Location, ActivityDoc} from "../activities/schemas/activity.schema";
+import {UserDoc} from '../users/user.schema';
+import {Device, DeviceDoc} from './device.schema';
+import {AddDeviceDto, EditDeviceDto, ListDeviceDto} from './device.dto';
+import {DevicesService} from './devices.service';
+import {ChannelDoc} from '../channels/channel.schema';
+import {PlaylistDoc} from '../playlists/playlist.schema';
+import {AddActivityDto} from '../activities/activity.dto';
 
 @Controller('devices')
 export class DevicesController {
@@ -17,11 +17,12 @@ export class DevicesController {
     }
 
     @Get()
+    @ApiExtraModels(ListDeviceDto)
     async list(@AuthUser() authUser: UserDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @Query('query', QueryPipe) q: ListDeviceDto) {
+               @ComplexQuery() q: ListDeviceDto) {
         return await this.devices.paginate(
             q.toQuery(authUser),
             {page, limit, sort}

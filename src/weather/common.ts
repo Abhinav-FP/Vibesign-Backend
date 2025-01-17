@@ -1,9 +1,9 @@
 import {FactoryToken} from '@stemy/nest-utils';
 
 export enum PrecipType {
-    Ice = "ice",
-    Rain = "rain",
-    Snow = "snow",
+    Ice = 'ice',
+    Rain = 'rain',
+    Snow = 'snow',
 }
 
 export interface IWeatherConditions {

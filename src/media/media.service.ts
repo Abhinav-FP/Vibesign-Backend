@@ -11,12 +11,12 @@ import {
     setAndUpdate
 } from '@stemy/nest-utils';
 
-import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
-import {Media, MediaDoc, MediaType} from './schemas/media.schema';
-import {Playlist} from '../playlists/schemas/playlist.schema';
+import {MediaDir, MediaDirDoc} from './media-dir.schema';
+import {Media, MediaDoc, MediaType} from './media.schema';
+import {Playlist} from '../playlists/playlist.schema';
 
-import {AddMediaDirDto, MediaDirDto} from './dtos/media-dir.dto';
-import {AddMediaDto, MediaDto} from './dtos/media.dto';
+import {AddMediaDirDto, MediaDirDto} from './media-dir.dto';
+import {AddMediaDto, MediaDto} from './media.dto';
 
 @Injectable()
 export class MediaService {

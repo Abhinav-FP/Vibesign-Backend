@@ -1,10 +1,10 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
-import {ToObjectId} from '@stemy/nest-utils';
+import {ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
-import {ApiProperty} from '../../decorators';
-import {UserDoc} from '../../schemas/user.schema';
-import {PlaylistDoc} from '../schemas/playlist.schema';
+import {ApiProperty} from '../decorators';
+import {UserDoc} from '../users/user.schema';
+import {PlaylistDoc} from './playlist.schema';
 
 export class ListPlaylistDto {
 
@@ -13,11 +13,14 @@ export class ListPlaylistDto {
     @ApiProperty()
     name: string = '';
 
+    filter: string = '';
+
     toQuery(user: UserDoc): FilterQuery<PlaylistDoc> {
-        return {
-            name: {$regex: this.name, $options: 'i'},
-            owner: user?._id
-        } as FilterQuery<PlaylistDoc>;
+        const query = toRegexFilter({
+            name: this.name
+        }, this.filter) as FilterQuery<PlaylistDoc>;
+        query.owner = user._id;
+        return query;
     }
 }
 

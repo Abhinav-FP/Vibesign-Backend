@@ -1,10 +1,10 @@
 import {FilterQuery, Types} from 'mongoose';
 import {IsOptional, IsString, MinLength} from 'class-validator';
-import {ToObjectId} from '@stemy/nest-utils';
+import {ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
-import {ApiProperty} from '../../decorators';
-import {UserDoc} from '../../schemas/user.schema';
-import {ChannelDoc} from '../schemas/channel.schema';
+import {ApiProperty} from '../decorators';
+import {UserDoc} from '../users/user.schema';
+import {ChannelDoc} from './channel.schema';
 
 export class ListChannelDto {
 
@@ -13,11 +13,14 @@ export class ListChannelDto {
     @ApiProperty()
     name: string = '';
 
+    filter: string = '';
+
     toQuery(user: UserDoc): FilterQuery<ChannelDoc> {
-        return {
-            name: {$regex: this.name, $options: 'i'},
-            owner: user?._id
-        } as FilterQuery<ChannelDoc>;
+        const query = toRegexFilter({
+            name: this.name
+        }, this.filter) as FilterQuery<ChannelDoc>;
+        query.owner = user._id;
+        return query;
     }
 }
 

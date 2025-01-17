@@ -1,6 +1,6 @@
 import {Buffer} from 'buffer';
 import {Injectable} from '@nestjs/common';
-import {IUploadedFile, IAssetTypeDetector, IFileType, fileTypeFromBuffer} from "@stemy/nest-utils";
+import {IUploadedFile, IAssetTypeDetector, IFileType, fileTypeFromBuffer} from '@stemy/nest-utils';
 
 @Injectable()
 export class AssetFileTypeService implements IAssetTypeDetector {

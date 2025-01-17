@@ -11,8 +11,8 @@ import {
 import {DASHBOARD_MODULE_OPTIONS, EXPO_PASSWORD, EXPO_USER, IDashboardModuleOpts} from './common';
 import {DashboardService} from './dashboard.service';
 import {DashboardController} from './dashboard.controller';
-import {Activity, ActivitySchema} from '../activities/schemas/activity.schema';
-import {Device, DeviceSchema} from '../devices/schemas/device.schema';
+import {Activity, ActivitySchema} from '../activities/activity.schema';
+import {Device, DeviceSchema} from '../devices/device.schema';
 
 export function createDashboardProviders(): Provider[] {
     return new FromOptionsProviders(DASHBOARD_MODULE_OPTIONS)

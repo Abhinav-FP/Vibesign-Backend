@@ -1,8 +1,9 @@
 import {FilterQuery} from 'mongoose';
 import {IsEmail, IsOptional, IsString, MinLength} from 'class-validator';
+import {toRegexFilter} from '@stemy/nest-utils';
 
-import {ApiProperty} from '../../decorators';
-import {TicketDoc} from '../schemas/ticket.schema';
+import {ApiProperty} from '../decorators';
+import {TicketDoc} from './ticket.schema';
 
 export class ListTicketDto {
 
@@ -25,12 +26,14 @@ export class ListTicketDto {
     @ApiProperty()
     subject: string = '';
 
+    filter: string = '';
+
     toQuery(): FilterQuery<TicketDoc> {
-        return {
-            name: {$regex: this.name, $options: 'i'},
-            email: {$regex: this.email, $options: 'i'},
-            subject: {$regex: this.subject, $options: 'i'},
-        } as FilterQuery<TicketDoc>;
+        return toRegexFilter({
+            name: this.name,
+            email: this.email,
+            subject: this.subject,
+        }, this.filter);
     }
 }
 

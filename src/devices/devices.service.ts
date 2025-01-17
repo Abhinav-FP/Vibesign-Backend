@@ -3,12 +3,12 @@ import {InjectModel} from '@nestjs/mongoose';
 import {FilterQuery, Model} from 'mongoose';
 import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nest-utils';
 
-import {AddDeviceDto, EditDeviceDto} from './dtos/device.dto';
-import {Device, DeviceDoc} from './schemas/device.schema';
-import {Channel, ChannelDoc} from '../channels/schemas/channel.schema';
-import {Activity, ActivityDoc, Location} from '../activities/schemas/activity.schema';
-import {UserDoc} from '../schemas/user.schema';
-import {AddActivityDto} from "../activities/dtos/activity.dto";
+import {AddDeviceDto, EditDeviceDto} from './device.dto';
+import {Device, DeviceDoc} from './device.schema';
+import {Channel, ChannelDoc} from '../channels/channel.schema';
+import {Activity, ActivityDoc, Location} from '../activities/activity.schema';
+import {UserDoc} from '../users/user.schema';
+import {AddActivityDto} from '../activities/activity.dto';
 
 @Injectable()
 export class DevicesService {

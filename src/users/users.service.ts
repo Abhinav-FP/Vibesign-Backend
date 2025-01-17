@@ -1,16 +1,24 @@
-import {FilterQuery, Model} from 'mongoose';
+import {Connection, FilterQuery, Model} from 'mongoose';
 import {hash} from 'bcrypt';
-import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
-import {InjectModel} from '@nestjs/mongoose';
-import {IPagination, IPaginationParams, paginate} from '@stemy/nest-utils';
+import {Injectable} from '@nestjs/common';
+import {InjectConnection, InjectModel} from '@nestjs/mongoose';
+import {
+    addFieldStage,
+    IPagination,
+    IPaginationParams,
+    lookupStages,
+    matchStage,
+    paginateAggregations
+} from '@stemy/nest-utils';
 
-import {AddUserDto, EditUserDto} from '../dtos/user.dto';
-import {User, UserDoc} from '../schemas/user.schema';
+import {AddUserDto, EditUserDto} from './user.dto';
+import {User, UserDoc} from './user.schema';
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User.name) private model: Model<User>) {
+    constructor(@InjectModel(User.name) private model: Model<User>, @InjectConnection() connection: Connection) {
+
     }
 
     async hashPassword(password: string): Promise<string> {
@@ -48,6 +56,18 @@ export class UsersService {
     }
 
     async paginate(where: FilterQuery<UserDoc>, params: IPaginationParams<User>): Promise<IPagination<UserDoc>> {
-        return paginate(this.model, where, params);
+        return paginateAggregations(this.model, [
+            ...lookupStages('users', 'host'),
+            addFieldStage({
+                host: '$host.name'
+            }),
+            ...lookupStages('devices', '_id', 'devices', 'owner', false),
+            addFieldStage({
+                devices: {
+                    $size: '$devices'
+                }
+            }),
+            matchStage(where)
+        ], params);
     }
 }

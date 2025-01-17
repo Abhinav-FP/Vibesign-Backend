@@ -2,9 +2,9 @@ import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssetsModule} from '@stemy/nest-utils';
 
-import {MediaDir, MediaDirSchema} from './schemas/media-dir.schema';
-import {Media, MediaSchema} from './schemas/media.schema';
-import {Playlist, PlaylistSchema} from '../playlists/schemas/playlist.schema';
+import {MediaDir, MediaDirSchema} from './media-dir.schema';
+import {Media, MediaSchema} from './media.schema';
+import {Playlist, PlaylistSchema} from '../playlists/playlist.schema';
 
 import {MediaService} from './media.service';
 

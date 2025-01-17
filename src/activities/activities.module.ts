@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {AssetsModule} from '@stemy/nest-utils';
-import {Activity, ActivitySchema} from './schemas/activity.schema';
+import {Activity, ActivitySchema} from './activity.schema';
 
 import {ActivitiesService} from './activities.service';
 import {ActivitiesController} from './activities.controller';

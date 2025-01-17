@@ -2,9 +2,9 @@ import {Controller, Get, Query} from '@nestjs/common';
 import {ApiExtraModels} from '@nestjs/swagger';
 import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
 
-import {UserDoc} from '../schemas/user.schema';
-import {Activity, ActivityDoc} from './schemas/activity.schema';
-import {AddActivityDto, EditActivityDto, ListActivityDto} from './dtos/activity.dto';
+import {UserDoc} from '../users/user.schema';
+import {Activity, ActivityDoc} from './activity.schema';
+import {AddActivityDto, EditActivityDto, ListActivityDto} from './activity.dto';
 import {ActivitiesService} from './activities.service';
 
 @Controller('activities')

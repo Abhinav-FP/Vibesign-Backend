@@ -1,10 +1,10 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post} from '@nestjs/common';
 import {AuthUser, ResolveEntity} from '@stemy/nest-utils';
 
-import {MediaDir, MediaDirDoc} from './schemas/media-dir.schema';
-import {UserDoc} from '../schemas/user.schema';
-import {AddMediaDirDto, EditMediaDirDto} from './dtos/media-dir.dto';
-import {MediaService} from "./media.service";
+import {MediaDir, MediaDirDoc} from './media-dir.schema';
+import {UserDoc} from '../users/user.schema';
+import {AddMediaDirDto, EditMediaDirDto} from './media-dir.dto';
+import {MediaService} from './media.service';
 
 @Controller('media-dir/:parentId')
 export class MediaDirController {

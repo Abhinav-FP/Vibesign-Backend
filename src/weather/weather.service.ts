@@ -6,11 +6,11 @@ import {InjectModel} from '@nestjs/mongoose';
 import {TemplatesService} from '@stemy/nest-utils';
 
 import {IWeatherData, WEATHER_API_KEY} from './common';
-import {Device} from '../devices/schemas/device.schema';
-import {Activity} from '../activities/schemas/activity.schema';
-import {MediaDoc, MediaType} from '../media/schemas/media.schema';
+import {Device} from '../devices/device.schema';
+import {Activity} from '../activities/activity.schema';
+import {MediaDoc, MediaType} from '../media/media.schema';
 import {sampleData} from './data';
-import {locales} from "./locales";
+import {locales} from './locales';
 
 @Injectable()
 export class WeatherService {

@@ -1,10 +1,11 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
-import {AuthUser, QueryPipe, ResolveEntity} from '@stemy/nest-utils';
+import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 
-import {UserDoc} from '../schemas/user.schema';
-import {Channel, ChannelDoc} from './schemas/channel.schema';
-import {AddChannelDto, EditChannelDto, ListChannelDto} from './dtos/channel.dto';
-import {ChannelsService} from "./channels.service";
+import {UserDoc} from '../users/user.schema';
+import {Channel, ChannelDoc} from './channel.schema';
+import {AddChannelDto, EditChannelDto, ListChannelDto} from './channel.dto';
+import {ChannelsService} from './channels.service';
+import {ApiExtraModels} from '@nestjs/swagger';
 
 @Controller('channels')
 export class ChannelsController {
@@ -13,11 +14,12 @@ export class ChannelsController {
     }
 
     @Get()
+    @ApiExtraModels(ListChannelDto)
     async list(@AuthUser() authUser: UserDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @Query('query', QueryPipe) q: ListChannelDto) {
+               @ComplexQuery() q: ListChannelDto) {
         return await this.channels.paginate(
             q.toQuery(authUser),
             {page, limit, sort}
