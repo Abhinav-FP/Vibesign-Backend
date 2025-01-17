@@ -1,7 +1,7 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {HydratedDocument, Types} from 'mongoose';
 import {ObjectId} from 'mongodb';
-import {createTransformer} from '@stemy/nest-utils';
+import {createTransformer, ToObjectId} from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
 
@@ -23,6 +23,19 @@ export class User {
 
     @Prop({unique: true})
     username: string;
+
+    @Prop()
+    playerLimit: number;
+
+    @Prop()
+    expireDate: Date;
+
+    @Prop({type: Types.ObjectId, required: false})
+    @ToObjectId()
+    picture: Types.ObjectId;
+
+    @Prop()
+    active: boolean;
 
     @Prop()
     password: string;

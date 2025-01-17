@@ -1,5 +1,7 @@
 import {FilterQuery, Types} from 'mongoose';
+import {DateTime} from 'luxon';
 import {
+    IS_BOOLEAN, IsBoolean,
     IsDate,
     IsEmail,
     IsNotEmpty,
@@ -7,13 +9,22 @@ import {
     IsOptional,
     IsString,
     IsStrongPassword,
+    IsStrongPasswordOptions,
     MinLength
 } from 'class-validator';
+import {imageTypes, ToObjectId} from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
 import {UserDoc} from '../schemas/user.schema';
 import {ApiProperty} from '../decorators';
-import {imageTypes, ToObjectId, videoTypes} from "@stemy/nest-utils";
+
+const strongPassword = {
+    minLength: 6,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 0
+} as IsStrongPasswordOptions;
 
 export class ListUserDto {
 
@@ -27,6 +38,10 @@ export class ListUserDto {
     @ApiProperty()
     username: string = '';
 
+    @IsOptional()
+    @ApiProperty()
+    host: string = '';
+
     @IsString()
     @IsOptional()
     @ApiProperty()
@@ -39,7 +54,7 @@ export class ListUserDto {
 
     @IsDate()
     @IsOptional()
-    @ApiProperty({disableFilter: true})
+    @ApiProperty({disableFilter: true, format: 'date'})
     expireDate: Date = new Date();
 
     @IsString()
@@ -47,9 +62,10 @@ export class ListUserDto {
     @ApiProperty({disableFilter: true})
     picture: string = '';
 
+    @IsBoolean()
     @IsOptional()
-    @ApiProperty({filterType: 'checkbox'})
-    host: string = '';
+    @ApiProperty()
+    active: boolean = true;
 
     toQuery(user: UserDoc): FilterQuery<UserDoc> {
         const query: FilterQuery<any> = {
@@ -73,33 +89,52 @@ export class UserDto {
 
     @MinLength(3)
     @ApiProperty()
-    name: string;
+    name: string = '';
 
     @MinLength(3)
     @ApiProperty()
-    username: string;
+    username: string = '';
+
+    @IsNumber()
+    @IsOptional()
+    @ApiProperty({serialize: true})
+    playerLimit: number = 1;
+
+    @IsDate()
+    @IsOptional()
+    @ApiProperty({format: 'date'})
+    expireDate: Date = DateTime.now().plus({year: 20}).toJSDate()
+
+    @IsBoolean()
+    @IsOptional()
+    @ApiProperty()
+    active: boolean = true;
+
+    @ApiProperty({type: 'file', accept: imageTypes, required: false})
+    @ToObjectId()
+    picture: Types.ObjectId;
 }
 
 export class AddUserDto extends UserDto {
 
-    @IsStrongPassword()
+    @IsStrongPassword(strongPassword)
     @ApiProperty()
     password: string;
 
-    @IsStrongPassword()
+    @IsStrongPassword(strongPassword)
     @ApiProperty()
     confirmPassword: string;
 }
 
 export class EditUserDto extends UserDto {
 
-    @IsString()
     @IsOptional()
+    @IsStrongPassword(strongPassword)
     @ApiProperty({required: false})
     password: string;
 
-    @IsString()
     @IsOptional()
+    @IsStrongPassword(strongPassword)
     @ApiProperty({required: false})
     confirmPassword: string;
 
