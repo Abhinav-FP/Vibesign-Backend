@@ -1,16 +1,21 @@
-import {FilterQuery} from 'mongoose';
-import {IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, MinLength} from 'class-validator';
+import {FilterQuery, Types} from 'mongoose';
+import {
+    IsDate,
+    IsEmail,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+    IsStrongPassword,
+    MinLength
+} from 'class-validator';
 
 import {UserRole} from '../common-types';
 import {UserDoc} from '../schemas/user.schema';
 import {ApiProperty} from '../decorators';
+import {imageTypes, ToObjectId, videoTypes} from "@stemy/nest-utils";
 
 export class ListUserDto {
-
-    @IsString()
-    @IsOptional()
-    @ApiProperty()
-    email: string = '';
 
     @IsString()
     @IsOptional()
@@ -22,6 +27,26 @@ export class ListUserDto {
     @ApiProperty()
     username: string = '';
 
+    @IsString()
+    @IsOptional()
+    @ApiProperty()
+    email: string = '';
+
+    @IsNumber()
+    @IsOptional()
+    @ApiProperty()
+    player: number = 0;
+
+    @IsDate()
+    @IsOptional()
+    @ApiProperty({disableFilter: true})
+    expireDate: Date = new Date();
+
+    @IsString()
+    @IsOptional()
+    @ApiProperty({disableFilter: true})
+    picture: string = '';
+
     @IsOptional()
     @ApiProperty({filterType: 'checkbox'})
     host: string = '';
@@ -32,7 +57,7 @@ export class ListUserDto {
             name: {$regex: this.name, $options: 'i'},
             username: {$regex: this.username, $options: 'i'},
         };
-        if (!this.host || (user.role !== UserRole.Admin && user.role !== UserRole.SuperAdmin)) {
+        if (user.role !== UserRole.Admin) {
             query.host = user._id;
         }
         return query;
@@ -69,11 +94,13 @@ export class AddUserDto extends UserDto {
 export class EditUserDto extends UserDto {
 
     @IsString()
-    @ApiProperty()
+    @IsOptional()
+    @ApiProperty({required: false})
     password: string;
 
     @IsString()
-    @ApiProperty()
+    @IsOptional()
+    @ApiProperty({required: false})
     confirmPassword: string;
 
 }

@@ -19,7 +19,7 @@ export class UsersService {
 
     async add(dto: AddUserDto): Promise<UserDoc> {
         if (dto.password !== dto.confirmPassword) {
-            throw new HttpException('Passwords do not match', HttpStatus.BAD_REQUEST);
+            throw new Error('Passwords do not match');
         }
         dto.password = await this.hashPassword(dto.password);
         const user = new this.model(dto);
@@ -27,6 +27,9 @@ export class UsersService {
     }
 
     async update(user: UserDoc, dto: EditUserDto): Promise<UserDoc> {
+        if (dto.password !== dto.confirmPassword) {
+            throw new Error('Passwords do not match');
+        }
         dto.password = !dto.password ? user.password : await this.hashPassword(dto.password);
         return user.updateOne(dto);
     }
