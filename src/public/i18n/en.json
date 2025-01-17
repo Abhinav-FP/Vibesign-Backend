@@ -104,6 +104,7 @@
     "media.mediaType": "Type",
     "media.mimeType": "Mime type",
     "media.template": "Template",
+    "media.add-directory": "Add directory",
     "media.toggle-view": "Toggle view",
 
     "playlists.name": "Playlist name",
