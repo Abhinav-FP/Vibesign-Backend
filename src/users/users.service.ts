@@ -13,11 +13,13 @@ import {
 
 import {AddUserDto, EditUserDto} from './user.dto';
 import {User, UserDoc} from './user.schema';
+import {Manager} from '../managers/manager.schema';
 
 @Injectable()
 export class UsersService {
 
-    constructor(@InjectModel(User.name) private model: Model<User>, @InjectConnection() connection: Connection) {
+    constructor(@InjectModel(User.name) private model: Model<User>,
+                @InjectModel(Manager.name) private managerModel: Model<Manager>) {
 
     }
 
@@ -46,13 +48,27 @@ export class UsersService {
         return this.model.findById(id);
     }
 
-    async findByCredential(credential: string): Promise<UserDoc> {
-        return this.model.findOne({
+    async findByCredentials(credential: string, password: string): Promise<UserDoc> {
+        const user = await this.model.findOne({
             $or: [
                 { username: credential },
                 { email: credential },
             ],
-        }).exec();
+        });
+        if (user && user.password === await this.hashPassword(password)) {
+            return user;
+        }
+        const manager = await this.managerModel.findOne({
+            $or: [
+                { username: credential },
+                { email: credential },
+            ],
+        });
+        if (manager && manager.password === password) {
+            await manager.populate('host')
+            return manager.host as any;
+        }
+        return null;
     }
 
     async paginate(where: FilterQuery<UserDoc>, params: IPaginationParams<User>): Promise<IPagination<UserDoc>> {

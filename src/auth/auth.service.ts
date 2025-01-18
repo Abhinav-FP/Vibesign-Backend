@@ -11,11 +11,8 @@ export class AuthService {
     }
 
     async validateUser(credential: string, password: string): Promise<UserDoc> {
-        const user = await this.users.findByCredential(credential);
-        if (user && user.password === await this.users.hashPassword(password)) {
-            return user;
-        }
-        return null;
+        const user = await this.users.findByCredentials(credential, password);
+        return user || null;
     }
 
     async byId(id: string): Promise<UserDoc> {
