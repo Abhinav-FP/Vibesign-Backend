@@ -45,6 +45,7 @@
 
     "label.enter-your-keywords": "Enter your keywords",
     "label.search-location": "Search for a location",
+    "label.impersonation": "{{impersonator.username}} is logged in as: {{username}}",
 
     "button.add-companies": "Add",
     "button.add-customers": "Add",
@@ -60,6 +61,8 @@
     "button.logout": "Log out",
     "button.download-app": "Download app",
     "button.send-ticket": "Send",
+    "button.select-files": "Select files",
+    "button.end-impersonation": "Exit Access",
 
     "message.login.success": "Login successful!",
     "message.login.error": "Invalid credentials provided!",
@@ -138,8 +141,7 @@
     "devices.screenInfo.screenResolution": "Screen Resolution",
     "devices.screenInfo.contentResolution": "Content Resolution",
 
-    "managers.firstName": "First name",
-    "managers.lastName": "Last name",
+    "managers.name": "Admin name",
     "managers.username": "Username",
     "managers.email": "E-mail",
     "managers.phone": "Phone",

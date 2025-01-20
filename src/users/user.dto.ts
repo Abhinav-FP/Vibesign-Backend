@@ -40,7 +40,7 @@ export class ListUserDto {
 
     @IsOptional()
     @ApiProperty()
-    host: string = '';
+    host?: string = '';
 
     @IsString()
     @IsOptional()
