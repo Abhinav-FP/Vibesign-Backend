@@ -63,6 +63,8 @@
     "button.send-ticket": "Send",
     "button.select-files": "Select files",
     "button.end-impersonation": "Exit Access",
+    "button.create-template": "Create template",
+    "button.edit-template": "Edit template",
 
     "message.login.success": "Login successful!",
     "message.login.error": "Invalid credentials provided!",
@@ -109,6 +111,8 @@
     "media.mediaType": "Type",
     "media.mimeType": "Mime type",
     "media.template": "Template",
+    "media.duration": "Duration",
+    "media.file": "File",
     "media.add-directory": "Add directory",
     "media.toggle-view": "Toggle view",
 
