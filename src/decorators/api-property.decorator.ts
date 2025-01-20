@@ -14,6 +14,7 @@ export type ApiPropertyOpts = Omit<ApiPropertyOptions, 'type'> & {
     labelField?: string;
     step?: number;
     fieldSet?: string;
+    column?: boolean;
 }
 
 export function ApiProperty(opts?: ApiPropertyOpts): PropertyDecorator {

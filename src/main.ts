@@ -1,8 +1,7 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
-import { JwtGuard } from './auth/jwt.guard';
+import {NestFactory} from '@nestjs/core';
+import {ValidationPipe} from '@nestjs/common';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
+import {AppModule} from './app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -12,7 +11,6 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe({ transform: true, transformOptions: {
         enableImplicitConversion: true
     }}));
-    app.useGlobalGuards(new JwtGuard(app.get(Reflector)));
 
     app.enableCors({
         origin: '*'
@@ -21,8 +19,8 @@ async function bootstrap() {
     // Create swagger docs
     const config = new DocumentBuilder()
         .setTitle('Vibesign')
-        .setDescription('The nest backend for vibesign')
-        .setVersion('1.0')
+        .setDescription('The Nest.js backend for Vibesign')
+        .setVersion('2.0')
         .addTag('vibesign')
         .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);

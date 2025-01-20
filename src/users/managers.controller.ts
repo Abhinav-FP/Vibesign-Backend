@@ -5,23 +5,23 @@ import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 import {UserRole} from '../common-types';
 import {UsersService} from './users.service';
 import {User, UserDoc} from './user.schema';
-import {AddPartnerDto, EditPartnerDto, ListPartnerDto} from './partner.dto';
+import {AddManagerDto, EditManagerDto, ListManagerDto} from './manager.dto';
 
-@Controller('partners')
-export class PartnersController {
+@Controller('managers')
+export class ManagersController {
 
     constructor(protected users: UsersService) {
     }
 
     @Get()
-    @ApiExtraModels(ListPartnerDto)
+    @ApiExtraModels(ListManagerDto)
     async list(@AuthUser() authUser: UserDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @ComplexQuery() dto: ListPartnerDto) {
+               @ComplexQuery() dto: ListManagerDto) {
         const query = this.users.toQuery(dto, authUser);
-        query.role = UserRole.Partner;
+        query.role = UserRole.Manager;
         const res = await this.users.paginate(query, {page, limit, sort});
         return {
             ...res,
@@ -31,7 +31,7 @@ export class PartnersController {
 
     @Get('/new/default')
     getDefault() {
-        return new AddPartnerDto();
+        return new AddManagerDto();
     }
 
     @Get('/:id')
@@ -40,16 +40,16 @@ export class PartnersController {
     }
 
     @Post()
-    async add(@AuthUser() authUser: UserDoc, @Body() dto: AddPartnerDto) {
+    async add(@AuthUser() authUser: UserDoc, @Body() dto: AddManagerDto) {
         const user = await this.users.add(dto);
-        user.role = UserRole.Partner;
+        user.role = UserRole.Manager;
         user.host = authUser._id;
         await user.save();
         return user.toJSON();
     }
 
     @Patch('/:id')
-    async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditPartnerDto) {
+    async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditManagerDto) {
         await this.users.update(user, dto);
         return user.toJSON();
     }

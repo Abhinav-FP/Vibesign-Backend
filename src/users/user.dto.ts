@@ -6,7 +6,7 @@ import {
     IsEmail,
     IsNotEmpty,
     IsNumber,
-    IsOptional,
+    IsOptional, IsPhoneNumber,
     IsString,
     IsStrongPassword,
     IsStrongPasswordOptions,
@@ -47,10 +47,15 @@ export class ListUserDto {
     @ApiProperty()
     email: string = '';
 
+    @IsString()
+    @IsOptional()
+    @ApiProperty()
+    phone?: string = '';
+
     @IsNumber()
     @IsOptional()
     @ApiProperty()
-    devices: number = 0;
+    devices?: number = 0;
 
     @IsDate()
     @IsOptional()
@@ -68,54 +73,44 @@ export class ListUserDto {
     active: boolean = true;
 
     filter: string = '';
-
-    toQuery(user: UserDoc): FilterQuery<UserDoc> {
-        const query = toRegexFilter({
-            name: this.name,
-            username: this.username,
-            host: this.host,
-            email: this.email,
-        }, this.filter);
-        if (user.role !== UserRole.Admin) {
-            query.hostId = user._id;
-        }
-        return query;
-    }
 }
 
 export class UserDto {
-
-    @IsNotEmpty()
-    @IsEmail()
-    @ApiProperty()
-    email: string;
 
     @MinLength(3)
     @ApiProperty()
     name: string = '';
 
-    @MinLength(3)
+    @IsEmail()
     @ApiProperty()
-    username: string = '';
+    email: string;
+
+    @IsNotEmpty()
+    @ApiProperty()
+    phone?: string = '';
 
     @IsNumber()
     @IsOptional()
     @ApiProperty({serialize: true})
-    deviceLimit: number = 1;
+    deviceLimit?: number = 1;
 
     @IsDate()
     @IsOptional()
     @ApiProperty({format: 'date'})
     expireDate: Date = DateTime.now().plus({year: 20}).toJSDate()
 
+    @ApiProperty({type: 'file', accept: imageTypes, required: false})
+    @ToObjectId()
+    picture: Types.ObjectId;
+
     @IsBoolean()
     @IsOptional()
     @ApiProperty()
     active: boolean = true;
 
-    @ApiProperty({type: 'file', accept: imageTypes, required: false})
-    @ToObjectId()
-    picture: Types.ObjectId;
+    @MinLength(3)
+    @ApiProperty()
+    username: string = '';
 }
 
 export class AddUserDto extends UserDto {

@@ -5,7 +5,7 @@ import {AuthUser, ResolveEntity, ComplexQuery} from '@stemy/nest-utils';
 import {UserRole} from '../common-types';
 import {UsersService} from './users.service';
 import {User, UserDoc} from './user.schema';
-import {AddUserDto, EditUserDto, ListUserDto} from './user.dto';
+import {AddCustomerDto, EditCustomerDto, ListCustomerDto} from './customer.dto';
 
 @Controller('customers')
 export class CustomersController {
@@ -14,15 +14,15 @@ export class CustomersController {
     }
 
     @Get()
-    @ApiExtraModels(ListUserDto)
+    @ApiExtraModels(ListCustomerDto)
     async list(@AuthUser() authUser: UserDoc,
                @Query('page') page: number = 0,
                @Query('limit') limit: number = 20,
                @Query('sort') sort: string = '',
-               @ComplexQuery() q: ListUserDto) {
-        const query = q.toQuery(authUser);
+               @ComplexQuery() dto: ListCustomerDto) {
+        const query = this.users.toQuery(dto, authUser);
         query.role = UserRole.Customer;
-        const res = await this.users.paginate(query, {page, limit, sort, populate: ['host']});
+        const res = await this.users.paginate(query, {page, limit, sort});
         return {
             ...res,
             items: res.items.map(i => i.toJSON())
@@ -31,16 +31,16 @@ export class CustomersController {
 
     @Get('/new/default')
     getDefault() {
-        return new AddUserDto();
+        return new AddCustomerDto();
     }
 
     @Get('/:id')
-    get(@ResolveEntity(User, ) user: UserDoc) {
+    get(@ResolveEntity(User) user: UserDoc) {
         return user.toJSON();
     }
 
     @Post()
-    async add(@AuthUser() authUser: UserDoc, @Body() dto: AddUserDto) {
+    async add(@AuthUser() authUser: UserDoc, @Body() dto: AddCustomerDto) {
         const user = await this.users.add(dto);
         user.role = UserRole.Customer;
         user.host = authUser._id;
@@ -49,7 +49,7 @@ export class CustomersController {
     }
 
     @Patch('/:id')
-    async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditUserDto) {
+    async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditCustomerDto) {
         await this.users.update(user, dto);
         return user.toJSON();
     }

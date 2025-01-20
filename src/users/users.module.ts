@@ -1,22 +1,28 @@
-import {Module} from '@nestjs/common';
+import {DynamicModule, Module} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 
 import {UsersService} from './users.service';
+import {User, UserSchema} from './user.schema';
 import {CustomersController} from './customers.controller';
 import {PartnersController} from './partners.controller';
-import {User, UserSchema} from './user.schema';
-import {Manager, ManagerSchema} from '../managers/manager.schema';
+import {ManagersController} from './managers.controller';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
-            {name: User.name, schema: UserSchema},
-            {name: Manager.name, schema: ManagerSchema},
+            {name: User.name, schema: UserSchema}
         ])
     ],
-    providers: [UsersService],
-    controllers: [CustomersController, PartnersController],
-    exports: [UsersService]
+    controllers: [CustomersController, PartnersController, ManagersController]
 })
 export class UsersModule {
+
+    static forRoot(): DynamicModule {
+        return {
+            module: UsersModule,
+            providers: [UsersService],
+            global: true,
+            exports: [UsersService]
+        };
+    }
 }

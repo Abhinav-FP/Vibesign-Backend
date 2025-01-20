@@ -1,30 +1,58 @@
-import {Connection, FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model} from 'mongoose';
 import {hash} from 'bcrypt';
 import {Injectable} from '@nestjs/common';
-import {InjectConnection, InjectModel} from '@nestjs/mongoose';
+import {InjectModel} from '@nestjs/mongoose';
 import {
     addFieldStage,
+    IAuthContext,
     IPagination,
     IPaginationParams,
+    IUserHandler,
     lookupStages,
     matchStage,
-    paginateAggregations
+    paginateAggregations,
+    toRegexFilter
 } from '@stemy/nest-utils';
 
-import {AddUserDto, EditUserDto} from './user.dto';
+import {UserRole} from '../common-types';
+import {AddUserDto, EditUserDto, ListUserDto} from './user.dto';
 import {User, UserDoc} from './user.schema';
-import {Manager} from '../managers/manager.schema';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IUserHandler {
 
-    constructor(@InjectModel(User.name) private model: Model<User>,
-                @InjectModel(Manager.name) private managerModel: Model<Manager>) {
-
+    constructor(@InjectModel(User.name) private model: Model<User>) {
+        console.log('UsersService', this);
     }
 
-    async hashPassword(password: string): Promise<string> {
-        return hash(password, '$2b$12$nLbWAfF5Tcev6r1sGU7C2.');
+    toQuery(dto: ListUserDto, user: UserDoc): FilterQuery<UserDoc> {
+        const query = toRegexFilter({
+            name: dto.name,
+            username: dto.username,
+            host: dto.host,
+            email: dto.email,
+            phone: dto.phone,
+        }, dto.filter);
+        if (user.role !== UserRole.Admin) {
+            query.hostId = user._id;
+        }
+        return query;
+    }
+
+    async paginate(where: FilterQuery<UserDoc>, params: IPaginationParams<User>): Promise<IPagination<UserDoc>> {
+        return paginateAggregations(this.model, [
+            ...lookupStages('users', 'host'),
+            addFieldStage({
+                host: '$host.name'
+            }),
+            ...lookupStages('devices', '_id', 'devices', 'owner', false),
+            addFieldStage({
+                devices: {
+                    $size: '$devices'
+                }
+            }),
+            matchStage(where)
+        ], params);
     }
 
     async add(dto: AddUserDto): Promise<UserDoc> {
@@ -44,46 +72,49 @@ export class UsersService {
         return user.updateOne(dto);
     }
 
-    async findById(id: string): Promise<UserDoc> {
-        return this.model.findById(id);
+    async findById(id: string): Promise<IAuthContext> {
+        const user = await this.model.findById(id);
+        if (!user) return null;
+        return this.toContext(user);
     }
 
-    async findByCredentials(credential: string, password: string): Promise<UserDoc> {
+    async findByCredentials(credential: string, password: string): Promise<IAuthContext> {
         const user = await this.model.findOne({
             $or: [
-                { username: credential },
-                { email: credential },
+                {username: credential},
+                {email: credential},
             ],
         });
         if (user && user.password === await this.hashPassword(password)) {
-            return user;
-        }
-        const manager = await this.managerModel.findOne({
-            $or: [
-                { username: credential },
-                { email: credential },
-            ],
-        });
-        if (manager && manager.password === password) {
-            await manager.populate('host')
-            return manager.host as any;
+            return this.toContext(user);
         }
         return null;
     }
 
-    async paginate(where: FilterQuery<UserDoc>, params: IPaginationParams<User>): Promise<IPagination<UserDoc>> {
-        return paginateAggregations(this.model, [
-            ...lookupStages('users', 'host'),
-            addFieldStage({
-                host: '$host.name'
-            }),
-            ...lookupStages('devices', '_id', 'devices', 'owner', false),
-            addFieldStage({
-                devices: {
-                    $size: '$devices'
+    protected async toContext(user: UserDoc): Promise<IAuthContext> {
+        if (user.role === UserRole.Manager) {
+            await user.populate('host');
+            const host = user.host as any;
+            return {
+                user: host,
+                context: {
+                    id: user.id,
+                    roles: [host.role],
+                    isManager: true,
+                    username: user.username
                 }
-            }),
-            matchStage(where)
-        ], params);
+            };
+        }
+        return {
+            user,
+            context: {
+                id: user.id,
+                roles: [user.role],
+            }
+        };
+    }
+
+    protected async hashPassword(password: string): Promise<string> {
+        return hash(password, '$2b$12$nLbWAfF5Tcev6r1sGU7C2.');
     }
 }

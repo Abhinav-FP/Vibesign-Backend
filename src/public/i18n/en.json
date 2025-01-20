@@ -41,6 +41,7 @@
     "title.support": "Support",
     "title.tickets": "Support",
     "title.edit-tickets": "Support ticket",
+    "title.send-ticket": "Send A Message To Support",
 
     "label.enter-your-keywords": "Enter your keywords",
     "label.search-location": "Search for a location",
@@ -58,6 +59,7 @@
     "button.login": "Log in",
     "button.logout": "Log out",
     "button.download-app": "Download app",
+    "button.send-ticket": "Send",
 
     "message.login.success": "Login successful!",
     "message.login.error": "Invalid credentials provided!",
@@ -108,8 +110,10 @@
     "media.toggle-view": "Toggle view",
 
     "playlists.name": "Playlist name",
+    "playlists.createdAt": "Creation date",
 
     "channels.name": "Channel name",
+    "channels.createdAt": "Creation date",
 
     "devices.name": "Player name",
     "devices.hexCode": "HEX code",
@@ -145,6 +149,17 @@
     "managers.active": "Active",
     "managers.password": "Password",
     "managers.confirmPassword": "Confirm password",
+
+    "tickets.createdAt": "Creation date",
+    "tickets.name": "Name",
+    "tickets.email": "E-mail",
+    "tickets.subject": "Subject",
+    "tickets.notes": "Message",
+
+    "support.name": "Name",
+    "support.email": "E-mail",
+    "support.subject": "Subject",
+    "support.notes": "Message",
 
     "error.required": "Field is required",
     "login.credential": "Username or Email address",

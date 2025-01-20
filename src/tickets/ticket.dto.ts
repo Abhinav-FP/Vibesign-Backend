@@ -8,7 +8,7 @@ import {TicketDoc} from './ticket.schema';
 export class ListTicketDto {
 
     @IsOptional()
-    @ApiProperty()
+    @ApiProperty({format: 'datetime', disableFilter: true})
     createdAt: Date = null;
 
     @IsString()
