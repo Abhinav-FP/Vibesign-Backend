@@ -15,14 +15,15 @@ import {UserRole} from '../common-types';
     }
 })
 export class User {
-    @Prop({unique: true})
-    email: string;
 
     @Prop()
     name: string;
 
     @Prop({unique: true})
-    username: string;
+    email: string;
+
+    @Prop()
+    phone: string;
 
     @Prop()
     deviceLimit: number;
@@ -36,6 +37,9 @@ export class User {
 
     @Prop()
     active: boolean;
+
+    @Prop({unique: true})
+    username: string;
 
     @Prop()
     password: string;
