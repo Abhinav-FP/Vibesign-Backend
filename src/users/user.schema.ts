@@ -22,10 +22,10 @@ export class User {
     @Prop({unique: true})
     email: string;
 
-    @Prop()
+    @Prop({required: false})
     phone: string;
 
-    @Prop()
+    @Prop({required: false})
     deviceLimit: number;
 
     @Prop()
