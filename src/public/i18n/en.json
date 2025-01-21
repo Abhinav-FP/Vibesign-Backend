@@ -138,6 +138,7 @@
     "channels.createdAt": "Creation date",
 
     "devices.name": "Player name",
+    "devices.createdAt": "Creation date",
     "devices.hexCode": "HEX code",
     "devices.timeZone": "Time Zone",
     "devices.channel": "Channel",

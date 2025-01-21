@@ -13,17 +13,15 @@ export class ListDeviceDto {
     @ApiProperty()
     name: string = '';
 
-    @IsString()
     @IsOptional()
-    @ApiProperty()
-    hexCode: string = '';
+    @ApiProperty({format: 'datetime', disableFilter: true})
+    createdAt: Date = null;
 
     filter: string = '';
 
     toQuery(user: UserDoc): FilterQuery<DeviceDoc> {
         const query = toRegexFilter({
             name: this.name,
-            hexCode: this.hexCode,
         }, this.filter) as FilterQuery<DeviceDoc>;
         query.owner = user._id;
         return query;
