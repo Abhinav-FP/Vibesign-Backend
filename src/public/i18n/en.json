@@ -67,6 +67,8 @@
     "button.end-impersonation": "Exit Access",
     "button.create-template": "Create template",
     "button.edit-template": "Edit template",
+    "button.ok": "Ok",
+    "button.cancel": "Cancel",
 
     "message.login.success": "Login successful!",
     "message.login.error": "Invalid credentials provided!",
@@ -75,6 +77,7 @@
     "message.edit-media.success": "Media '{{name}}' updated successfully",
     "message.add-media-dir.success": "Directory '{{name}}' created successfully",
     "message.edit-media-dir.success": "Directory '{{name}}' updated successfully",
+    "message.leave-without-changes.confirm": "Are you sure, that you want to leave your unsaved changes?",
 
     "companies.name": "Company name",
     "companies.username": "Username",
