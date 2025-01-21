@@ -47,7 +47,7 @@ export class ListMediaDto {
     }
 }
 
-export class WeatherAddressDto {
+export class MediaAddressDto {
 
     @MinLength(3)
     @IsOptional()
@@ -114,8 +114,8 @@ export class MediaDto {
 
     @ValidateNested()
     @IsOptional()
-    @ApiProperty({required: false, serialize: true, type: () => WeatherAddressDto})
-    address: WeatherAddressDto;
+    @ApiProperty({required: false, serialize: true, type: () => MediaAddressDto})
+    address: MediaAddressDto;
 
     @IsOptional()
     @ToObjectId()
@@ -137,7 +137,7 @@ export class AddMediaDto extends MediaDto {
         this.forecastDays = ForecastDays.FiveDays;
         this.forecastUnits = ForecastUnits.Metric;
         this.forecastLocale = 'gu-IN';
-        this.address = new WeatherAddressDto();
+        this.address = new MediaAddressDto();
         this.parent = null;
         this.path = '';
     }

@@ -1,10 +1,20 @@
 import {FilterQuery, Types} from 'mongoose';
-import {IsBoolean, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested} from 'class-validator';
+import {
+    IsBoolean,
+    IsEmpty,
+    IsEnum,
+    IsNumber,
+    IsOptional,
+    IsString,
+    MaxLength,
+    MinLength,
+    ValidateNested
+} from 'class-validator';
 import {ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../decorators';
 import {UserDoc} from '../users/user.schema';
-import {DeviceDoc} from './device.schema';
+import {DeviceDoc, DeviceSizing, DeviceTransition} from './device.schema';
 
 export class ListDeviceDto {
 
@@ -35,15 +45,79 @@ export class DeviceAddressDto {
     @MinLength(3)
     @IsOptional()
     @ApiProperty()
-    address: string = '';
+    address: string = 'Rajkot, Gujarat, India';
 
     @IsNumber()
     @ApiProperty({step: 0.000000001})
-    lat: number;
+    lat: number = 22.3038945;
 
     @IsNumber()
     @ApiProperty({step: 0.000000001})
-    lng: number;
+    lng: number = 70.80215989999999;
+
+    @IsString()
+    @ApiProperty({required: false})
+    countryCode: string = 'IN';
+}
+
+export class DeviceCoordsDto {
+
+    @IsNumber()
+    @IsOptional()
+    @ApiProperty({required: false})
+    x: number = 0;
+
+    @IsNumber()
+    @IsOptional()
+    @ApiProperty({required: false})
+    y: number = 0;
+}
+
+export class DeviceSettingsDto {
+
+    @IsOptional()
+    @ApiProperty({required: false, type: () => DeviceCoordsDto})
+    offset: DeviceCoordsDto = new DeviceCoordsDto();
+
+    @IsOptional()
+    @ApiProperty({required: false, type: () => DeviceCoordsDto})
+    resolution: DeviceCoordsDto = new DeviceCoordsDto();
+
+    @IsEnum(DeviceSizing)
+    @ApiProperty({enum: DeviceSizing, required: false})
+    sizing: DeviceSizing = DeviceSizing.Fill;
+
+    @IsEnum(DeviceTransition)
+    @ApiProperty({enum: DeviceTransition, required: false})
+    transition: DeviceTransition = DeviceTransition.Fade;
+}
+
+export class DeviceScreenInfoDto {
+
+    @MinLength(2)
+    @IsOptional()
+    @ApiProperty({required: false})
+    manufacturer: string = '';
+
+    @MinLength(2)
+    @IsOptional()
+    @ApiProperty({required: false})
+    model: string = '';
+
+    @MinLength(2)
+    @IsEmpty()
+    @ApiProperty({required: false})
+    size: string = '';
+
+    @MinLength(2)
+    @IsOptional()
+    @ApiProperty({required: false})
+    screenResolution: string = '';
+
+    @MinLength(2)
+    @IsOptional()
+    @ApiProperty({required: false})
+    contentResolution: string = '';
 }
 
 export class DeviceDto {
@@ -65,6 +139,14 @@ export class DeviceDto {
     @IsOptional()
     @ApiProperty({required: false})
     active: boolean = true;
+
+    @ValidateNested()
+    @ApiProperty({type: () => DeviceSettingsDto})
+    settings: DeviceSettingsDto = new DeviceSettingsDto();
+
+    @ValidateNested()
+    @ApiProperty({type: () => DeviceScreenInfoDto})
+    screenInfo: DeviceScreenInfoDto = new DeviceScreenInfoDto();
 
     @ValidateNested()
     @ApiProperty({type: () => DeviceAddressDto})
