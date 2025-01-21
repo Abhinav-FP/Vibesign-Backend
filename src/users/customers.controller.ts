@@ -1,6 +1,16 @@
-import {Body, Controller, Delete, ForbiddenException, Get, Patch, Post, Query} from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    ForbiddenException,
+    Get,
+    Patch,
+    Post,
+    Query
+} from '@nestjs/common';
 import {ApiExtraModels} from '@nestjs/swagger';
-import {AuthUser, ResolveEntity, ComplexQuery} from '@stemy/nest-utils';
+import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
 import {UsersService} from './users.service';
@@ -41,16 +51,21 @@ export class CustomersController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddCustomerDto) {
-        const user = await this.users.add(dto);
-        user.role = UserRole.Customer;
-        user.host = authUser._id;
-        await user.save();
-        return user.toJSON();
+        try {
+            const user = await this.users.add(dto, UserRole.Customer, authUser._id);
+            return user.toJSON();
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
     }
 
     @Patch('/:id')
     async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditCustomerDto) {
-        await this.users.update(user, dto);
+        try {
+            await this.users.update(user, dto);
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return user.toJSON();
     }
 

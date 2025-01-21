@@ -1,21 +1,24 @@
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
-import {FilterQuery, Model} from 'mongoose';
+import {EventEmitter2} from '@nestjs/event-emitter';
+import {FilterQuery, Model, Types} from 'mongoose';
 import {IPagination, IPaginationParams, paginate, setAndUpdate} from '@stemy/nest-utils';
 
+import {DeviceUpdated} from '../events/device-updated';
+import {UserDoc} from '../users/user.schema';
+import {Channel, ChannelDoc} from '../channels/channel.schema';
+import {AddActivityDto} from '../activities/activity.dto';
+import {Activity, ActivityDoc, Location} from '../activities/activity.schema';
 import {AddDeviceDto, EditDeviceDto} from './device.dto';
 import {Device, DeviceDoc} from './device.schema';
-import {Channel, ChannelDoc} from '../channels/channel.schema';
-import {Activity, ActivityDoc, Location} from '../activities/activity.schema';
-import {UserDoc} from '../users/user.schema';
-import {AddActivityDto} from '../activities/activity.dto';
 
 @Injectable()
 export class DevicesService {
 
     constructor(@InjectModel(Channel.name) protected channelModel: Model<Channel>,
                 @InjectModel(Activity.name) protected activityModel: Model<Activity>,
-                @InjectModel(Device.name) protected model: Model<Device>) {
+                @InjectModel(Device.name) protected model: Model<Device>,
+                private eventEmitter: EventEmitter2) {
     }
 
     listChannels(owner: UserDoc): Promise<ChannelDoc[]> {
@@ -26,12 +29,18 @@ export class DevicesService {
         return paginate(this.model, query, params);
     }
 
-    create(dto: AddDeviceDto): DeviceDoc {
-        return new this.model(dto);
+    async add(dto: AddDeviceDto, owner: Types.ObjectId): Promise<DeviceDoc> {
+        const device = new this.model(dto);
+        device.owner = owner;
+        this.eventEmitter.emit(DeviceUpdated.name, new DeviceUpdated(device, device.hexCode));
+        return device.save();
     }
 
-    update(device: DeviceDoc, dto: EditDeviceDto) {
-        return setAndUpdate(device, dto);
+    async update(device: DeviceDoc, dto: EditDeviceDto) {
+        const hexCode = device.hexCode;
+        device = await setAndUpdate(device, dto);
+        this.eventEmitter.emit(DeviceUpdated.name, new DeviceUpdated(device, hexCode));
+        return device;
     }
 
     async createActivity(dto: AddActivityDto, device: DeviceDoc): Promise<ActivityDoc> {

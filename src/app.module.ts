@@ -1,6 +1,7 @@
 import {join} from 'path';
 import {Module} from '@nestjs/common';
 import {ConfigModule} from '@nestjs/config';
+import {EventEmitterModule} from '@nestjs/event-emitter';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ServeStaticModule} from '@nestjs/serve-static';
 import {AssetsModule, AuthModule, TemplatesModule} from '@stemy/nest-utils';
@@ -30,6 +31,7 @@ import {MiscModule} from './misc/misc.module';
             cache: true,
             isGlobal: true,
         }),
+        EventEmitterModule.forRoot({global: true}),
         MongooseModule.forRootAsync(databaseConfig.asProvider()),
         ServeStaticModule.forRoot({
             rootPath: join(__dirname, 'public'),

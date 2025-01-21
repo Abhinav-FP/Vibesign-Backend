@@ -41,15 +41,12 @@ export class DevicesController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddDeviceDto) {
-        let device: DeviceDoc = null;
         try {
-            device = this.devices.create(dto);
-            device.owner = authUser._id;
-            await device.save();
+            const device = await this.devices.add(dto, authUser._id);
+            return device.toJSON();
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
-        return device.toJSON();
     }
 
     @Get('/:id')

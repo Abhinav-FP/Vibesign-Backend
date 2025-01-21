@@ -1,4 +1,14 @@
-import {Body, Controller, Delete, ForbiddenException, Get, Patch, Post, Query} from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    ForbiddenException,
+    Get,
+    Patch,
+    Post,
+    Query
+} from '@nestjs/common';
 import {ApiExtraModels} from '@nestjs/swagger';
 import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 
@@ -41,16 +51,21 @@ export class PartnersController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddPartnerDto) {
-        const user = await this.users.add(dto);
-        user.role = UserRole.Partner;
-        user.host = authUser._id;
-        await user.save();
-        return user.toJSON();
+        try {
+            const user = await this.users.add(dto, UserRole.Partner, authUser._id);
+            return user.toJSON();
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
     }
 
     @Patch('/:id')
     async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditPartnerDto) {
-        await this.users.update(user, dto);
+        try {
+            await this.users.update(user, dto);
+        } catch (e) {
+            throw new BadRequestException(`${e}`);
+        }
         return user.toJSON();
     }
 

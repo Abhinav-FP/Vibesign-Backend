@@ -1,5 +1,15 @@
 import {FilterQuery, Types} from 'mongoose';
-import {IsBoolean, IsEnum, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested} from 'class-validator';
+import {
+    IsBoolean,
+    IsEnum,
+    IsHexColor,
+    IsNumber,
+    IsOptional,
+    IsString,
+    MaxLength,
+    MinLength,
+    ValidateNested
+} from 'class-validator';
 import {ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../decorators';
@@ -78,6 +88,10 @@ export class DeviceSettingsDto {
     @IsEnum(DeviceTransition)
     @ApiProperty({enum: DeviceTransition, required: false})
     transition: DeviceTransition = DeviceTransition.Fade;
+
+    @IsHexColor()
+    @ApiProperty({format: 'color', required: false})
+    background: string = '#000000';
 }
 
 export class DeviceScreenInfoDto {

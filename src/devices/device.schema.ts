@@ -54,6 +54,9 @@ export class DeviceSettings {
 
     @Prop({enum: DeviceTransition, required: false})
     transition: DeviceTransition;
+
+    @Prop({required: false})
+    background: string;
 }
 
 export class DeviceScreenInfo {

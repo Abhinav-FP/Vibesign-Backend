@@ -1,7 +1,8 @@
-import {FilterQuery, Model} from 'mongoose';
+import {FilterQuery, Model, Types} from 'mongoose';
 import {hash} from 'bcrypt';
 import {Injectable} from '@nestjs/common';
 import {InjectModel} from '@nestjs/mongoose';
+import {EventEmitter2} from '@nestjs/event-emitter';
 import {
     addFieldStage,
     IAuthContext,
@@ -11,18 +12,20 @@ import {
     lookupStages,
     matchStage,
     paginateAggregations,
+    setAndUpdate,
     toRegexFilter
 } from '@stemy/nest-utils';
 
 import {UserRole} from '../common-types';
+import {UserUpdated} from '../events/user-updated';
 import {AddUserDto, EditUserDto, ListUserDto} from './user.dto';
 import {User, UserDoc} from './user.schema';
 
 @Injectable()
 export class UsersService implements IUserHandler {
 
-    constructor(@InjectModel(User.name) private model: Model<User>) {
-        console.log('UsersService', this);
+    constructor(@InjectModel(User.name) private model: Model<User>,
+                private eventEmitter: EventEmitter2) {
     }
 
     toQuery(dto: ListUserDto, user: UserDoc): FilterQuery<UserDoc> {
@@ -55,12 +58,15 @@ export class UsersService implements IUserHandler {
         ], params);
     }
 
-    async add(dto: AddUserDto): Promise<UserDoc> {
+    async add(dto: AddUserDto, role: UserRole, host: Types.ObjectId): Promise<UserDoc> {
         if (dto.password !== dto.confirmPassword) {
             throw new Error('Passwords do not match');
         }
         dto.password = await this.hashPassword(dto.password);
         const user = new this.model(dto);
+        user.role = role;
+        user.host = host;
+        this.eventEmitter.emit(UserUpdated.name, new UserUpdated(user));
         return user.save();
     }
 
@@ -69,7 +75,9 @@ export class UsersService implements IUserHandler {
             throw new Error('Passwords do not match');
         }
         dto.password = !dto.password ? user.password : await this.hashPassword(dto.password);
-        return user.updateOne(dto);
+        user = await setAndUpdate(user, dto);
+        this.eventEmitter.emit(UserUpdated.name, new UserUpdated(user));
+        return user;
     }
 
     async findById(id: string): Promise<IAuthContext> {
