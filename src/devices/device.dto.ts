@@ -1,15 +1,5 @@
 import {FilterQuery, Types} from 'mongoose';
-import {
-    IsBoolean,
-    IsEmpty,
-    IsEnum,
-    IsNumber,
-    IsOptional,
-    IsString,
-    MaxLength,
-    MinLength,
-    ValidateNested
-} from 'class-validator';
+import {IsBoolean, IsEnum, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested} from 'class-validator';
 import {ToObjectId, toRegexFilter} from '@stemy/nest-utils';
 
 import {ApiProperty} from '../decorators';
@@ -94,28 +84,23 @@ export class DeviceSettingsDto {
 
 export class DeviceScreenInfoDto {
 
-    @MinLength(2)
-    @IsOptional()
+    @IsString()
     @ApiProperty({required: false})
     manufacturer: string = '';
 
-    @MinLength(2)
-    @IsOptional()
+    @IsString()
     @ApiProperty({required: false})
     model: string = '';
 
-    @MinLength(2)
-    @IsEmpty()
+    @IsString()
     @ApiProperty({required: false})
     size: string = '';
 
-    @MinLength(2)
-    @IsOptional()
+    @IsString()
     @ApiProperty({required: false})
     screenResolution: string = '';
 
-    @MinLength(2)
-    @IsOptional()
+    @IsString()
     @ApiProperty({required: false})
     contentResolution: string = '';
 }
