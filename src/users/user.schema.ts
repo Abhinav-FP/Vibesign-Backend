@@ -29,7 +29,7 @@ export class User {
     deviceLimit: number;
 
     @Prop()
-    expireDate: Date;
+    expiryDate: Date;
 
     @Prop({type: Types.ObjectId, required: false})
     @ToObjectId()

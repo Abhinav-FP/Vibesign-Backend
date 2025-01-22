@@ -20,10 +20,17 @@ import {AddActivityDto} from '../activities/activity.dto';
 import {Channel, ChannelDoc} from '../channels/channel.schema';
 import {Activity} from '../activities/activity.schema';
 import {Device, DeviceDoc} from '../devices/device.schema';
-import {PlaylistDoc} from "../playlists/playlist.schema";
+import {PlaylistDoc} from '../playlists/playlist.schema';
+import {UserDoc} from '../users/user.schema';
 
 export interface ClientSocket extends Socket {
     deviceId: string;
+}
+
+export interface DeviceInfo {
+    error?: string;
+    settings?: any;
+    screenInfo?: any;
 }
 
 @Injectable()
@@ -60,8 +67,15 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     @OnEvent(UserUpdated.name)
-    onUserUpdated(ev: UserUpdated) {
-        console.log('user updated', ev);
+    async onUserUpdated(ev: UserUpdated) {
+        const devices = await this.deviceModel.find({owner: ev.user._id});
+        for (const device of devices) {
+            const client = this.clients.find(c => c.deviceId === device.hexCode);
+            if (client) {
+                client.emit('deviceInfo', await this.getDeviceInfo(device));
+                client.emit('playlist', await this.getPlaylist(device));
+            }
+        }
     }
 
     @OnEvent(DeviceUpdated.name)
@@ -69,12 +83,12 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         const oldClient = this.clients.find(c => c.deviceId === ev.oldCode);
         const client = this.clients.find(c => c.deviceId === ev.device.hexCode);
         if (oldClient && oldClient !== client) {
-            oldClient.emit('deviceInfo', null);
-            oldClient.emit('playlist', null);
+            oldClient.emit('deviceInfo', {});
+            oldClient.emit('playlist', []);
         }
         if (client) {
-            client.emit('deviceInfo', ev.device.toJSON());
-            client.emit('playlist', await this.generatePlaylist(ev.device));
+            client.emit('deviceInfo', await this.getDeviceInfo(ev.device));
+            client.emit('playlist', await this.getPlaylist(ev.device));
         }
     }
 
@@ -82,8 +96,8 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     async onDeviceId(@ConnectedSocket() client: ClientSocket, @MessageBody() deviceId: string) {
         client.deviceId = deviceId;
         const device = await this.deviceModel.findOne({hexCode: deviceId});
-        client.emit('deviceInfo', device?.toJSON() || null);
-        client.emit('playlist', await this.generatePlaylist(device));
+        client.emit('deviceInfo', await this.getDeviceInfo(device));
+        client.emit('playlist', await this.getPlaylist(device));
     }
 
     @SubscribeMessage('activity')
@@ -91,20 +105,49 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         console.log('device updated', data);
     }
 
-    protected async generatePlaylist(device: DeviceDoc): Promise<any[]> {
-        if (!device) return null;
+    protected async getPlaylist(device: DeviceDoc): Promise<any[]> {
+        if (!device) return [];
         try {
+            if (!device.active) {
+                return [];
+            }
+            await device.populate('owner');
+            const owner: UserDoc = device.owner as any;
+            if (owner.expiryDate <= new Date()) {
+                return [];
+            }
             await device.populate('channel');
-            const channel = device.channel as unknown as ChannelDoc;
+            const channel: ChannelDoc = device.channel as any;
             await channel.populate('playlists');
-            const playlists = channel.playlists.map(p => p as unknown as PlaylistDoc);
+            const playlists = channel.playlists
+                .map(p => p as unknown as PlaylistDoc);
             await Promise.all(playlists.map(p => p.populate('medias')));
-            const results = playlists.map(p => p.medias).flat();
-            console.log(results, device.hexCode);
-            return results;
+            return playlists.map(p => p.medias).flat();
         } catch (e) {
             console.log(e);
             return null;
         }
+    }
+
+    protected async getDeviceInfo(device: DeviceDoc): Promise<DeviceInfo> {
+        if (!device) return {};
+        if (!device.active) {
+            return {
+                error: 'message.device-inactive.error'
+            };
+        }
+        await device.populate('owner');
+        const owner: UserDoc = device.owner as any;
+        if (!owner.active) {
+            return {
+                error: 'message.user-inactive.error'
+            };
+        }
+        if (owner.expiryDate <= new Date()) {
+            return {
+                error: 'message.user-expired.error'
+            };
+        }
+        return device.toJSON();
     }
 }

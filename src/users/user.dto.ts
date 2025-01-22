@@ -60,7 +60,7 @@ export class ListUserDto {
     @IsDate()
     @IsOptional()
     @ApiProperty({disableFilter: true, format: 'date'})
-    expireDate: Date = new Date();
+    expiryDate: Date = new Date();
 
     @IsString()
     @IsOptional()
