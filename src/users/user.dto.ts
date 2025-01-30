@@ -92,12 +92,12 @@ export class UserDto {
     @IsNumber()
     @IsOptional()
     @ApiProperty({serialize: true})
-    deviceLimit?: number = 1;
+    deviceLimit?: number;
 
     @IsDate()
     @IsOptional()
     @ApiProperty({format: 'date'})
-    expireDate: Date = DateTime.now().plus({year: 20}).toJSDate()
+    expiryDate: Date;
 
     @ApiProperty({type: 'file', accept: imageTypes, required: false})
     @ToObjectId()

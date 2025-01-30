@@ -28,7 +28,7 @@ export class User {
     @Prop({required: false})
     deviceLimit: number;
 
-    @Prop()
+    @Prop({required: false})
     expiryDate: Date;
 
     @Prop({type: Types.ObjectId, required: false})
