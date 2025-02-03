@@ -8,10 +8,13 @@ async function bootstrap() {
 
     // Ensure all endpoints are protected from invalid data
     app.setGlobalPrefix('api')
-    app.useGlobalPipes(new ValidationPipe({ transform: true, transformOptions: {
-        enableImplicitConversion: true,
-        excludeExtraneousValues: true
-    }}));
+    app.useGlobalPipes(new ValidationPipe({
+        transform: true,
+        whitelist: true,
+        transformOptions: {
+            enableImplicitConversion: true,
+        }
+    }));
 
     app.enableCors({
         origin: '*'
