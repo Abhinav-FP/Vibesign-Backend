@@ -72,6 +72,8 @@ export class ListUserDto {
     @ApiProperty()
     active: boolean = true;
 
+    @IsString()
+    @IsOptional()
     filter: string = '';
 }
 

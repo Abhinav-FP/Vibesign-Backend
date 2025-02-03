@@ -27,6 +27,8 @@ export class ListMediaDto {
     @ApiProperty({filterType: 'checkbox'})
     template: string = '';
 
+    @IsString()
+    @IsOptional()
     filter: string = '';
 
     toQuery(user: UserDoc, parent: Types.ObjectId, forFile: boolean): FilterQuery<MediaDoc> {

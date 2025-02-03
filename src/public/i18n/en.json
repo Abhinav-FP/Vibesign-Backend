@@ -44,8 +44,10 @@
     "title.tickets": "Support",
     "title.edit-tickets": "Support Ticket",
     "title.send-ticket": "Send A Message To Support",
+    "title.take-actions": "Take Actions",
 
     "label.enter-your-keywords": "Enter your keywords",
+    "label.search": "Search: ",
     "label.search-location": "Search for a location",
     "label.impersonation": "{{impersonator.username}} is logged in as: {{username}}",
     "label.app-notes": "Version Notes",

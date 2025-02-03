@@ -17,6 +17,8 @@ export class ListChannelDto {
     @ApiProperty({format: 'datetime', disableFilter: true})
     createdAt: Date = null;
 
+    @IsString()
+    @IsOptional()
     filter: string = '';
 
     toQuery(user: UserDoc): FilterQuery<ChannelDoc> {

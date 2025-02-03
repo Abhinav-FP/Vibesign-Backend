@@ -26,6 +26,8 @@ export class ListTicketDto {
     @ApiProperty()
     subject: string = '';
 
+    @IsString()
+    @IsOptional()
     filter: string = '';
 
     toQuery(): FilterQuery<TicketDoc> {

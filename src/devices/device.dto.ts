@@ -27,6 +27,8 @@ export class ListDeviceDto {
     @ApiProperty({format: 'datetime', disableFilter: true})
     createdAt: Date = null;
 
+    @IsString()
+    @IsOptional()
     filter: string = '';
 
     toQuery(user: UserDoc): FilterQuery<DeviceDoc> {
