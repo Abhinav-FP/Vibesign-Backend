@@ -29,9 +29,12 @@ export interface ClientSocket extends Socket {
 }
 
 export interface DeviceInfo {
-    error?: string;
     settings?: any;
     screenInfo?: any;
+    playlist?: any;
+    error?: string;
+    color?: string;
+    textColor?: string;
 }
 
 @Injectable()
@@ -74,7 +77,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             const client = this.clients.find(c => c.deviceCode === device.hexCode);
             if (client) {
                 client.emit('deviceInfo', await this.getDeviceInfo(device));
-                client.emit('playlist', await this.getPlaylist(device));
             }
         }
     }
@@ -85,11 +87,9 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         const client = this.clients.find(c => c.deviceCode === ev.device.hexCode);
         if (oldClient && oldClient !== client) {
             oldClient.emit('deviceInfo', {});
-            oldClient.emit('playlist', []);
         }
         if (client) {
             client.emit('deviceInfo', await this.getDeviceInfo(ev.device));
-            client.emit('playlist', await this.getPlaylist(ev.device));
         }
     }
 
@@ -98,7 +98,6 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         client.deviceCode = deviceId;
         const device = await this.deviceModel.findOne({hexCode: deviceId});
         client.emit('deviceInfo', await this.getDeviceInfo(device));
-        client.emit('playlist', await this.getPlaylist(device));
     }
 
     @SubscribeMessage('activity')
@@ -107,16 +106,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
 
     protected async getPlaylist(device: DeviceDoc): Promise<any[]> {
-        if (!device) return [];
         try {
-            if (!device.active) {
-                return [];
-            }
-            await device.populate('owner');
-            const owner: UserDoc = device.owner as any;
-            if (owner.expiryDate <= new Date()) {
-                return [];
-            }
             await device.populate('channel');
             const channel: ChannelDoc = device.channel as any;
             await channel.populate('playlists');
@@ -134,21 +124,32 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         if (!device) return {};
         if (device.active === false) {
             return {
-                error: 'message.device-inactive.error'
+                error: 'app.message.device-inactive.error'
             };
         }
         await device.populate('owner');
         const owner: UserDoc = device.owner as any;
         if (owner.active === false) {
             return {
-                error: 'message.user-inactive.error'
+                error: 'app.message.user-inactive.error'
             };
         }
         if (isDate(owner.expiryDate) && owner.expiryDate <= new Date()) {
             return {
-                error: 'message.user-expired.error'
+                error: 'app.message.user-expired.error'
             };
         }
-        return device.toJSON();
+        const {settings, screenInfo} = device.toJSON();
+        const playlist = await this.getPlaylist(device);
+        if (playlist.length === 0) {
+            return {
+                error: 'app.message.playlist-empty.warning'
+            };
+        }
+        return {
+            settings,
+            screenInfo,
+            playlist: await this.getPlaylist(device)
+        }
     }
 }

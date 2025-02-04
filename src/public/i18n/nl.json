@@ -194,5 +194,19 @@
 
     "error.required": "Veld is verplicht",
     "login.credential": "Gebruikersnaam of e-mailadres",
-    "login.password": "Wachtwoord"
+    "login.password": "Wachtwoord",
+
+    "app.title.pairing-code": "Koppelingscode",
+    "app.title.pairing-info": "Koppel dit scherm met de koppelingscode op Vibe Sign",
+    "app.title.step": "Stap {{num}}",
+    "app.title.check-problems": "Controleer de volgende problemen:",
+    "app.text.pairing-steps": "Koppelingsstappen:",
+    "app.text.step1": "Log in op uw account",
+    "app.text.step2": "Ga naar spelers en klik op de knop Toevoegen (+)",
+    "app.text.step3": "Zoek het veld voor de koppelingscode en typ de koppelingscode die op dit scherm wordt weergegeven",
+    "app.text.step4": "Controleer het actieve veld en sla het op. Het scherm zou automatisch moeten worden gekoppeld",
+    "app.message.device-inactive.error": "Uw speler is op dit moment inactief",
+    "app.message.user-inactive.error": "Uw gebruiker is op dit moment inactief",
+    "app.message.user-expired.error": "Uw gebruiker is verlopen, neem contact op met support",
+    "app.message.playlist-empty.warning": "Uw afspeellijst is leeg, dus er is nog niets om weer te geven"
 }

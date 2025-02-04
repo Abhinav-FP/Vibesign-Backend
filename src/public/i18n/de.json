@@ -177,5 +177,19 @@
     "support.notes": "Nachricht",
     "error.required": "Feld ist erforderlich",
     "login.credential": "Benutzername oder E-Mail Adresse",
-    "login.password": "Passwort"
+    "login.password": "Passwort",
+
+    "app.title.pairing-code": "Kopplungscode",
+    "app.title.pairing-info": "Koppeln Sie diesen Bildschirm mit dem Kopplungscode bei Vibe Sign",
+    "app.title.step": "Schritt {{num}}",
+    "app.title.check-problems": "Bitte überprüfen Sie die folgenden Probleme:",
+    "app.text.pairing-steps": "Kopplungsschritte:",
+    "app.text.step1": "Melden Sie sich bei Ihrem Konto an",
+    "app.text.step2": "Gehen Sie zu Playern und klicken Sie auf die Schaltfläche Hinzufügen (+)",
+    "app.text.step3": "Suchen Sie das Feld Kopplungscode und geben Sie den auf diesem Bildschirm angezeigten Kopplungscode ein",
+    "app.text.step4": "Aktivfeld prüfen und speichern. Der Bildschirm sollte automatisch gekoppelt werden",
+    "app.message.device-inactive.error": "Ihr Player ist momentan inaktiv",
+    "app.message.user-inactive.error": "Ihr Benutzer ist momentan inaktiv",
+    "app.message.user-expired.error": "Ihr Benutzer ist abgelaufen, bitte kontaktieren Sie den Support",
+    "app.message.playlist-empty.warning": "Ihre Playlist ist leer, es gibt also noch nichts anzuzeigen"
 }

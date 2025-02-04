@@ -194,5 +194,19 @@
 
     "error.required": "Le champ est obligatoire",
     "login.credential": "Nom d'utilisateur ou adresse e-mail",
-    "login.password": "Mot de passe"
+    "login.password": "Mot de passe",
+
+    "app.title.pairing-code": "Code d'appairage",
+    "app.title.pairing-info": "Appairez cet écran avec le code d'appairage de Vibe Sign",
+    "app.title.step": "Étape {{num}}",
+    "app.title.check-problems": "Veuillez vérifier les problèmes suivants :",
+    "app.text.pairing-steps": "Étapes d'appairage :",
+    "app.text.step1": "Connectez-vous à votre compte",
+    "app.text.step2": "Accédez aux lecteurs et cliquez sur le bouton Ajouter (+)",
+    "app.text.step3": "Recherchez le champ du code d'appairage et saisissez le code d'appairage affiché sur cet écran",
+    "app.text.step4": "Vérifiez le champ actif et enregistrez-le. L'écran devrait être appairé automatiquement",
+    "app.message.device-inactive.error": "Votre lecteur est inactif pour le moment",
+    "app.message.user-inactive.error": "Votre utilisateur est inactif pour le moment moment",
+    "app.message.user-expired.error": "Votre utilisateur a expiré, veuillez contacter le support",
+    "app.message.playlist-empty.warning": "Votre playlist est vide, il n'y a donc rien à afficher pour l'instant"
 }

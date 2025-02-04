@@ -194,5 +194,19 @@
 
     "error.required": "Field is required",
     "login.credential": "Username or Email address",
-    "login.password": "Password"
+    "login.password": "Password",
+
+    "app.title.pairing-code": "Pairing code",
+    "app.title.pairing-info": "Pair this screen with the pairing code at Vibe Sign",
+    "app.title.step": "Step {{num}}",
+    "app.title.check-problems": "Please check the following problems:",
+    "app.text.pairing-steps": "Pairing steps:",
+    "app.text.step1": "Login to your account",
+    "app.text.step2": "Go to players and click on Add button (+)",
+    "app.text.step3": "Find the pairing code field and type in the pairing code displayed on this screen",
+    "app.text.step4": "Check active field and save it. The screen should be paired automatically",
+    "app.message.device-inactive.error": "Your player is inactive at the moment",
+    "app.message.user-inactive.error": "Your user is inactive at the moment",
+    "app.message.user-expired.error": "Your user is expired, please contact support",
+    "app.message.playlist-empty.warning": "Your playlist is empty, so there is nothing to display yet"
 }
