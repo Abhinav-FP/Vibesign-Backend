@@ -84,7 +84,7 @@ export class UserDto {
     name: string = '';
 
     @IsEmail()
-    @ApiProperty()
+    @ApiProperty({format: 'email'})
     email: string;
 
     @IsNotEmpty()
