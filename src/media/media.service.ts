@@ -112,10 +112,10 @@ export class MediaService {
     async deleteMedia(media: MediaDoc): Promise<any> {
         if (!media) return;
         const playlists = await this.playlistModel
-            .find({ medias: {$in: [media._id]}});
+            .find({media: {$in: [media._id]}});
         for (const playlist of playlists) {
-            const medias = playlist.medias.filter(c => !c?.equals(media._id));
-            await playlist.updateOne({medias});
+            const mediaList = playlist.media.filter(c => !c?.equals(media._id));
+            await playlist.updateOne({media: mediaList});
         }
         await this.assets.unlink(media.file);
         await this.assets.unlink(media.template);

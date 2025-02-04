@@ -112,8 +112,8 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             await channel.populate('playlists');
             const playlists = channel.playlists
                 .map(p => p as unknown as PlaylistDoc);
-            await Promise.all(playlists.map(p => p.populate('medias')));
-            return playlists.map(p => p.medias).flat();
+            await Promise.all(playlists.map(p => p.populate('media')));
+            return playlists.map(p => p.media).flat();
         } catch (e) {
             console.log(e);
             return null;

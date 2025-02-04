@@ -1,0 +1,11 @@
+{
+    "message.delete-companies.confirm": "Are you sure that you want to delete the selected Company?",
+    "message.delete-customers.confirm": "Are you sure that you want to delete the selected Customer?",
+    "message.delete-partners.confirm": "Are you sure that you want to delete the selected Partner?",
+    "message.delete-media.confirm": "Are you sure that you want to delete the selected Media?",
+    "message.delete-media-dir.confirm": "Are you sure that you want to delete the selected Directory?",
+    "message.delete-playlists.confirm": "Are you sure that you want to delete the selected Playlist?",
+    "message.delete-channels.confirm": "Are you sure that you want to delete the selected Channel?",
+    "message.delete-devices.confirm": "Are you sure that you want to delete the selected Player?",
+    "message.delete-managers.confirm": "Are you sure that you want to delete the selected Admin?"
+}

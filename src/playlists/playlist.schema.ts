@@ -20,7 +20,7 @@ export class Playlist {
     owner: ObjectId;
 
     @Prop({type: [Types.ObjectId], required: false, ref: Media.name})
-    medias: ObjectId[];
+    media: ObjectId[];
 }
 
 export type PlaylistDoc = HydratedDocument<Playlist>;

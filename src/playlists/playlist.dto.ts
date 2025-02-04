@@ -37,7 +37,7 @@ export class PlaylistDto {
 
     @ToObjectId()
     @ApiProperty({required: false, endpoint: 'playlists/media', multi: true, labelField: 'name', default: () => []})
-    medias: Types.ObjectId[] = [];
+    media: Types.ObjectId[] = [];
 }
 
 export class AddPlaylistDto extends PlaylistDto {
