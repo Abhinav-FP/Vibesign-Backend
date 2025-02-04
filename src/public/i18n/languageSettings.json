@@ -1,12 +1,16 @@
 {
     "languages": [
         "en",
-        "de"
+        "de",
+        "fr",
+        "nl"
     ],
     "devLanguages": [],
     "defaultLanguage": "en",
     "settings": {
         "de": {},
-        "en": {}
+        "en": {},
+        "fr": {},
+        "nl": {}
     }
 }
