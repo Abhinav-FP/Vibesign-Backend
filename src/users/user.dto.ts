@@ -26,6 +26,8 @@ const strongPassword = {
     minSymbols: 0
 } as IsStrongPasswordOptions;
 
+const strongPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$';
+
 export class ListUserDto {
 
     @IsString()
@@ -118,11 +120,11 @@ export class UserDto {
 export class AddUserDto extends UserDto {
 
     @IsStrongPassword(strongPassword)
-    @ApiProperty()
+    @ApiProperty({pattern: strongPattern})
     password: string;
 
     @IsStrongPassword(strongPassword)
-    @ApiProperty()
+    @ApiProperty({pattern: strongPattern})
     confirmPassword: string;
 }
 
@@ -130,12 +132,12 @@ export class EditUserDto extends UserDto {
 
     @IsOptional()
     @IsStrongPassword(strongPassword)
-    @ApiProperty({required: false})
+    @ApiProperty({required: false, pattern: strongPattern})
     password: string;
 
     @IsOptional()
     @IsStrongPassword(strongPassword)
-    @ApiProperty({required: false})
+    @ApiProperty({required: false, pattern: strongPattern})
     confirmPassword: string;
 
 }

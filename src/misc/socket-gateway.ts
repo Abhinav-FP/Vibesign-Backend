@@ -1,6 +1,7 @@
 import {Injectable, Logger} from '@nestjs/common';
 import {OnEvent} from '@nestjs/event-emitter';
 import {InjectModel} from '@nestjs/mongoose';
+import {isDate} from 'class-validator';
 import {
     ConnectedSocket,
     MessageBody,
@@ -24,7 +25,7 @@ import {PlaylistDoc} from '../playlists/playlist.schema';
 import {UserDoc} from '../users/user.schema';
 
 export interface ClientSocket extends Socket {
-    deviceId: string;
+    deviceCode: string;
 }
 
 export interface DeviceInfo {
@@ -70,7 +71,7 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     async onUserUpdated(ev: UserUpdated) {
         const devices = await this.deviceModel.find({owner: ev.user._id});
         for (const device of devices) {
-            const client = this.clients.find(c => c.deviceId === device.hexCode);
+            const client = this.clients.find(c => c.deviceCode === device.hexCode);
             if (client) {
                 client.emit('deviceInfo', await this.getDeviceInfo(device));
                 client.emit('playlist', await this.getPlaylist(device));
@@ -80,8 +81,8 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     @OnEvent(DeviceUpdated.name)
     async onDeviceUpdated(ev: DeviceUpdated) {
-        const oldClient = this.clients.find(c => c.deviceId === ev.oldCode);
-        const client = this.clients.find(c => c.deviceId === ev.device.hexCode);
+        const oldClient = this.clients.find(c => c.deviceCode === ev.oldCode);
+        const client = this.clients.find(c => c.deviceCode === ev.device.hexCode);
         if (oldClient && oldClient !== client) {
             oldClient.emit('deviceInfo', {});
             oldClient.emit('playlist', []);
@@ -92,9 +93,9 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         }
     }
 
-    @SubscribeMessage('deviceId')
+    @SubscribeMessage('deviceCode')
     async onDeviceId(@ConnectedSocket() client: ClientSocket, @MessageBody() deviceId: string) {
-        client.deviceId = deviceId;
+        client.deviceCode = deviceId;
         const device = await this.deviceModel.findOne({hexCode: deviceId});
         client.emit('deviceInfo', await this.getDeviceInfo(device));
         client.emit('playlist', await this.getPlaylist(device));
@@ -131,19 +132,19 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     protected async getDeviceInfo(device: DeviceDoc): Promise<DeviceInfo> {
         if (!device) return {};
-        if (!device.active) {
+        if (device.active === false) {
             return {
                 error: 'message.device-inactive.error'
             };
         }
         await device.populate('owner');
         const owner: UserDoc = device.owner as any;
-        if (!owner.active) {
+        if (owner.active === false) {
             return {
                 error: 'message.user-inactive.error'
             };
         }
-        if (owner.expiryDate <= new Date()) {
+        if (isDate(owner.expiryDate) && owner.expiryDate <= new Date()) {
             return {
                 error: 'message.user-expired.error'
             };
