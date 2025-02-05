@@ -11,9 +11,11 @@ export enum DeviceSizing {
 }
 
 export enum DeviceTransition {
-    Fade = 'fade',
-    LeftSwipe = 'leftSwipe',
-    RightSwipe = 'rightSwipe'
+    Normal = 'normal',
+    Parallax = 'parallax',
+    ScaleFade = 'scaleFade',
+    Rotate = 'rotate',
+    Circular = 'circular'
 }
 
 export class DeviceAddress {

@@ -267,6 +267,13 @@
     "devices.screenInfo.screenResolution": "Screen Resolution",
     "devices.screenInfo.contentResolution": "Content Resolution",
     "devices.error.required": "This field is required",
+    "devices.sizing.fit": "Fit",
+    "devices.sizing.fill": "Fill",
+    "devices.transition.normal": "Normal",
+    "devices.transition.parallax": "Parallax",
+    "devices.transition.scaleFade": "Scale Fade",
+    "devices.transition.rotate": "Rotate",
+    "devices.transition.circular": "Circular",
 
     "managers.name": "Admin Name",
     "managers.username": "Username",

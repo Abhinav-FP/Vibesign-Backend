@@ -89,7 +89,7 @@ export class DeviceSettingsDto {
 
     @IsEnum(DeviceTransition)
     @ApiProperty({enum: DeviceTransition, required: false})
-    transition: DeviceTransition = DeviceTransition.Fade;
+    transition: DeviceTransition = DeviceTransition.Normal;
 
     @IsHexColor()
     @ApiProperty({format: 'color', required: false})
