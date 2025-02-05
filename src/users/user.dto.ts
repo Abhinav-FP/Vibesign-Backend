@@ -26,7 +26,7 @@ const strongPassword = {
     minSymbols: 0
 } as IsStrongPasswordOptions;
 
-const strongPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d]{6,}$';
+const strongPattern = '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{6,}$';
 
 export class ListUserDto {
 
