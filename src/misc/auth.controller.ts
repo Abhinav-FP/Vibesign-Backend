@@ -1,4 +1,4 @@
-import {Controller, Delete, Get, Post, UseGuards} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, Post, UseGuards} from '@nestjs/common';
 import {ApiExtraModels} from '@nestjs/swagger';
 import {AuthGuard} from '@nestjs/passport';
 import {Auth, AuthService, IAuthContext, Public, ResolveEntity} from '@stemy/nest-utils';
@@ -17,6 +17,13 @@ export class AuthController {
     @ApiExtraModels(UserLoginDto)
     async login(@Auth() ctx: IAuthContext) {
         return this.authService.login(ctx);
+    }
+
+    @Public()
+    @Post('forgot-password')
+    async forgotPassword(@Body() dto: UserLoginDto) {
+        throw new BadRequestException('Not implemented');
+        // return dto;
     }
 
     @Get('user')

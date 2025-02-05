@@ -107,6 +107,9 @@
     "message.login.success": "Login successful!",
     "message.login.error": "Invalid credentials provided!",
     "message.logout.success": "Logout successful!",
+    "message.forgot-password.success": "Forgot password e-mail sent successful!",
+    "message.forgot-password.error": "There was a problem requesting your forgotten password. Please check the provided e-mail",
+    "message.reset-password.error": "There was a problem while logging in with your reset password token",
     "message.invalid-files.error": "Invalid file type provided",
 
     "message.add-companies.success": "Company created successfully",
