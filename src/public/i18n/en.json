@@ -103,6 +103,8 @@
     "button.cancel": "Cancel",
     "button.reset": "Reset",
     "button.close": "Close",
+    "button.view-screenshot": "View Screenshot",
+    "button.recapture-screenshot": "Recapture Screenshot",
 
     "message.login.success": "Login successful!",
     "message.login.error": "Invalid credentials provided!",
