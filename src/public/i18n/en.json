@@ -208,6 +208,7 @@
     "devices.lastActiveDate": "Last Active",
     "devices.lastActiveTime": "Time",
     "devices.status": "Status",
+    "devices.preview": "Preview",
     "devices.status.online": "Online",
     "devices.status.offline": "Offline",
 
