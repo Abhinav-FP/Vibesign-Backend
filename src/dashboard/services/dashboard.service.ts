@@ -1,16 +1,13 @@
-import {join} from 'path';
-import {createReadStream} from 'fs';
 import axios, {AxiosInstance} from 'axios';
 import {Model} from 'mongoose';
 import {Inject, Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose';
-import {Asset, AssetsService, compareId, IAsset, TempAsset} from '@stemy/nest-utils';
+import {Asset, AssetsService, IAsset} from '@stemy/nest-utils';
 
-import {APK_MIME, BuildData, BuildsResponse, EXPO_PASSWORD, EXPO_USER} from './common';
-import {UserDoc} from '../users/user.schema';
-import {Device} from '../devices/device.schema';
-import {Activity} from '../activities/activity.schema';
-
+import {APK_MIME, BuildData, BuildsResponse, EXPO_PASSWORD, EXPO_USER} from '../common';
+import {UserDoc} from '../../users/user.schema';
+import {Device, DeviceDoc} from '../../devices/device.schema';
+import {SocketGateway} from "./socket-gateway";
 
 @Injectable()
 export class DashboardService {
@@ -19,9 +16,9 @@ export class DashboardService {
     protected sessionSecret: string;
     protected client: AxiosInstance;
 
-    constructor(readonly assets: AssetsService,
+    constructor(protected assets: AssetsService,
+                protected gateway: SocketGateway,
                 @InjectModel(Device.name) protected deviceModel: Model<Device>,
-                @InjectModel(Activity.name) protected activityModel: Model<Activity>,
                 @Inject(EXPO_USER) protected expoUser: string,
                 @Inject(EXPO_PASSWORD) protected expoPassword: string) {
         this.client = axios.create({
@@ -53,18 +50,22 @@ export class DashboardService {
 
     async aggregate(user: UserDoc): Promise<any> {
         const devices = await this.deviceModel.find({owner: user?._id});
-        const $in = devices.map(d => d._id);
-        const activities = await this.activityModel.find({device: {$in}});
-        const online = devices.filter(d => {
-            return activities.some(a => compareId(a.device, d._id) && a.isOnline());
-        });
+        const online = devices.filter(d => this.gateway.getClient(d) !== null);
         return {
             devices: {
                 total: devices.length,
                 online: online.length,
                 offline: devices.length - online.length
             },
-            recent: activities.map(r => r.toJSON())
+            recent: devices.map(device => {
+                const data = device.toJSON() as Record<string, any>;
+                const client = this.gateway.getClient(device);
+                data.status = client ? 'online' : 'offline';
+                data.lastActive = client ? new Date() : device.lastActive || data.createdAt;
+                return data;
+            }).sort((a, b) => {
+                return b.lastActive - a.lastActive;
+            })
         };
     }
 
@@ -83,6 +84,10 @@ export class DashboardService {
             throw new Error('No APK build is available at the moment');
         }
         return build;
+    }
+
+    async screenShot(device: DeviceDoc): Promise<IAsset> {
+        return this.gateway.screenShot(device);
     }
 
     protected async getSessionSecret(): Promise<string> {

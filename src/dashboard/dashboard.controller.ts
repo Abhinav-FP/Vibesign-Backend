@@ -1,8 +1,9 @@
 import {BadRequestException, Controller, Get, StreamableFile} from '@nestjs/common';
-import {AuthUser, Public} from '@stemy/nest-utils';
+import {AuthUser, Public, ResolveEntity} from '@stemy/nest-utils';
 
 import {UserDoc} from '../users/user.schema';
-import {DashboardService} from './dashboard.service';
+import {DashboardService} from './services/dashboard.service';
+import {Device, DeviceDoc} from "../devices/device.schema";
 
 @Controller('dashboard')
 export class DashboardController {
@@ -38,5 +39,18 @@ export class DashboardController {
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
+    }
+
+    @Public()
+    @Get('device-screenshot/:id')
+    async screenShot(@ResolveEntity(Device) device: DeviceDoc) {
+        const asset = await this.dashboard.screenShot(device);
+        if (!asset) {
+            return new BadRequestException(`Device does not have a preview to show`);
+        }
+        return new StreamableFile(asset.stream, {
+            type: asset.contentType,
+            disposition: `attachment; filename="${asset.filename}"`
+        });
     }
 }

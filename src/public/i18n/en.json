@@ -310,6 +310,8 @@
     "login.password": "Password",
     "login.error.required": "This field is required",
 
+    "app.button.save-url": "Save URL",
+    "app.button.reset-connection": "Reset Connection",
     "app.title.pairing-code": "Pairing code",
     "app.title.pairing-info": "Pair this screen with the pairing code at Vibe Sign",
     "app.title.step": "Step {{num}}",
@@ -319,8 +321,11 @@
     "app.text.step2": "Go to players and click on Add button (+)",
     "app.text.step3": "Find the pairing code field and type in the pairing code displayed on this screen",
     "app.text.step4": "Check active field and save it. The screen should be paired automatically",
+    "app.text.api-url": "Type API url here...",
     "app.message.device-inactive.error": "Your player is inactive at the moment",
     "app.message.user-inactive.error": "Your user is inactive at the moment",
     "app.message.user-expired.error": "Your user is expired, please contact support",
-    "app.message.playlist-empty.warning": "Your playlist is empty, so there is nothing to display yet"
+    "app.message.playlist-empty.warning": "Your playlist is empty, so there is nothing to display yet",
+    "app.message.save-url.success": "API url has been saved successfully",
+    "app.message.reset-connection.success": "Connection has been reset successfully"
 }

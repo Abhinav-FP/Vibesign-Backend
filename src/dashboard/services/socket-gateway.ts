@@ -1,28 +1,27 @@
+import {isDate} from 'class-validator';
+import {Model} from 'mongoose';
+import {Server, Socket} from 'socket.io';
 import {Injectable, Logger} from '@nestjs/common';
 import {OnEvent} from '@nestjs/event-emitter';
 import {InjectModel} from '@nestjs/mongoose';
-import {isDate} from 'class-validator';
 import {
     ConnectedSocket,
     MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
-    OnGatewayInit,
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer
 } from '@nestjs/websockets';
-import {Model} from 'mongoose';
-import {Server, Socket} from 'socket.io';
+import {AssetsService, IAsset, promiseTimeout, setAndUpdate} from '@stemy/nest-utils';
 
-import {DeviceUpdated} from '../events/device-updated';
-import {UserUpdated} from '../events/user-updated';
-import {AddActivityDto} from '../activities/activity.dto';
-import {Channel, ChannelDoc} from '../channels/channel.schema';
-import {Activity} from '../activities/activity.schema';
-import {Device, DeviceDoc} from '../devices/device.schema';
-import {PlaylistDoc} from '../playlists/playlist.schema';
-import {UserDoc} from '../users/user.schema';
+import {DeviceUpdated} from '../../events/device-updated';
+import {UserUpdated} from '../../events/user-updated';
+import {Channel, ChannelDoc} from '../../channels/channel.schema';
+import {Device, DeviceDoc} from '../../devices/device.schema';
+import {PlaylistDoc} from '../../playlists/playlist.schema';
+import {UserDoc} from '../../users/user.schema';
+import {DeviceLocation} from './dto';
 
 export interface ClientSocket extends Socket {
     deviceCode: string;
@@ -39,35 +38,54 @@ export interface DeviceInfo {
 
 @Injectable()
 @WebSocketGateway()
-export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     protected readonly logger: Logger;
     protected readonly clients: ClientSocket[];
+    protected readonly screenshotMap: Map<string, (device: DeviceDoc) => void>;
 
     @WebSocketServer() io: Server;
 
-    constructor(@InjectModel(Channel.name) protected channelModel: Model<Channel>,
-                @InjectModel(Activity.name) protected activityModel: Model<Activity>,
+    constructor(protected assets: AssetsService,
+                @InjectModel(Channel.name) protected channelModel: Model<Channel>,
                 @InjectModel(Device.name) protected deviceModel: Model<Device>) {
         this.logger = new Logger(this.constructor.name);
         this.clients = [];
-        this.logger.log('Initialized');
+        this.screenshotMap = new Map();
     }
 
-    afterInit(): void {
-        this.logger.log('Initialized');
+    getClient(device: DeviceDoc) {
+        return this.clients.find(client => client.deviceCode === device.hexCode) || null;
     }
 
-    handleConnection(@ConnectedSocket() client: ClientSocket) {
+    async screenShot(device: DeviceDoc): Promise<IAsset> {
+        const client = this.getClient(device);
+        if (client) {
+            const shotPromise = new Promise<DeviceDoc>(resolve => {
+                this.screenshotMap.set(device.id, resolve);
+            });
+            client.emit('screenshot');
+            // Wait for successful screenshot or timeout
+            const result = await Promise.race([shotPromise, promiseTimeout(7500)]) as DeviceDoc;
+            // Save new device instance
+            device = result || device;
+            // Remove resolver function from map
+            this.screenshotMap.delete(device.id);
+        }
+        return !device.lastScreenShot ? null : this.assets.read(device.lastScreenShot);
+    }
+
+    async handleConnection(@ConnectedSocket() client: ClientSocket) {
         this.logger.verbose(`Client id: ${client.id} connected`);
         this.clients.push(client);
     }
 
-    handleDisconnect(@ConnectedSocket() client: ClientSocket) {
+    async handleDisconnect(@ConnectedSocket() client: ClientSocket) {
         this.logger.verbose(`Client id: ${client.id} disconnected`);
         const index = this.clients.indexOf(client);
         if (index < 0) return;
         this.clients.splice(index, 1);
+        await this.deviceModel.updateOne({hexCode: client.deviceCode}, {lastActive: new Date()});
     }
 
     @OnEvent(UserUpdated.name)
@@ -100,9 +118,46 @@ export class SocketGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         client.emit('deviceInfo', await this.getDeviceInfo(device));
     }
 
-    @SubscribeMessage('activity')
-    onActivity(@ConnectedSocket() client: ClientSocket, @MessageBody() data: AddActivityDto) {
-        console.log('device updated', data);
+    @SubscribeMessage('deviceLocation')
+    async onDeviceLocation(@ConnectedSocket() client: ClientSocket, @MessageBody() data: DeviceLocation) {
+        const device = await this.deviceModel.findOne({hexCode: client.deviceCode});
+        if (!device) return;
+        const {address, lat, lng} = device.address || {address: '', lat: 0, lng: 0};
+        data.address = data.address || address;
+        data.location = data.location || {lat, lng};
+        data.location.lat = data.location.lat ?? lat;
+        data.location.lng = data.location.lng ?? lng;
+
+        await setAndUpdate(device, {
+            lastActive: new Date(),
+            address: {
+                address: data.address,
+                lat: data.location.lat,
+                lng: data.location.lng,
+            }
+        } as any);
+    }
+
+    @SubscribeMessage('screenshot')
+    async onDeviceScreenShot(@ConnectedSocket() client: ClientSocket, @MessageBody() shot: string) {
+        const device = await this.deviceModel.findOne({hexCode: client.deviceCode});
+        if (!device) return;
+
+        if (device.lastScreenShot) {
+            const old = await this.assets.read(device.lastScreenShot);
+            await old.unlink();
+        }
+
+        const newAsset = await this.assets.writeUrl(shot, {filename: `screenshot-${device.id}`});
+
+        await setAndUpdate(device, {
+            lastActive: new Date(),
+            lastScreenShot: newAsset.oid
+        });
+
+        if (this.screenshotMap.has(device.id)) {
+            this.screenshotMap.get(device.id)?.(device);
+        }
     }
 
     protected async getPlaylist(device: DeviceDoc): Promise<any[]> {

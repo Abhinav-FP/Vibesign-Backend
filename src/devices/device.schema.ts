@@ -110,6 +110,12 @@ export class Device {
 
     @Prop({type: Types.ObjectId, required: false, ref: Channel.name})
     channel: ObjectId;
+
+    @Prop({required: false})
+    lastActive: Date;
+
+    @Prop({type: Types.ObjectId, required: false})
+    lastScreenShot: ObjectId;
 }
 
 export type DeviceDoc = HydratedDocument<Device>;

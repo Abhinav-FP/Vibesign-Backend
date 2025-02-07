@@ -7,9 +7,7 @@ import {TemplatesService} from '@stemy/nest-utils';
 
 import {IWeatherData, WEATHER_API_KEY} from './common';
 import {Device} from '../devices/device.schema';
-import {Activity} from '../activities/activity.schema';
 import {MediaDoc, MediaType} from '../media/media.schema';
-import {sampleData} from './data';
 import {locales} from './locales';
 
 @Injectable()
@@ -19,7 +17,6 @@ export class WeatherService {
 
     constructor(readonly templates: TemplatesService,
                 @InjectModel(Device.name) protected deviceModel: Model<Device>,
-                @InjectModel(Activity.name) protected activityModel: Model<Activity>,
                 @Inject(WEATHER_API_KEY) protected apiKey: string) {
         this.client = axios.create({
             baseURL: `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services`,

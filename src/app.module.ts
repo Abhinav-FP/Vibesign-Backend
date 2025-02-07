@@ -19,7 +19,6 @@ import {ChannelsModule} from './channels/channels.module';
 import {DevicesModule} from './devices/devices.module';
 import {TicketsModule} from './tickets/tickets.module';
 import {DashboardModule} from './dashboard/dashboard.module';
-import {ActivitiesModule} from './activities/activities.module';
 import {WeatherModule} from './weather/weather.module';
 import {MiscModule} from './misc/misc.module';
 
@@ -52,7 +51,6 @@ import {MiscModule} from './misc/misc.module';
         ChannelsModule,
         DevicesModule,
         TicketsModule,
-        ActivitiesModule,
         DashboardModule.forRootAsync(dashboardConfig.asProvider()),
         WeatherModule.forRootAsync(weatherConfig.asProvider()),
     ],

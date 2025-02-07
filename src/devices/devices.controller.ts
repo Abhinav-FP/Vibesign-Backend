@@ -1,14 +1,11 @@
 import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, Query} from '@nestjs/common';
 import {ApiExtraModels} from '@nestjs/swagger';
-import {AuthUser, ComplexQuery, Public, ResolveEntity} from '@stemy/nest-utils';
+import {AuthUser, ComplexQuery, ResolveEntity} from '@stemy/nest-utils';
 
 import {UserDoc} from '../users/user.schema';
 import {Device, DeviceDoc} from './device.schema';
 import {AddDeviceDto, EditDeviceDto, ListDeviceDto} from './device.dto';
 import {DevicesService} from './devices.service';
-import {ChannelDoc} from '../channels/channel.schema';
-import {PlaylistDoc} from '../playlists/playlist.schema';
-import {AddActivityDto} from '../activities/activity.dto';
 
 @Controller('devices')
 export class DevicesController {
@@ -67,32 +64,5 @@ export class DevicesController {
     @Delete('/:id')
     async delete(@ResolveEntity(Device) device: DeviceDoc) {
         return this.devices.delete(device);
-    }
-
-    @Public()
-    @Get('/:hexCode/playlist')
-    async playlist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc) {
-        try {
-            await device.populate('channel');
-            const channel = device.channel as unknown as ChannelDoc;
-            await channel.populate('playlists');
-            const playlists = channel.playlists.map(p => p as unknown as PlaylistDoc);
-            await Promise.all(playlists.map(p => p.populate('medias')));
-            return playlists.map(p => p.media).flat();
-        } catch (e) {
-            throw new BadRequestException(`${e}`);
-        }
-    }
-
-    @Public()
-    @Post('/:hexCode/playlist')
-    async postPlaylist(@ResolveEntity(Device, true, 'hexCode') device: DeviceDoc,
-                       @Body() dto: AddActivityDto) {
-        try {
-            await this.devices.createActivity(dto, device);
-        } catch (e) {
-            throw new BadRequestException(`${e}`);
-        }
-        return this.playlist(device);
     }
 }

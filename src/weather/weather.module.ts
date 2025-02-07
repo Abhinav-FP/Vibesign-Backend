@@ -1,7 +1,6 @@
 import {DynamicModule, Module, Provider} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {
-    AssetsModule,
     createRootModule,
     createRootModuleAsync,
     FromOptionsProviders,
@@ -11,7 +10,6 @@ import {
 import {WEATHER_MODULE_OPTIONS, WEATHER_API_KEY, IWeatherModuleOpts} from './common';
 import {WeatherService} from './weather.service';
 import {WeatherController} from './weather.controller';
-import {Activity, ActivitySchema} from '../activities/activity.schema';
 import {Device, DeviceSchema} from '../devices/device.schema';
 
 export function createDashboardProviders(): Provider[] {
@@ -24,7 +22,6 @@ export function createDashboardProviders(): Provider[] {
 @Module({
     imports: [
         MongooseModule.forFeature([
-            {name: Activity.name, schema: ActivitySchema},
             {name: Device.name, schema: DeviceSchema},
         ])
     ],
