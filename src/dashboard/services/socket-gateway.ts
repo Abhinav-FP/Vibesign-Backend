@@ -37,7 +37,9 @@ export interface DeviceInfo {
 }
 
 @Injectable()
-@WebSocketGateway()
+@WebSocketGateway({
+    maxHttpBufferSize: 1024 * 1024 * 5,
+})
 export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     protected readonly logger: Logger;
