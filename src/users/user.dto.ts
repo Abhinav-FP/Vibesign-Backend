@@ -101,7 +101,7 @@ export class UserDto {
     @IsDate()
     @IsOptional()
     @ApiProperty({format: 'date'})
-    expiryDate: Date;
+    expiryDate?: Date;
 
     @ApiProperty({type: 'file', accept: imageTypes, required: false})
     @ToObjectId()
@@ -110,7 +110,7 @@ export class UserDto {
     @IsBoolean()
     @IsOptional()
     @ApiProperty()
-    active: boolean = true;
+    active?: boolean = true;
 
     @MinLength(3)
     @ApiProperty()

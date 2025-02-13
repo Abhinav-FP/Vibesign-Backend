@@ -22,7 +22,7 @@ export class PlaylistsController {
                @ComplexQuery() q: ListPlaylistDto) {
         return await this.playlists.paginate(
             q.toQuery(authUser),
-            {page, limit, sort}
+            {page, limit, sort, populate: ['media']}
         );
     }
 

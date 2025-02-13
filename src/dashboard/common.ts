@@ -46,11 +46,11 @@ export interface BuildsResponse {
 
 export const APK_MIME = 'application/vnd.android.package-archive';
 
-export interface IDashboardModuleOpts {
+export interface IMiscModuleOpts {
     expoUser?: string;
     expoPassword?: string;
 }
 
 export const EXPO_USER: FactoryToken<string> = Symbol.for('EXPO_USER');
 export const EXPO_PASSWORD: FactoryToken<string> = Symbol.for('EXPO_PASSWORD');
-export const DASHBOARD_MODULE_OPTIONS: FactoryToken<IDashboardModuleOpts> = Symbol.for('DASHBOARD_MODULE_OPTIONS');
+export const MISC_MODULE_OPTIONS: FactoryToken<IMiscModuleOpts> = Symbol.for('MISC_MODULE_OPTIONS');

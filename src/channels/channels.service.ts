@@ -16,7 +16,7 @@ export class ChannelsService {
     }
 
     listPlaylists(owner: UserDoc): Promise<PlaylistDoc[]> {
-        return this.playlistModel.find({ owner: owner._id });
+        return this.playlistModel.find({ owner: owner._id }).populate('media');
     }
 
     paginate(query: FilterQuery<ChannelDoc>, params: IPaginationParams<Channel>): Promise<IPagination<ChannelDoc>> {

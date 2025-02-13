@@ -1,7 +1,7 @@
 import { registerAs } from '@nestjs/config';
-import {IDashboardModuleOpts} from '../dashboard/common';
+import {IMiscModuleOpts} from '../dashboard/common';
 
-export default registerAs('dashboard', () => ({
+export default registerAs('misc', () => ({
     expoUser: process.env.EXPO_USER || '',
     expoPassword: process.env.EXPO_PASSWORD || '',
-} as IDashboardModuleOpts));
+} as IMiscModuleOpts));

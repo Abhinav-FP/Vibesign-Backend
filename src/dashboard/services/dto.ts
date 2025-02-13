@@ -1,5 +1,7 @@
-import {IsNumber, IsOptional, MinLength, ValidateNested} from "class-validator";
+import {IsNumber, IsOptional, IsString, MinLength, ValidateNested} from "class-validator";
 import {ApiProperty} from "../../decorators";
+import {OmitType} from "@nestjs/swagger";
+import {EditUserDto} from "../../users/user.dto";
 
 export class LatLng {
 
@@ -23,5 +25,20 @@ export class DeviceLocation {
     @IsOptional()
     @ApiProperty({type: () => LatLng})
     location: LatLng = new LatLng();
+
+}
+
+export class UserLoginDto {
+
+    @ApiProperty()
+    @IsString()
+    credential: string;
+
+    @ApiProperty()
+    @IsString()
+    password: string;
+}
+
+export class UserProfileDto extends OmitType(EditUserDto, ['phone', 'deviceLimit', 'expiryDate', 'active']) {
 
 }

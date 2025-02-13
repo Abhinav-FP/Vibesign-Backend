@@ -87,16 +87,20 @@ export class UsersService implements IUserHandler {
     }
 
     async findByCredentials(credential: string, password: string): Promise<IAuthContext> {
-        const user = await this.model.findOne({
+        const user = await this.findByCredential(credential);
+        if (user && user.password === await this.hashPassword(password)) {
+            return this.toContext(user);
+        }
+        return null;
+    }
+
+    async findByCredential(credential: string): Promise<UserDoc> {
+        return this.model.findOne({
             $or: [
                 {username: credential},
                 {email: credential},
             ],
         });
-        if (user && user.password === await this.hashPassword(password)) {
-            return this.toContext(user);
-        }
-        return null;
     }
 
     protected async toContext(user: UserDoc): Promise<IAuthContext> {
