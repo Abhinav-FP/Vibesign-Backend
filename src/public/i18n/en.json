@@ -254,6 +254,7 @@
     "playlists.name": "Playlist Name",
     "playlists.createdAt": "Creation Date and Time",
     "playlists.drop-media": "Drag & drop your files from existing media",
+    "playlists.toggle-view": "Toggle View",
     "playlists.error.required": "This field is required",
 
     "channels.name": "Channel Name",
