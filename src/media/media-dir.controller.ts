@@ -12,7 +12,7 @@ export class MediaDirController {
     constructor(protected media: MediaService) {
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     async getDefault(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc) {
         const res = new AddMediaDirDto();
         res.path = !parent ? `/` : await parent.getPath();
@@ -34,7 +34,7 @@ export class MediaDirController {
         return dir.toJSON();
     }
 
-    @Get('/:id')
+    @Get(':id')
     async get(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
               @ResolveEntity(MediaDir) dir: MediaDirDoc) {
         const res = dir.toJSON();
@@ -42,7 +42,7 @@ export class MediaDirController {
         return res;
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     async update(@ResolveEntity(MediaDir, false, 'parentId') parent: MediaDirDoc,
                  @ResolveEntity(MediaDir) dir: MediaDirDoc,
                  @Body() dto: EditMediaDirDto) {
@@ -55,7 +55,7 @@ export class MediaDirController {
         return dir.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@ResolveEntity(MediaDir) dir: MediaDirDoc) {
         return this.media.deleteDir(dir);
     }

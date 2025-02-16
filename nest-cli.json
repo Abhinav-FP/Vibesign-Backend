@@ -9,7 +9,7 @@
                 "include": "public/**/*.*"
             },
             {
-                "include": "templates/**/*.handlebars"
+                "include": "templates/**/*.*"
             }
         ],
         "watchAssets": true,

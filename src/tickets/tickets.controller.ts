@@ -25,7 +25,7 @@ export class TicketsController {
         );
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     async getDefault() {
         return new AddTicketDto();
     }
@@ -42,13 +42,13 @@ export class TicketsController {
         return ticket.toJSON();
     }
 
-    @Get('/:id')
+    @Get(':id')
     @ApiExtraModels(EditTicketDto)
     async get(@ResolveEntity(Ticket) ticket: TicketDoc) {
         return ticket.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@ResolveEntity(Ticket) ticket: TicketDoc) {
         return this.tickets.delete(ticket);
     }

@@ -2,7 +2,7 @@ import {DynamicModule, Module, Provider} from '@nestjs/common';
 import {MongooseModule} from '@nestjs/mongoose';
 import {createRootModule, createRootModuleAsync, FromOptionsProviders, IModuleOptionsProvider} from '@stemy/nest-utils';
 
-import {MISC_MODULE_OPTIONS, EXPO_PASSWORD, EXPO_USER, IMiscModuleOpts} from './common';
+import {MISC_MODULE_OPTIONS, EXPO_PASSWORD, EXPO_USER, IMiscModuleOpts, UI_URL} from './common';
 import {Device, DeviceSchema} from '../devices/device.schema';
 import {Channel, ChannelSchema} from '../channels/channel.schema';
 
@@ -24,6 +24,7 @@ export function createDashboardProviders(): Provider[] {
         )
         .useValue(EXPO_USER, opts => opts.expoUser || '')
         .useValue(EXPO_PASSWORD, opts => opts.expoPassword || '')
+        .useValue(UI_URL, opts => opts.uiUrl || 'http://localhost:4200')
         .asArray();
 }
 

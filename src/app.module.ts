@@ -4,11 +4,12 @@ import {ConfigModule} from '@nestjs/config';
 import {EventEmitterModule} from '@nestjs/event-emitter';
 import {MongooseModule} from '@nestjs/mongoose';
 import {ServeStaticModule} from '@nestjs/serve-static';
-import {AssetsModule, AuthModule, TemplatesModule, TranslationModule, TranslationService} from '@stemy/nest-utils';
+import {AssetsModule, AuthModule, TemplatesModule, TranslationModule, TranslationService, MailerModule} from '@stemy/nest-utils';
 
 import assetsConfig from './config/assets.config';
 import authConfig from './config/auth.config';
 import miscConfig from './config/misc.config';
+import mailerConfig from './config/mailer.config';
 import databaseConfig from './config/database.config';
 import weatherConfig from './config/weather.config';
 
@@ -25,7 +26,7 @@ import {WeatherModule} from './weather/weather.module';
     imports: [
         // 3rd party modules
         ConfigModule.forRoot({
-            load: [assetsConfig, authConfig, miscConfig, databaseConfig, weatherConfig],
+            load: [assetsConfig, authConfig, miscConfig, mailerConfig, databaseConfig, weatherConfig],
             cache: true,
             isGlobal: true,
         }),
@@ -46,6 +47,7 @@ import {WeatherModule} from './weather/weather.module';
             templatesDir: join(__dirname, 'templates'),
             translator: TranslationService,
         }),
+        MailerModule.forRootAsync(mailerConfig.asProvider()),
         // App modules
         UsersModule.forRoot(),
         MediaModule,

@@ -49,8 +49,10 @@ export const APK_MIME = 'application/vnd.android.package-archive';
 export interface IMiscModuleOpts {
     expoUser?: string;
     expoPassword?: string;
+    uiUrl?: string;
 }
 
 export const EXPO_USER: FactoryToken<string> = Symbol.for('EXPO_USER');
 export const EXPO_PASSWORD: FactoryToken<string> = Symbol.for('EXPO_PASSWORD');
+export const UI_URL: FactoryToken<string> = Symbol.for('UI_URL');
 export const MISC_MODULE_OPTIONS: FactoryToken<IMiscModuleOpts> = Symbol.for('MISC_MODULE_OPTIONS');

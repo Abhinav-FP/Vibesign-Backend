@@ -1,17 +1,20 @@
-import {BadRequestException, Body, Controller, Delete, Get, Patch, Post, UseGuards} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, Inject, Patch, Post, UseGuards} from '@nestjs/common';
 import {ApiExtraModels} from '@nestjs/swagger';
 import {AuthGuard} from '@nestjs/passport';
-import {Auth, AuthService, AuthUser, IAuthContext, Public, ResolveEntity, TemplatesService} from '@stemy/nest-utils';
+import {Auth, AuthService, AuthUser, IAuthContext, Public, ResolveEntity, MailerService, Language} from '@stemy/nest-utils';
 
 import {User, UserDoc} from '../users/user.schema';
 import {UsersService} from '../users/users.service';
+
+import {UI_URL} from './common';
 import {UserLoginDto, UserProfileDto} from './services/dto';
 
 @Controller('auth')
 export class AuthController {
     constructor(protected authService: AuthService,
                 protected users: UsersService,
-                protected templates: TemplatesService) {
+                protected mailer: MailerService,
+                @Inject(UI_URL) protected uiUrl: string) {
     }
 
     @UseGuards(AuthGuard('local'))
@@ -24,14 +27,24 @@ export class AuthController {
 
     @Public()
     @Post('forgot-password')
-    async forgotPassword(@Body() dto: UserLoginDto) {
-        const user = await this.users.findByCredential(dto.credential);
-        if (user) {
-            const test = await this.templates.render('forgot-password', 'en', {
-                impersonator: user,
-                context: {impersonator: user}
-            });
-            console.log(test);
+    async forgotPassword(@Body() dto: UserLoginDto, @Language() language: string) {
+        const context = await this.users.findByCredential(dto.credential);
+        if (context) {
+            const {user, token} = this.authService.login(context);
+            const resetLink = `${this.uiUrl}/login?token=${encodeURI(token)}`;
+            const mail = this.mailer.create({
+                to: user.email,
+                content: {
+                    template: 'forgot-password',
+                    context: {user, resetLink},
+                    language
+                },
+                subject: 'mail.forgot-password.subject'
+            }).attach({
+                content: this.mailer.templateAsset('logo.png'),
+                filename: 'logo.png'
+            }, 'logo');
+            await mail.send();
         }
         return {
             message: `We sent the details to your e-mail address if the user exists`

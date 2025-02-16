@@ -26,12 +26,12 @@ export class ChannelsController {
         );
     }
 
-    @Get('/playlists')
+    @Get('playlists')
     async getPlaylists(@AuthUser() authUser: UserDoc) {
         return this.channels.listPlaylists(authUser);
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     async getDefault() {
         return new AddChannelDto();
     }
@@ -48,12 +48,12 @@ export class ChannelsController {
         return channel.toJSON();
     }
 
-    @Get('/:id')
+    @Get(':id')
     async get(@ResolveEntity(Channel) channel: ChannelDoc) {
         return channel.toJSON();
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     async update(@ResolveEntity(Channel) channel: ChannelDoc, @Body() dto: EditChannelDto) {
         try {
             await this.channels.update(channel, dto);
@@ -63,7 +63,7 @@ export class ChannelsController {
         return channel.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@ResolveEntity(Channel) channel: ChannelDoc) {
         return this.channels.delete(channel);
     }

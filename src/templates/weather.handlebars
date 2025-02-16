@@ -1,44 +1,44 @@
-<html lang='{{ language }}'>
+<html lang="{{ language }}">
 <head>
     <title>Weather of {{ address.address }}</title>
-    <link rel='preconnect' href='https://fonts.googleapis.com'>
-    <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href='https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap'
-        rel='stylesheet'>
-    <link rel='stylesheet' type='text/css' href='/weather.css'>
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/weather.css">
 </head>
 <body>
-<div class='weather-animated'>
-    <div class='location'>
+<div class="weather-animated">
+    <div class="location">
         {{ address.address }}
     </div>
 
     {{#with currentConditions}}
-    <div class='main'>
-        <div class='main-left'>
-            <div class='icon {{ icon }}'></div>
+    <div class="main">
+        <div class="main-left">
+            <div class="icon {{ icon }}"></div>
             <div>{{ conditions }}</div>
         </div>
-        <div class='main-center'>
+        <div class="main-center">
             {{ temp }}°c
         </div>
-        <div class='main-right'>
+        <div class="main-right">
             <ul>
-                <li class='wind'>Wind: {{ windspeed }}&nbsp;kmph</li>
-                <li class='precip'>Precip: {{ precip }}&nbsp;mm</li>
-                <li class='pressure'>Pressure: {{ pressure }}&nbsp;mb</li>
+                <li class="wind">Wind: {{ windspeed }}&nbsp;kmph</li>
+                <li class="precip">Precip: {{ precip }}&nbsp;mm</li>
+                <li class="pressure">Pressure: {{ pressure }}&nbsp;mb</li>
             </ul>
         </div>
     </div>
     {{/with}}
 
-    <div class='week'>
+    <div class="week">
         {{#each days}}
-            <div class='day'>
-                <div class='name'>{{ day }}</div>
-                <div class='icon {{ icon }}'></div>
-                <div class='temperature'> {{ temp }}°c</div>
+            <div class="day">
+                <div class="name">{{ day }}</div>
+                <div class="icon {{ icon }}"></div>
+                <div class="temperature"> {{ temp }}°c</div>
             </div>
         {{/each}}
     </div>

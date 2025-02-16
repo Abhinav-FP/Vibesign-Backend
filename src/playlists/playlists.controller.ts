@@ -26,12 +26,12 @@ export class PlaylistsController {
         );
     }
 
-    @Get('/media')
+    @Get('media')
     async getMedia(@AuthUser() authUser: UserDoc) {
         return this.playlists.listMedias(authUser);
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     async getDefault() {
         return new AddPlaylistDto();
     }
@@ -48,12 +48,12 @@ export class PlaylistsController {
         return playlist.toJSON();
     }
 
-    @Get('/:id')
+    @Get(':id')
     async get(@ResolveEntity(Playlist) playlist: PlaylistDoc) {
         return playlist.toJSON();
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     async update(@ResolveEntity(Playlist) playlist: PlaylistDoc, @Body() dto: EditPlaylistDto) {
         try {
             await this.playlists.update(playlist, dto);
@@ -63,7 +63,7 @@ export class PlaylistsController {
         return playlist.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@ResolveEntity(Playlist) playlist: PlaylistDoc) {
         return this.playlists.delete(playlist);
     }

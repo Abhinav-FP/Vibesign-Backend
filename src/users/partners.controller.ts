@@ -39,12 +39,12 @@ export class PartnersController {
         };
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     getDefault() {
         return new AddPartnerDto();
     }
 
-    @Get('/:id')
+    @Get(':id')
     get(@ResolveEntity(User) user: UserDoc) {
         return user.toJSON();
     }
@@ -59,7 +59,7 @@ export class PartnersController {
         }
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     async update(@ResolveEntity(User) user: UserDoc, @Body() dto: EditPartnerDto) {
         try {
             await this.users.update(user, dto);
@@ -69,7 +69,7 @@ export class PartnersController {
         return user.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@AuthUser() authUser: UserDoc, @ResolveEntity(User) user: UserDoc) {
         if (authUser.id == user.id) {
             throw new ForbiddenException(`Can't remove own user`);

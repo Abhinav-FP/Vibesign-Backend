@@ -26,12 +26,12 @@ export class DevicesController {
         );
     }
 
-    @Get('/channels')
+    @Get('channels')
     async getChannels(@AuthUser() authUser: UserDoc) {
         return this.devices.listChannels(authUser);
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     async getDefault() {
         return new AddDeviceDto();
     }
@@ -46,12 +46,12 @@ export class DevicesController {
         }
     }
 
-    @Get('/:id')
+    @Get(':id')
     async get(@ResolveEntity(Device) device: DeviceDoc) {
         return device.toJSON();
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     async update(@ResolveEntity(Device) device: DeviceDoc, @Body() dto: EditDeviceDto) {
         try {
             await this.devices.update(device, dto);
@@ -61,7 +61,7 @@ export class DevicesController {
         return device.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@ResolveEntity(Device) device: DeviceDoc) {
         return this.devices.delete(device);
     }

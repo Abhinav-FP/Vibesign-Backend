@@ -344,5 +344,20 @@
     "app.message.user-expired.error": "Your user is expired, please contact support",
     "app.message.playlist-empty.warning": "Your playlist is empty, so there is nothing to display yet",
     "app.message.save-url.success": "API url has been saved successfully",
-    "app.message.reset-connection.success": "Connection has been reset successfully"
+    "app.message.reset-connection.success": "Connection has been reset successfully",
+
+    "mail.forgot-password.subject": "Reset Password",
+    "mail.forgot-password.welcome": [
+        "Hello {{name}}, \n",
+        "Somebody requested a new password for the VibeSign account associated with {{email}}. \n",
+        "No changes have been made to your account yet."
+    ],
+    "mail.forgot-password.button": "Reset Password",
+    "mail.forgot-password.with-button": "You can reset your password by clicking the button below: ",
+    "mail.forgot-password.with-link": "Or copying this link to your browser address bar: ",
+    "mail.forgot-password.goodbye": [
+        "If you did not request a new password, please let us know immediately by replying to this email. \n",
+        "Yours,",
+        "The VibeSign team"
+    ]
 }

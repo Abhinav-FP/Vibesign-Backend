@@ -62,7 +62,7 @@ export class MediaController {
         };
     }
 
-    @Get('/new/default')
+    @Get('new/default')
     async getDefault(@ResolveEntity(MediaDir, false) dir: MediaDirDoc) {
         const res = new AddMediaDto();
         res.path = !dir ? `/` : await dir.getPath();
@@ -85,7 +85,7 @@ export class MediaController {
         return media.toJSON();
     }
 
-    @Get('/:id')
+    @Get(':id')
     async get(@ResolveEntity(MediaDir, false) dir: MediaDirDoc,
               @ResolveEntity(Media) media: MediaDoc) {
         const res = media.toJSON();
@@ -93,7 +93,7 @@ export class MediaController {
         return res;
     }
 
-    @Patch('/:id')
+    @Patch(':id')
     async update(@ResolveEntity(MediaDir, false) dir: MediaDirDoc,
                  @ResolveEntity(Media) media: MediaDoc,
                  @Body() dto: EditMediaDto) {
@@ -106,7 +106,7 @@ export class MediaController {
         return media.toJSON();
     }
 
-    @Delete('/:id')
+    @Delete(':id')
     async delete(@ResolveEntity(Media) media: MediaDoc) {
         return this.media.deleteMedia(media);
     }

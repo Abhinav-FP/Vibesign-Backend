@@ -10,7 +10,7 @@ export class WeatherController {
     }
 
     @Public()
-    @Get('/:mediaId/info')
+    @Get(':mediaId/info')
     @Header('Content-Type', () => 'text/html')
     async info(@ResolveEntity(Media) media: MediaDoc) {
         try {
@@ -21,7 +21,7 @@ export class WeatherController {
     }
 
     @Public()
-    @Get('/locales')
+    @Get('locales')
     async locales(@Query('country') country: string) {
         try {
             return await this.weather.getLocales(country);
