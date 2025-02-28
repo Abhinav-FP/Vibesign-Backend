@@ -36,7 +36,11 @@ export class AuthController {
                 to: user.email,
                 content: {
                     template: 'forgot-password',
-                    context: {user, resetLink},
+                    context: {
+                        user,
+                        resetLink,
+                        resetLinkText: resetLink.match(/.{1,10}/g).join('&#8203;')
+                    },
                     language
                 },
                 subject: 'mail.forgot-password.subject'

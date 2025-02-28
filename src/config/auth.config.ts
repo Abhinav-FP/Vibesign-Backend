@@ -1,5 +1,5 @@
-import { registerAs } from '@nestjs/config';
-import { IAuthModuleOpts } from '@stemy/nest-utils';
+import {registerAs} from '@nestjs/config';
+import {IAuthModuleOpts} from '@stemy/nest-utils';
 import {UsersService} from "../users/users.service";
 
 export default registerAs('auth', () => ({
