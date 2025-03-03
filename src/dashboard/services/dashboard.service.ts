@@ -75,11 +75,10 @@ export class DashboardService {
         const lastAsset = apps
             .sort((a, b) => Number(a.metadata.buildVersion) - Number(b.metadata.buildVersion))
             .pop();
-        // const build = await this.getLastBuild(lastAsset);
-        // if (build !== lastAsset) {
-        //     await Promise.all(apps.map(a => a.unlink()));
-        // }
-        const build = lastAsset;
+        const build = await this.getLastBuild(lastAsset);
+        if (build !== lastAsset) {
+            await Promise.all(apps.map(a => a.unlink()));
+        }
         if (!build) {
             throw new Error('No APK build is available at the moment');
         }
