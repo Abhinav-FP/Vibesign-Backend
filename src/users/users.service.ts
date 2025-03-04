@@ -46,7 +46,8 @@ export class UsersService implements IUserHandler {
         return paginateAggregations(this.model, [
             ...lookupStages('users', 'host'),
             addFieldStage({
-                host: '$host.name'
+                host: '$host.name',
+                hostId: '$host._id'
             }),
             ...lookupStages('devices', '_id', 'devices', 'owner', false),
             addFieldStage({
