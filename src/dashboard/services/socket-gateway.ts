@@ -22,6 +22,9 @@ import {Device, DeviceDoc} from '../../devices/device.schema';
 import {PlaylistDoc} from '../../playlists/playlist.schema';
 import {UserDoc} from '../../users/user.schema';
 import {DeviceLocation} from './dto';
+import {MediaDoc} from "../../media/media.schema";
+import {ChannelUpdated} from "../../events/channel-updated";
+import {PlaylistUpdated} from "../../events/playlist-updated";
 
 export interface ClientSocket extends Socket {
     deviceCode: string;
@@ -90,26 +93,52 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         await this.deviceModel.updateOne({hexCode: client.deviceCode}, {lastActive: new Date()});
     }
 
-    @OnEvent(UserUpdated.name)
-    async onUserUpdated(ev: UserUpdated) {
-        const devices = await this.deviceModel.find({owner: ev.user._id});
-        for (const device of devices) {
-            const client = this.clients.find(c => c.deviceCode === device.hexCode);
-            if (client) {
-                client.emit('deviceInfo', await this.getDeviceInfo(device));
+    @OnEvent(PlaylistUpdated.name)
+    async onPlaylistUpdated(ev: PlaylistUpdated) {
+        this.channelModel.find({playlists: ev.playlist._id}).then(channels => {
+            for (const channel of channels) {
+                this.onChannelUpdated(new ChannelUpdated(channel));
             }
-        }
+        }).catch(e => {
+            this.logger.log(`Error occurred when finding channels for playlist: ${e}`);
+        });
+    }
+
+    @OnEvent(ChannelUpdated.name)
+    onChannelUpdated(ev: ChannelUpdated) {
+        this.deviceModel.find({channel: ev.channel._id}).then(devices => {
+            for (const device of devices) {
+                this.onDeviceUpdated(new DeviceUpdated(device));
+            }
+        }).catch(e => {
+            this.logger.log(`Error occurred when finding devices for channel: ${e}`);
+        });
+    }
+
+    @OnEvent(UserUpdated.name)
+    onUserUpdated(ev: UserUpdated) {
+        this.deviceModel.find({owner: ev.user._id}).then(devices => {
+            for (const device of devices) {
+                this.onDeviceUpdated(new DeviceUpdated(device));
+            }
+        }).catch(e => {
+            this.logger.log(`Error occurred when finding devices for user: ${e}`);
+        });
     }
 
     @OnEvent(DeviceUpdated.name)
-    async onDeviceUpdated(ev: DeviceUpdated) {
+    onDeviceUpdated(ev: DeviceUpdated) {
         const oldClient = this.clients.find(c => c.deviceCode === ev.oldCode);
         const client = this.clients.find(c => c.deviceCode === ev.device.hexCode);
         if (oldClient && oldClient !== client) {
             oldClient.emit('deviceInfo', {});
         }
         if (client) {
-            client.emit('deviceInfo', await this.getDeviceInfo(ev.device));
+            this.getDeviceInfo(ev.device)
+                .then(info => client.emit('deviceInfo', info))
+                .catch(e => {
+                    this.logger.log(`Error occurred when generating device info: ${e}`);
+                });
         }
     }
 
@@ -170,7 +199,11 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
             const playlists = channel.playlists
                 .map(p => p as unknown as PlaylistDoc);
             await Promise.all(playlists.map(p => p.populate('media')));
-            return playlists.map(p => p.media).flat();
+            const media = playlists
+                .map(p => p.media as unknown as MediaDoc).flat();
+            return media
+                .filter(m => m.file || m.mediaType == 'weather')
+                .map(m => m.toJSON())
         } catch (e) {
             console.log(e);
             return null;
@@ -206,7 +239,7 @@ export class SocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
         return {
             settings,
             screenInfo,
-            playlist: await this.getPlaylist(device)
+            playlist
         }
     }
 }

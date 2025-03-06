@@ -1,7 +1,10 @@
 import {DeviceDoc} from '../devices/device.schema';
 
 export class DeviceUpdated {
-    constructor(readonly device: DeviceDoc, readonly oldCode: string) {
 
+    readonly oldCode: string;
+
+    constructor(readonly device: DeviceDoc, oldCode: string = null) {
+        this.oldCode = oldCode || device.hexCode;
     }
 }

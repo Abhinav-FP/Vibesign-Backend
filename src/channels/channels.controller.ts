@@ -38,14 +38,12 @@ export class ChannelsController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddChannelDto) {
-        const channel = this.channels.create(dto);
         try {
-            channel.owner = authUser._id;
-            await channel.save();
+            const channel = await this.channels.add(dto, authUser._id);
+            return channel.toJSON();
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
-        return channel.toJSON();
     }
 
     @Get(':id')

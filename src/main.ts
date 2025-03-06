@@ -24,7 +24,7 @@ async function bootstrap() {
     const config = new DocumentBuilder()
         .setTitle('Vibesign')
         .setDescription('The Nest.js backend for Vibesign')
-        .setVersion('2.0')
+        .setVersion('2.1.0')
         .addTag('vibesign')
         .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
@@ -33,7 +33,7 @@ async function bootstrap() {
     });
 
     // Listen
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(process.env.PORT ?? 5000);
 }
 
 bootstrap().catch(e => {

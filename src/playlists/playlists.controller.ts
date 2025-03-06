@@ -38,14 +38,12 @@ export class PlaylistsController {
 
     @Post()
     async add(@AuthUser() authUser: UserDoc, @Body() dto: AddPlaylistDto) {
-        const playlist = this.playlists.create(dto);
         try {
-            playlist.owner = authUser._id;
-            await playlist.save();
+            const playlist = await this.playlists.add(dto, authUser._id);
+            return playlist.toJSON();
         } catch (e) {
             throw new BadRequestException(`${e}`);
         }
-        return playlist.toJSON();
     }
 
     @Get(':id')

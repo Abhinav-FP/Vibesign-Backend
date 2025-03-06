@@ -15,7 +15,7 @@ export class DevicesService {
 
     constructor(@InjectModel(Channel.name) protected channelModel: Model<Channel>,
                 @InjectModel(Device.name) protected model: Model<Device>,
-                private eventEmitter: EventEmitter2) {
+                protected eventEmitter: EventEmitter2) {
     }
 
     listChannels(owner: UserDoc): Promise<ChannelDoc[]> {
@@ -29,11 +29,11 @@ export class DevicesService {
     async add(dto: AddDeviceDto, owner: Types.ObjectId): Promise<DeviceDoc> {
         const device = new this.model(dto);
         device.owner = owner;
-        this.eventEmitter.emit(DeviceUpdated.name, new DeviceUpdated(device, device.hexCode));
+        this.eventEmitter.emit(DeviceUpdated.name, new DeviceUpdated(device));
         return device.save();
     }
 
-    async update(device: DeviceDoc, dto: EditDeviceDto) {
+    async update(device: DeviceDoc, dto: EditDeviceDto): Promise<DeviceDoc> {
         const hexCode = device.hexCode;
         device = await setAndUpdate(device, dto);
         this.eventEmitter.emit(DeviceUpdated.name, new DeviceUpdated(device, hexCode));
