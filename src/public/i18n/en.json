@@ -155,6 +155,16 @@
     "message.add-managers.error": "An error occurred while creating the Admin",
     "message.edit-managers.error": "An error occurred while updating the Admin",
 
+    "message.delete-companies.success": "Company deleted successfully",
+    "message.delete-customers.success": "Customer deleted successfully",
+    "message.delete-partners.success": "Partner deleted successfully",
+    "message.delete-media.success": "Media deleted successfully",
+    "message.delete-media-dir.success": "Directory deleted successfully",
+    "message.delete-playlists.success": "Playlist deleted successfully",
+    "message.delete-channels.success": "Channel deleted successfully",
+    "message.delete-devices.success": "Player deleted successfully",
+    "message.delete-managers.success": "Admin deleted successfully",
+
     "message.delete-companies.confirm": "Are you sure that you want to delete the selected Company?",
     "message.delete-customers.confirm": "Are you sure that you want to delete the selected Customer?",
     "message.delete-partners.confirm": "Are you sure that you want to delete the selected Partner?",
