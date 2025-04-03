@@ -33,7 +33,7 @@
         "@nestjs/serve-static": "^4.0.2",
         "@nestjs/swagger": "^11.0.2",
         "@nestjs/websockets": "^11.0.3",
-        "@stemy/nest-utils": "0.8.4",
+        "@stemy/nest-utils": "0.8.6",
         "axios": "^1.7.9",
         "bcrypt": "^5.1.1",
         "class-transformer": "^0.5.1",

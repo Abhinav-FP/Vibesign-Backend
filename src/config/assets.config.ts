@@ -4,6 +4,7 @@ import {CompressionAssetProcessorService} from '../dashboard/services/compressio
 import {AssetFileTypeService} from '../dashboard/services/file-type.service';
 
 export default registerAs('assets', () => ({
+    maxSize: parseInt(process.env.MAX_FILE_SIZE || '262144000'),
     assetProcessor: CompressionAssetProcessorService,
     typeDetector: AssetFileTypeService,
     driver: AssetGridDriver
