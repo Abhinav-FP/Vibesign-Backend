@@ -2,14 +2,15 @@ import {Readable} from 'stream';
 import {createReadStream} from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
 import {Injectable} from '@nestjs/common';
-import {AssetProcessorService, IAssetMeta, IFileType, streamToBuffer, tempPath, tempWrite} from '@stemy/nest-utils';
+import {AssetProcessorService, IAssetMeta, IFileType, streamToBuffer, tempPath} from '@stemy/nest-utils';
 
 export async function compress(metadata: IAssetMeta) {
     const output = await tempPath('compressed.mp4');
     const ratio = 1080 / metadata.height;
     const width = ratio < 1 ? metadata.width * ratio : metadata.width;
     const height = ratio < 1 ? metadata.height * ratio : metadata.height;
-    const bitrate = Math.min(metadata.bit_rate / 1000, 3000);
+    const minBitrate = 3000_000;
+    const bitrate = Math.min((isNaN(metadata.bit_rate) ? minBitrate : metadata.bit_rate), minBitrate) / 1000;
     return new Promise<Readable>((resolve, reject) => {
         ffmpeg(metadata.tempFfmpegPath)
             .output(output)
