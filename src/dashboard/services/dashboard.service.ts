@@ -73,7 +73,7 @@ export class DashboardService {
         const apps = await this.assets
             .findMany({contentType: APK_MIME, filename: {$regex: 'vibesign-', $options: 'i'}});
         const lastAsset = apps
-            .sort((a, b) => Number(a.metadata.buildVersion) - Number(b.metadata.buildVersion))
+            .sort((a, b) => a.metadata.buildVersion - b.metadata.buildVersion)
             .pop();
         const build = await this.getLastBuild(lastAsset);
         if (build !== lastAsset) {
@@ -174,6 +174,7 @@ export class DashboardService {
             const buildData = buildRes.data.builds.byId;
             const buildDate = new Date(buildData.createdAt);
             const name = buildDate.toISOString().split('T').shift();
+            await lastAsset?.unlink();
             return this.assets.writeUrl(buildData.artifacts.applicationArchiveUrl, {
                 filename: `vibesign-${name}.apk`,
                 buildDate,
