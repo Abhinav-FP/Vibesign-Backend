@@ -177,7 +177,7 @@ export class DashboardService {
             return this.assets.writeUrl(buildData.artifacts.applicationArchiveUrl, {
                 filename: `vibesign-${name}.apk`,
                 buildDate,
-                buildVersion: buildData.appBuildVersion,
+                buildVersion: Number(buildData.appBuildVersion),
                 version: buildData.appVersion,
                 notes: buildData.gitCommitMessage || `Enhancements`
             }, {
