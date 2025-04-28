@@ -1,26 +1,32 @@
-import {Readable} from 'stream';
-import {createReadStream} from 'fs';
 import * as ffmpeg from 'fluent-ffmpeg';
 import {Injectable} from '@nestjs/common';
-import {AssetProcessorService, IAssetMeta, IFileType, streamToBuffer, tempPath} from '@stemy/nest-utils';
+import {AssetProcessorService, IAssetMeta, IFileType, IUploadedFile} from '@stemy/nest-utils';
+import {join} from "path";
 
-export async function compress(metadata: IAssetMeta) {
-    const output = await tempPath('compressed.mp4');
+export async function compress(file: IUploadedFile, metadata: IAssetMeta, fileType: IFileType): Promise<IUploadedFile> {
+    const path = join(file.destination, `${file.filename.replace(/\./, '-')}-conv.mp4`);
+    const filename = path.replace(file.destination, '');
     const ratio = 1080 / metadata.height;
     const width = ratio < 1 ? metadata.width * ratio : metadata.width;
     const height = ratio < 1 ? metadata.height * ratio : metadata.height;
-    const minBitrate = 3000_000;
+    const minBitrate = 2500_000;
     const bitrate = Math.min((isNaN(metadata.bit_rate) ? minBitrate : metadata.bit_rate), minBitrate) / 1000;
-    return new Promise<Readable>((resolve, reject) => {
-        ffmpeg(metadata.tempFfmpegPath)
-            .output(output)
-            .outputOptions("-preset superfast")
+    const date = `cmp_${Date.now()}`;
+    console.log(`Compressing`, bitrate, `${metadata.width}x${metadata.height}`, `${width}x${height}`, fileType);
+    return new Promise((resolve, reject) => {
+        console.time(date);
+        ffmpeg(file.path)
+            .output(path)
+            .outputOptions("-preset ultrafast")
             .videoCodec('libx264')
             .size(`${width}x${height}`)
-            .fps(25)
             .videoBitrate(`${bitrate}k`)
+            .fps(20)
             .on('end', () => {
-                resolve(createReadStream(output));
+                resolve({...file, filename, path});
+            })
+            .on('progress', progress => {
+                console.timeLog(date, `${progress.percent}%`);
             })
             .on('error', (err) => {
                 console.log(err);
@@ -32,14 +38,12 @@ export async function compress(metadata: IAssetMeta) {
 
 @Injectable()
 export class CompressionAssetProcessorService extends AssetProcessorService {
-
-    async process(buffer: Buffer, metadata: IAssetMeta, fileType: IFileType): Promise<Buffer> {
-        buffer = await super.process(buffer, metadata, fileType);
+    async process(file: IUploadedFile, metadata: IAssetMeta, fileType: IFileType): Promise<IUploadedFile> {
+        file = await super.process(file, metadata, fileType);
         if (AssetProcessorService.isVideo(fileType.mime)) {
-            const compressed = await compress(metadata);
-            buffer = await streamToBuffer(compressed);
-            await AssetProcessorService.copyVideoMeta(buffer, metadata);
+            const compressed = await compress(file, metadata, fileType);
+            return await AssetProcessorService.copyVideoMeta(compressed, metadata);
         }
-        return buffer;
+        return file;
     }
 }

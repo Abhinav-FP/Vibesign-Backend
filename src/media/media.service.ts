@@ -96,7 +96,10 @@ export class MediaService {
             scaleX: ratio,
             scaleY: ratio
         });
-        const preview = await this.assets.writeStream(thumbnail);
+        const preview = await this.assets.write(thumbnail, {...image.metadata, filename: null}, {
+            mime: image.contentType,
+            ext: image.metadata.extension
+        });
         dto.preview = preview.oid;
     }
 

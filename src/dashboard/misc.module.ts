@@ -8,7 +8,6 @@ import {Channel, ChannelSchema} from '../channels/channel.schema';
 
 import {SocketGateway} from './services/socket-gateway';
 import {DashboardService} from './services/dashboard.service';
-import {AssetFileTypeService} from './services/file-type.service';
 import {CompressionAssetProcessorService} from './services/compression-asset-processor.service';
 
 import {DashboardController} from './dashboard.controller';
@@ -18,7 +17,6 @@ export function createDashboardProviders(): Provider[] {
     return new FromOptionsProviders(MISC_MODULE_OPTIONS)
         .add(
             CompressionAssetProcessorService,
-            AssetFileTypeService,
             DashboardService,
             SocketGateway
         )
