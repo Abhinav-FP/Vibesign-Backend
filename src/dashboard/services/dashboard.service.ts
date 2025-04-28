@@ -128,9 +128,9 @@ export class DashboardService {
     protected async getLastBuild(lastAsset: IAsset): Promise<IAsset> {
         await this.getSessionSecret();
         const now = new Date();
-        const dayAgo = new Date(now.getTime() - 24 * 3_600_1000);
+        const fewHoursAgo = new Date(now.getTime() - 3 * 3600_000);
         // We check only once a day
-        if (lastAsset instanceof Asset && dayAgo < new Date(lastAsset.createdAt)) {
+        if (lastAsset instanceof Asset && fewHoursAgo < new Date(lastAsset.metadata.buildDate)) {
             return lastAsset;
         }
         // We check build version
