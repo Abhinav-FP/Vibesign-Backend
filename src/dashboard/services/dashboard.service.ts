@@ -130,7 +130,7 @@ export class DashboardService {
         const now = new Date();
         const dayAgo = new Date(now.getTime() - 24 * 3_600_1000);
         // We check only once a day
-        if (lastAsset instanceof Asset && dayAgo > new Date(lastAsset.createdAt)) {
+        if (lastAsset instanceof Asset && dayAgo < new Date(lastAsset.createdAt)) {
             return lastAsset;
         }
         // We check build version
