@@ -47,6 +47,13 @@ export interface IWeatherConditions {
     [key: string]: any;
 }
 
+export interface IWeatherUnits {
+    speed?: string;
+    precip?: string;
+    pressure?: string;
+    temp?: string;
+}
+
 export interface IWeatherData {
     queryCost: number;
     latitude: number;
@@ -57,6 +64,7 @@ export interface IWeatherData {
     description?: string;
     days: IWeatherConditions[];
     currentConditions: IWeatherConditions;
+    units?: IWeatherUnits;
 }
 
 export interface IWeatherModuleOpts {

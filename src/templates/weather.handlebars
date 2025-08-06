@@ -21,13 +21,13 @@
             <div>{{ conditions }}</div>
         </div>
         <div class="main-center">
-            {{ temp }}°c
+            {{ temp }}{{ @root.units.temp }}
         </div>
         <div class="main-right">
             <ul>
-                <li class="wind">Wind: {{ windspeed }}&nbsp;kmph</li>
-                <li class="precip">Precip: {{ precip }}&nbsp;mm</li>
-                <li class="pressure">Pressure: {{ pressure }}&nbsp;mb</li>
+                <li class="wind">Wind: {{ windspeed }}&nbsp;{{ @root.units.speed }}</li>
+                <li class="precip">Precip: {{ precip }}&nbsp;{{ @root.units.precip }}</li>
+                <li class="pressure">Pressure: {{ pressure }}&nbsp;{{ @root.units.pressure }}</li>
             </ul>
         </div>
     </div>
@@ -38,7 +38,7 @@
             <div class="day">
                 <div class="name">{{ day }}</div>
                 <div class="icon {{ icon }}"></div>
-                <div class="temperature"> {{ temp }}°c</div>
+                <div class="temperature"> {{ temp }}{{ @root.units.temp }}</div>
             </div>
         {{/each}}
     </div>

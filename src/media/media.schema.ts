@@ -21,7 +21,6 @@ export enum ForecastUnits {
     Metric = 'metric',
     Us = 'us',
     Uk = 'uk',
-    Scientific = 'scientific',
 }
 
 export class MediaAddress {

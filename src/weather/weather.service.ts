@@ -5,10 +5,31 @@ import {Inject, Injectable} from '@nestjs/common'
 import {InjectModel} from '@nestjs/mongoose';
 import {TemplatesService} from '@stemy/nest-utils';
 
-import {IWeatherData, WEATHER_API_KEY} from './common';
+import {IWeatherData, IWeatherUnits, WEATHER_API_KEY} from './common';
 import {Device} from '../devices/device.schema';
 import {MediaDoc, MediaType} from '../media/media.schema';
 import {locales} from './locales';
+
+const weatherUnits: {[group: string]: IWeatherUnits} = {
+    metric: {
+        speed : 'kmph',
+        precip: 'mm',
+        pressure: 'mb',
+        temp: '°c'
+    },
+    us: {
+        speed: 'mph',
+        precip: 'inch',
+        pressure: 'mb',
+        temp: '°F'
+    },
+    uk: {
+        speed: 'mph',
+        precip: 'mm',
+        pressure: 'mb',
+        temp: '°c'
+    }
+};
 
 @Injectable()
 export class WeatherService {
@@ -59,6 +80,7 @@ export class WeatherService {
                 .weekdayShort;
             return d;
         }).slice(1, forecastDays + 1);
+        data.units = weatherUnits[forecastUnits] || weatherUnits.metric;
         return data;
     }
 
